@@ -1,0 +1,15 @@
+{
+  "name": "behat/flexible-mink",
+  "type": "behat-extension",
+  "description": "Mink extension with patient assertions and object storage",
+  "require": {
+    "php": ">=5.4.42",
+    "behat/behat": "^3.0",
+    "behat/mink-extension": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Behat\\FlexibleMink": "src/"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+ACCOUNT=chekote
+REPO=composer
+VERSION=php5.4.45-2016-03-27-16-14-51
+
+. "${DIR}"/lib/args.sh
+
+COMMAND="echo pid1 > /dev/null && composer $ARGS"
+
+docker run -it -v ~/.composer:/root/.composer -v $(pwd):/data --rm ${ACCOUNT}/${REPO}:${VERSION} "${COMMAND}"

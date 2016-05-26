@@ -201,4 +201,22 @@ class FlexibleContext extends MinkContext
         // set cookie:
         $this->getSession()->setCookie($key, null);
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @When angular rendered the page
+     */
+    public function waitForAngular()
+    {
+        // Wait for angular to load
+        $this->getSession()->wait(5000, "typeof angular != 'undefined'");
+        // Wait for angular to be testable
+        $this->getSession()->evaluateScript(
+            'angular.getTestability(document.body).whenStable(function() {
+                window.__testable = true;
+            })'
+        );
+        $this->getSession()->wait(5000, 'window.__testable == true');
+    }
 }

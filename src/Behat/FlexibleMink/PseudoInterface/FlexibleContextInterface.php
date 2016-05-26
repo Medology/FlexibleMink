@@ -103,4 +103,9 @@ trait FlexibleContextInterface
      * @throws ExpectationException     If the option is exist/not exist as expected
      */
     abstract public function assertSelectContainsOption($select, $existence, $option);
+
+    /**
+     * Wait for angular render the page to become testable.
+     */
+    abstract public function waitForAngular();
 }

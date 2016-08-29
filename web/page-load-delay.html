@@ -9,20 +9,23 @@
           // prevent the default click
           event.preventDefault();
 
-          // delay the click for 5 seconds
+          // delay the click for 2 seconds
           setTimeout(function() {
             location = $("#sml_delay").attr('href');
           }, 2000);
+
+          return false;
         });
 
         $("#big_delay").click(function() {
           // prevent the default click
           event.preventDefault();
 
-          // delay the click for 5 seconds
+          // delay the click for 7 seconds
           setTimeout(function() {
-            location = $("#sml_delay").attr('href');
+            location = $("#big_delay").attr('href');
           }, 7000);
+
           return false;
         });
       });

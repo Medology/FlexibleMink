@@ -51,6 +51,16 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
+    public function assertPageAddress($page)
+    {
+        $this->waitFor(function () use ($page) {
+            parent::assertPageAddress($page);
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function assertPageContainsText($text)
     {
         $text = $this->injectStoredValues($text);

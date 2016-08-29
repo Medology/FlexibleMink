@@ -26,6 +26,14 @@ trait FlexibleContextInterface
     abstract public function assertPageContainsText($text);
 
     /**
+     * This method overrides the MinkContext::assertPageAddress() default behavior by adding a waitFor to ensure that
+     * Behat waits for the page to load properly before failing out.
+     *
+     * @param string $page The address of the page to load
+     */
+    abstract public function assertPageAddress($page);
+
+    /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertFieldContains to
      * ensure that it waits for the text to be available with a max time limit.
      *

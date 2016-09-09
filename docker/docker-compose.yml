@@ -10,7 +10,7 @@ services:
       - 80:80
 
   chrome:
-    image: selenium/standalone-chrome-debug:2.53.0
+    image: medology/standalone-chrome-debug:2.53.0
     depends_on:
       - web
     environment:

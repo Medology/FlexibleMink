@@ -348,8 +348,8 @@ trait TableContext
     /**
      * {@inheritdoc}
      *
-     * @Given /^the table (?P<name>"[^"]+") has (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?<piece>header|body|footer)$/
-     * @Then /^the table (?P<name>"[^"]+") should have (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?<piece>header|body|footer)$/
+     * @Given /^the table (?P<name>"[^"]+") has (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
+     * @Then /^the table (?P<name>"[^"]+") should have (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
      */
     public function assertCellValue($name, $val, $rIdx, $cIdx, $piece)
     {

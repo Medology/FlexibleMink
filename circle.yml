@@ -11,6 +11,7 @@ machine:
 dependencies:
   override:
     - sudo pip install docker-compose
+    - sudo pip install 'six==1.10.0'
     - docker login -e ${DOCKER_EMAIL} -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
     - docker-compose -p flexiblemink -f docker/docker-compose.yml up -d
     - sleep 5

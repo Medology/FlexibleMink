@@ -1,3 +1,3 @@
 #!/bin/bash +x
 
-docker run -v $(pwd):/data -w /data --rm phpunit/phpunit --configuration=phpunit.xml $@
+docker run -v $(pwd):/data -w /data --rm phpunit/phpunit:5.5.0 --configuration=phpunit.xml $@

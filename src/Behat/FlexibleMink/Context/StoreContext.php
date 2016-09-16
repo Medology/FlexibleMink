@@ -98,18 +98,33 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function injectStoredValues($string)
+    protected function injectStoredValues($string, callable $onGetFn = null)
     {
+        if ($onGetFn && (new \ReflectionFunction($onGetFn))->getNumberOfParameters() != 1) {
+            throw new Exception('Method $onGetFn must take one argument!');
+        }
+
         preg_match_all('/\(the ([^\)]+) of the ([^\)]+)\)/', $string, $matches);
         foreach ($matches[0] as $i => $match) {
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
 
-            if (!$thing = $this->get($thingName)) {
+            if (!$this->isStored($thingName)) {
                 throw new Exception("Did not find $thingName in the store");
             }
 
-            if (!isset($thing, $thingProperty)) {
+            // applies the hook the to the entity
+            $thing = $onGetFn ? $onGetFn($this->get($thingName)) : $this->get($thingName);
+
+            // must return object, array, but not function
+            if (!is_object($thing) && !is_array($thing) || is_callable($thing)) {
+               throw new Exception('The $onGetFn method must return an object or an array!');
+            }
+
+            if (
+                (is_object($thing) && !property_exists($thing, $thingProperty)) ||
+                (is_array($thing) && !isset($thing, $thingProperty))
+            ) {
                 throw new Exception("$thingName does not have a $thingProperty property");
             }
 

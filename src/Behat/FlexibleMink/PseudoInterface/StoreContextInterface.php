@@ -53,11 +53,15 @@ trait StoreContextInterface
     /**
      * Parses the string for references to stored items and replaces them with the value from the store.
      *
-     * @param  string    $string String to parse.
+     * @param  string    $string  String to parse.
+     * @param  callable  $onGetFn Used to modify a resource after it is retrieved from store and before properties of
+     *                            it are accessed. Takes one argument, the resource retrieved and returns the resource
+     *                            after modifying it.
+     *                                  $thing = $onGetFn($thing);
      * @throws Exception If the string references something that does not exist in the store.
      * @return string    The parsed string.
      */
-    abstract protected function injectStoredValues($string);
+    abstract protected function injectStoredValues($string, callable $onGetFn = null);
 
     /**
      * Checks that the specified thing exists in the registry.

@@ -3,27 +3,28 @@
 use Behat\FlexibleMink\Context\StoreContext;
 use Exception;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Error_Notice;
 use PHPUnit_Framework_Error_Warning;
 use stdClass;
 use TypeError;
 
-class StoreContextTest extends TestCase {
+class StoreContextTest extends TestCase
+{
     use StoreContext;
 
     /**
-     * Creates a simple mock object
+     * Creates a simple mock object.
      *
      * @return stdClass A mock object with properties test_property_1/2/3
      */
-    private function getMockObject() {
+    private function getMockObject()
+    {
         static $obj = null;
 
         if (is_object($obj)) {
             return $obj;
         }
 
-        $obj = (object)[
+        $obj = (object) [
             'test_property_1' => 'test_value_1',
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
@@ -33,9 +34,10 @@ class StoreContextTest extends TestCase {
     }
 
     /**
-     * Tests the StoreContext::injectStoredValues method
+     * Tests the StoreContext::injectStoredValues method.
      */
-    public function testInjectStoredValues() {
+    public function testInjectStoredValues()
+    {
         /***********************
          * Set up Mocks
          ***********************/
@@ -63,7 +65,8 @@ class StoreContextTest extends TestCase {
         }
 
         try {
-            $this->injectStoredValues(function() {});
+            $this->injectStoredValues(function () {
+            });
             $this->expectException(PHPUnit_Framework_Error_Warning::class);
         } catch (Exception $e) {
             $this->assertInstanceOf(PHPUnit_Framework_Error_Warning::class, $e);
@@ -138,7 +141,8 @@ class StoreContextTest extends TestCase {
         }
 
         // test function with bad arguments
-        $badFn = function() {return null;};
+        $badFn = function () {
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->expectException(Exception::class);
@@ -147,7 +151,8 @@ class StoreContextTest extends TestCase {
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
         }
 
-        $badFn = function($a, $b) {return null;};
+        $badFn = function ($a, $b) {
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->expectException(Exception::class);
@@ -157,7 +162,9 @@ class StoreContextTest extends TestCase {
         }
 
         // test function with no return
-        $badFn = function($a) {$a = 1;};
+        $badFn = function ($a) {
+            $a = 1;
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->expectException(Exception::class);
@@ -167,7 +174,9 @@ class StoreContextTest extends TestCase {
         }
 
         // test function with bad return
-        $badFn = function($a) {return 'bad return';};
+        $badFn = function ($a) {
+            return 'bad return';
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->expectException(Exception::class);
@@ -176,7 +185,10 @@ class StoreContextTest extends TestCase {
             $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
         }
 
-        $badFn = function($a) {return function() {};};
+        $badFn = function ($a) {
+            return function () {
+            };
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->expectException(Exception::class);
@@ -186,14 +198,20 @@ class StoreContextTest extends TestCase {
         }
 
         // test basic reflection
-        $goodFn = function($thing) { return $thing; };
+        $goodFn = function ($thing) {
+            return $thing;
+        };
         $this->assertEquals(
             'test_value_1',
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
         );
 
         // test accessing property after unsetting with callback
-        $goodFn = function($thing) { unset($thing->test_property_1); return $thing; };
+        $goodFn = function ($thing) {
+            unset($thing->test_property_1);
+
+            return $thing;
+        };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
             $this->expectException(Exception::class);
@@ -203,14 +221,22 @@ class StoreContextTest extends TestCase {
         }
 
         // test accessing property after adding with callback
-        $goodFn = function($thing) { $thing->test_property_4 = 'test_value_4'; return $thing; };
+        $goodFn = function ($thing) {
+            $thing->test_property_4 = 'test_value_4';
+
+            return $thing;
+        };
         $this->assertEquals(
             'test_value_4',
             $this->injectStoredValues('(the test_property_4 of the testObj)', $goodFn)
         );
 
         // test overwriting property
-        $goodFn = function($thing) { $thing->test_property_1 = 'overwritten'; return $thing; };
+        $goodFn = function ($thing) {
+            $thing->test_property_1 = 'overwritten';
+
+            return $thing;
+        };
         $this->assertEquals(
             'overwritten',
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)

@@ -118,7 +118,7 @@ trait StoreContext
 
             // must return object, array, but not function
             if (!is_object($thing) && !is_array($thing) || is_callable($thing)) {
-               throw new Exception('The $onGetFn method must return an object or an array!');
+                throw new Exception('The $onGetFn method must return an object or an array!');
             }
 
             if (

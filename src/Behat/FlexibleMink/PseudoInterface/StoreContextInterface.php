@@ -57,7 +57,7 @@ trait StoreContextInterface
      * @param  callable  $onGetFn Used to modify a resource after it is retrieved from store and before properties of
      *                            it are accessed. Takes one argument, the resource retrieved and returns the resource
      *                            after modifying it.
-     *                                  $thing = $onGetFn($thing);
+     *                            $thing = $onGetFn($thing);
      * @throws Exception If the string references something that does not exist in the store.
      * @return string    The parsed string.
      */

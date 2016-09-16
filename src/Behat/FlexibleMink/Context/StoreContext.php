@@ -4,6 +4,7 @@ namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
 use Exception;
+use ReflectionFunction;
 
 /**
  * {@inheritdoc}
@@ -100,7 +101,7 @@ trait StoreContext
      */
     protected function injectStoredValues($string, callable $onGetFn = null)
     {
-        if ($onGetFn && (new \ReflectionFunction($onGetFn))->getNumberOfParameters() != 1) {
+        if ($onGetFn && (new ReflectionFunction($onGetFn))->getNumberOfParameters() != 1) {
             throw new Exception('Method $onGetFn must take one argument!');
         }
 

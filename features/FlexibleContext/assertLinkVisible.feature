@@ -6,13 +6,39 @@ Feature: Assert Link is visible
   Background:
     Given I am on "/link.html"
 
-  Scenario: Step passes if link is visible
-    Then the "I am a link" link is visible
+  Scenario: When Multiple Matches are Found, First Visible Match is Used
+    Then the "Text Link" link should be visible
 
-  Scenario: Step passes if link without href is visible
-    Then the "an anchor tag without href" link is visible
+  Scenario Outline: Visible Links Are Properly Found
+    Then the "<locator>" link is visible
 
-  Scenario: Step fails if link is invisible
-    When I assert that the "an invisible anchor tag" link is visible
+    Examples:
+      | locator                   |
+      | Visible Text Link w/ Href |
+      | Visible Text Link no Href |
+      | id-visible-href           |
+      | id-visible-nohref         |
+      | title-visible-href        |
+      | title-visible-nohref      |
+      | rel-visible-href          |
+      | rel-visible-nohref        |
+      | alt-visible-href          |
+      | alt-visible-nohref        |
+
+  Scenario Outline: Asserting Hidden Links are Visible Throws Exception
+    When I assert that the "<locator>" link is visible
     Then the assertion should throw an ExpectationException
-     And the assertion should fail with the message "No visible link found for 'an invisible anchor tag'"
+     And the assertion should fail with the message "No visible link found for '<locator>'"
+
+    Examples:
+      | locator                     |
+      | Invisible Text Link w/ Href |
+      | Invisible Text Link no Href |
+      | id-invisible-href           |
+      | id-invisible-nohref         |
+      | title-invisible-href        |
+      | title-invisible-nohref      |
+      | rel-invisible-href          |
+      | rel-invisible-nohref        |
+      | alt-invisible-href          |
+      | alt-invisible-nohref        |

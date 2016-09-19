@@ -171,28 +171,25 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->fixStepArgument($locator);
 
-        $links = $this->getSession()->getPage()->findAll(
-            'named',
-            ['content', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
-        );
+        // the link selector in Behat/Min/src/Selector/NamedSelector requires anchor tags have href
+        // we don't want that, because some don't, so rip out that section. Ideally we would load our own
+        // selector with registerNamedXpath, but I want to re-use the link named selector so we're doing it
+        // this way
+        $xpath = $this->getSession()->getSelectorsHandler()->selectorToXpath('named', ['link', $locator]);
+        $xpath = preg_replace('/\[\.\/@href\]/', '', $xpath);
 
-        /** @var NodeElement $link */
-        foreach ($links as $link) {
-            if ($link->getTagName() != 'a') {
-                continue;
-            }
-            try {
-                $visible = $link->isVisible();
-            } catch (UnsupportedDriverActionException $e) {
-                return $link;
-            }
+        /** @var NodeElement[] $links */
+        $links = array_filter($this->getSession()->getPage()->findAll('xpath', $xpath), function ($link) {
+            /* @var NodeElement $link */
+            return $link->isVisible();
+        });
 
-            if ($visible) {
-                return $link;
-            }
+        if (empty($links)) {
+            throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
         }
 
-        throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
+        // $links is NOT numerically indexed, so just grab the first element and send it back
+        return array_shift($links);
     }
 
     /**

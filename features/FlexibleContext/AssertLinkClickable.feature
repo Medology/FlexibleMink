@@ -6,13 +6,39 @@ Feature: Assert Link is clickable
   Background:
     Given I am on "/link.html"
 
-  Scenario: Step passes if link is clickable
-    Then I follow "I am a link"
+  Scenario: When Multiple Matches are Found, First Visible Match is Used
+    When I follow "Link"
 
-  Scenario: Step passes if link without href
-    Then I follow "an anchor tag without href"
+  Scenario Outline: Visible Links are Clickable
+    Then I follow "<locator>"
 
-  Scenario: Step fails if link is invisible
-    When I assert that I follow "an invisible anchor tag"
+    Examples:
+      | locator                   |
+      | Visible Text Link w/ Href |
+      | Visible Text Link no Href |
+      | id-visible-href           |
+      | id-visible-nohref         |
+      | title-visible-href        |
+      | title-visible-nohref      |
+      | rel-visible-href          |
+      | rel-visible-nohref        |
+      | alt-visible-href          |
+      | alt-visible-nohref        |
+
+  Scenario Outline: Trying to Click Invisible Link Throws Exception
+    When I assert that I follow "<locator>"
     Then the assertion should throw an ExpectationException
-     And the assertion should fail with the message "No visible link found for 'an invisible anchor tag'"
+     And the assertion should fail with the message "No visible link found for '<locator>'"
+
+    Examples:
+      | locator                     |
+      | Invisible Text Link w/ Href |
+      | Invisible Text Link no Href |
+      | id-invisible-href           |
+      | id-invisible-nohref         |
+      | title-invisible-href        |
+      | title-invisible-nohref      |
+      | rel-invisible-href          |
+      | rel-invisible-nohref        |
+      | alt-invisible-href          |
+      | alt-invisible-nohref        |

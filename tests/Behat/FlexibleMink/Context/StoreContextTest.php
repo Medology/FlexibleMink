@@ -244,9 +244,9 @@ class StoreContextTest extends TestCase
     }
 
     /**
-     * This tests accessing magic properties on the model.
+     * Tests injectStoredValues using objects with magic properties.
      */
-    public function testMagicProperties()
+    public function testInjectStoredValuesMagicProperties()
     {
         $name = 'magicMock';
         $mock = $this->getMockBuilder(MagicMethods::class)
@@ -268,5 +268,45 @@ class StoreContextTest extends TestCase
         $this->put($mock, $name);
 
         $this->assertEquals('test_value_1', $this->injectStoredValues("(the test_property_1 of the $name)"));
+    }
+
+    /**
+     * Tests the parseKey function.
+     */
+    public function testParseKey()
+    {
+        /***********************
+         * Invalid Format Reflects Back
+         ***********************/
+        $this->assertEquals(['not right', null], $this->parseKey('not right'));
+        $this->assertEquals(['not_right', null], $this->parseKey('not_right'));
+        $this->assertEquals(['1st_not right', null], $this->parseKey('1st_not right'));
+        $this->assertEquals(['not_right_1st', null], $this->parseKey('not_right_1st'));
+        $this->assertEquals(['not right 1st', null], $this->parseKey('not right 1st'));
+
+
+        /***********************
+         * Basic 1st, 2nd, 3rd, etc.
+         ***********************/
+        $this->assertEquals(['University', 1], $this->parseKey('1st University'));
+        $this->assertEquals(['University', 2], $this->parseKey('2nd University'));
+        $this->assertEquals(['University', 3], $this->parseKey('3rd University'));
+        $this->assertEquals(['University', 21], $this->parseKey('21st University'));
+        $this->assertEquals(['University', 500], $this->parseKey('500th University'));
+
+
+        /***********************
+         * Strange Key Names
+         ***********************/
+        $this->assertEquals(['lol$@!@#$', 1], $this->parseKey('1st lol$@!@#$'));
+        $this->assertEquals(['%%%%%', 1], $this->parseKey('1st %%%%%'));
+        $this->assertEquals(['     ', 42], $this->parseKey('42nd      '));
+
+
+        /***********************
+         * No suffix on numbers
+         ***********************/
+        $this->assertEquals(['1 University', null], $this->parseKey('1 University'));
+        $this->assertEquals(['2 University', null], $this->parseKey('2 University'));
     }
 }

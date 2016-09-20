@@ -66,13 +66,30 @@ trait StoreContext
     }
 
     /**
+     * Converts a key of the form "nth thing" into "n" and "thing".
+     *
+     * @param  string $key The key to parse
+     * @return array  For a key "nth thing", returns [thing, n], else [thing, null]
+     */
+    private function parseKey($key)
+    {
+        if (preg_match('/^([1-9][0-9]*)(?:st|nd|rd|th) (.+)$/', $key, $matches)) {
+            $nth = $matches[1];
+            $key = $matches[2];
+        } else {
+            $nth = '';
+        }
+
+        return [$key, $nth];
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function get($key, $nth = null)
     {
-        if (!$nth && preg_match('/^([1-9][0-9]*)(?:st|nd|rd|th) (.+)$/', $key, $matches)) {
-            $nth = $matches[1];
-            $key = $matches[2];
+        if (!$nth) {
+            list($key, $nth) = $this->parseKey($key);
         }
 
         if (!$this->isStored($key, $nth)) {
@@ -140,6 +157,10 @@ trait StoreContext
      */
     protected function isStored($key, $nth = null)
     {
+        if (!$nth) {
+            list($key, $nth) = $this->parseKey($key);
+        }
+
         return $nth ? isset($this->registry[$key][$nth - 1]) : isset($this->registry[$key]);
     }
 

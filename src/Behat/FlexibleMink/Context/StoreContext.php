@@ -123,8 +123,8 @@ trait StoreContext
             }
 
             if (
-                (is_object($thing) && !property_exists($thing, $thingProperty)) ||
-                (is_array($thing) && !isset($thing, $thingProperty))
+                (is_object($thing) && !isset($thing->$thingProperty)) ||
+                (is_array($thing) && !isset($thing[$thingProperty]))
             ) {
                 throw new Exception("$thingName does not have a $thingProperty property");
             }

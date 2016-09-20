@@ -14,6 +14,7 @@
             <directory suffix=".php">./tests/Behat/ParallelWorker</directory>
         </testsuite>
         <testsuite name="Flexible Mink Context Tests">
+            <directory suffix=".php">./tests/Behat/DefaultMocks</directory>
             <directory suffix=".php">./tests/Behat/FlexibleMink/Context</directory>
         </testsuite>
     </testsuites>

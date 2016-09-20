@@ -5,6 +5,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_Error_Warning;
 use stdClass;
+use Tests\Behat\DefaultMocks\MagicMethods;
 use TypeError;
 
 class StoreContextTest extends TestCase
@@ -44,7 +45,6 @@ class StoreContextTest extends TestCase
 
         $testObj = $this->getMockObject();
         $name = 'testObj';
-
         $this->put($testObj, $name);
 
 
@@ -241,5 +241,32 @@ class StoreContextTest extends TestCase
             'overwritten',
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
         );
+    }
+
+    /**
+     * This tests accessing magic properties on the model.
+     */
+    public function testMagicProperties()
+    {
+        $name = 'magicMock';
+        $mock = $this->getMockBuilder(MagicMethods::class)
+            ->setMethods(['__get', '__isset'])
+            ->getMock();
+
+        $mock->expects($this->once())
+            ->method('__isset')
+            ->with('test_property_1')
+            ->will($this->returnCallback(function ($prop) {
+                return $prop == 'test_property_1';
+            }));
+
+        $mock->expects($this->once())
+            ->method('__get')
+            ->with($this->equalTo('test_property_1'))
+            ->will($this->returnValue('test_value_1'));
+
+        $this->put($mock, $name);
+
+        $this->assertEquals('test_value_1', $this->injectStoredValues("(the test_property_1 of the $name)"));
     }
 }

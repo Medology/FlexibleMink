@@ -12,19 +12,19 @@ Feature: Assert Page Contains Texts
       | Line two   |
       | Line three |
 
-    Scenario: Step injects values properly
-      Given the following is stored as "list":
-          | first_entry  | Line one   |
-          | second_entry | Line two   |
-          | third_entry  | Line three |
-       Then I should see the following:
-          | (the first entry of the list)  |
-          | (the second entry of the list) |
-          | (the third entry of the list)  |
+  Scenario: Step injects values properly
+    Given the following is stored as "list":
+      | first_entry  | Line one   |
+      | second_entry | Line two   |
+      | third_entry  | Line three |
+     Then I should see the following:
+      | (the first entry of the list)  |
+      | (the second entry of the list) |
+      | (the third entry of the list)  |
 
-    Scenario: Assertion fails reliably if a given line is not present
-      When I assert that I should see the following:
-         | Line two |
-         | Megatron |
-      Then the assertion should throw an ResponseTextException
-       And the assertion should fail with the message 'The text "Megatron" was not found anywhere in the text of the current page.'
+  Scenario: Assertion fails reliably if a given line is not present
+    When I assert that I should see the following:
+     | Line two |
+     | Megatron |
+    Then the assertion should throw an ResponseTextException
+     And the assertion should fail with the message 'The text "Megatron" was not found anywhere in the text of the current page.'

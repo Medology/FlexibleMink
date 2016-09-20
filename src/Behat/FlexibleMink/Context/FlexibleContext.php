@@ -72,6 +72,23 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
+     * @Then I should see the following:
+     */
+    public function assertPageContainsTexts(TableNode $table)
+    {
+        if (count($table->getRow(0)) > 1) {
+            throw new InvalidArgumentException('Arguments must be a single-column list of items');
+        }
+
+        foreach ($table->getRows() as $text) {
+            $this->assertPageContainsText($text[0]);
+        }
+    }
+
+
+    /**
+     * {@inheritdoc}
      */
     public function assertPageNotContainsText($text)
     {

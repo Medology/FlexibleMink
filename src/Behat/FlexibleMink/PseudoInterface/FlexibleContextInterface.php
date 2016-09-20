@@ -7,6 +7,7 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
+use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\Mink\Session;
 use InvalidArgumentException;
@@ -24,6 +25,14 @@ trait FlexibleContextInterface
      * @param string $text Text to be searched in the page.
      */
     abstract public function assertPageContainsText($text);
+
+    /**
+     * Asserts that the page contains a list of strings.
+     *
+     * @param  TableNode             $table The list of strings to find.
+     * @throws ResponseTextException If the text is not found.
+     */
+    abstract public function assertPageContainsTexts(TableNode $table);
 
     /**
      * This method overrides the MinkContext::assertPageAddress() default behavior by adding a waitFor to ensure that

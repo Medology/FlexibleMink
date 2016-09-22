@@ -6,6 +6,7 @@ services:
     volumes:
       - ..:/data
       - ../web:/usr/local/apache2/htdocs:ro
+    env_file: .env
     ports:
       - 80:80
 
@@ -20,6 +21,7 @@ services:
     volumes:
       - /dev/shm:/dev/shm
       - ..:/data
+    env_file: .env
     ports:
       - 4444:4444
       - 5900:5900

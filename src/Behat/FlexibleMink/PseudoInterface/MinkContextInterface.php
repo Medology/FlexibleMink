@@ -1,11 +1,12 @@
 <?php namespace Behat\FlexibleMink\PseudoInterface;
 
+use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
 
 /**
  * Pseudo interface for tracking the methods of the MinkContext.
  *
- * @see Behat\MinkExtension\Context\MinkContext.
+ * @see \Behat\MinkExtension\Context\MinkContext.
  */
 trait MinkContextInterface
 {
@@ -30,6 +31,25 @@ trait MinkContextInterface
      * @param string $value the value to fill
      */
     abstract public function fillField($field, $value);
+
+    /**
+     * Fills in form fields with provided table.
+     *
+     * @param TableNode $fields Pairs of fields and values to fill. Example:
+     *                          [
+     *                          [ username, bruceWayne]
+     *                          [ password, iLoveBats123]
+     *                          ]
+     */
+    abstract public function fillFields(TableNode $fields);
+
+    /**
+     * Selects option in select field with specified id|name|label|value.
+     *
+     * @param string $select The select field
+     * @param string $option The option to select in the field
+     */
+    abstract public function selectOption($select, $option);
 
     /**
      * Returns the Mink session.

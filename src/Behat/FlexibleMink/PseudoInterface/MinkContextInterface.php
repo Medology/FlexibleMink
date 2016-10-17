@@ -36,10 +36,8 @@ trait MinkContextInterface
      * Fills in form fields with provided table.
      *
      * @param TableNode $fields Pairs of fields and values to fill. Example:
-     *                          [
-     *                          [ username, bruceWayne]
-     *                          [ password, iLoveBats123]
-     *                          ]
+     *                          | username | bruceWayne |
+     *                          | password | iLoveBats123 |
      */
     abstract public function fillFields(TableNode $fields);
 

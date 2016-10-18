@@ -2,11 +2,12 @@
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
+use Behat\MinkExtension\Context\MinkContext;
 
 /**
  * Pseudo interface for tracking the methods of the MinkContext.
  *
- * @see \Behat\MinkExtension\Context\MinkContext.
+ * @see MinkContext.
  */
 trait MinkContextInterface
 {

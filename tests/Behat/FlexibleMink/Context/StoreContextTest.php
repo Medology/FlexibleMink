@@ -260,7 +260,15 @@ class StoreContextTest extends TestCase
         }
 
         // Lambda without two args throws appropriate error
-        foreach ([function () {}, function ($a) {}, function ($a, $b, $c) {}] as $wrongArgCount) {
+        $wrongArgCount = [
+            function () {
+            },
+            function ($a) {
+            },
+            function ($a, $b, $c) {
+            },
+        ];
+        foreach ($wrongArgCount as $wrongArgCount) {
             try {
                 $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
                 $this->expectException(Exception::class);
@@ -272,9 +280,15 @@ class StoreContextTest extends TestCase
 
         // Lambda with wrong return type throws appropriate error
         $wrongReturnTypes = [
-            function ($a, $b) {}, // null
-            function ($a, $b) { return ''; }, // string
-            function ($a, $b) { return function () {}; }, // callable
+            function ($a, $b) {
+            },
+            function ($a, $b) {
+                return '';
+            },
+            function ($a, $b) {
+                return function () {
+                };
+            },
         ];
         foreach ($wrongReturnTypes as $wrongReturnType) {
             try {
@@ -291,7 +305,9 @@ class StoreContextTest extends TestCase
             $this->injectStoredValues(
                 '(the test_property_1 of the testObj)',
                 null,
-                function ($a, $b) { return false; }
+                function ($a, $b) {
+                    return false;
+                }
             );
             $this->expectException(Exception::class);
         } catch (Exception $e) {

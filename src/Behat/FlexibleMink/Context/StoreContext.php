@@ -127,9 +127,8 @@ trait StoreContext
                 throw new Exception('Lambda $hasValue must take two arguments!');
             }
         } else {
-            $hasValue = function($thing, $property) {
-                return !
-                    (is_object($thing) && !isset($thing->$property)) ||
+            $hasValue = function ($thing, $property) {
+                return !(is_object($thing) && !isset($thing->$property)) ||
                     (is_array($thing) && !isset($thing[$property]));
             };
         }

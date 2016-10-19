@@ -246,104 +246,69 @@ class StoreContextTest extends TestCase
          * Validate $hasValue argument
          *****************************/
 
-        // test null values
+        // Null $hasValue should default to using isset
         $this->assertEmpty($this->injectStoredValues('', null, null));
 
-        // test invalid values
-        try {
-            $this->injectStoredValues('', null, '');
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
+        // Non-callable $hasValue throws appropriate error
+        foreach (['', 0, $testObj] as $nonCallable) {
+            try {
+                $this->injectStoredValues('', null, $nonCallable);
+                $this->expectException(TypeError::class);
+            } catch (TypeError $e) {
+                $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
+            }
         }
 
-        try {
-            $this->injectStoredValues('', null, 0);
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
+        // Lambda without two args throws appropriate error
+        foreach ([function () {}, function ($a) {}, function ($a, $b, $c) {}] as $wrongArgCount) {
+            try {
+                $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
+                $this->expectException(Exception::class);
+            } catch (Exception $e) {
+                $this->assertInstanceOf(Exception::class, $e);
+                $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
+            }
         }
 
-        try {
-            $this->injectStoredValues('', null, $testObj);
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
+        // Lambda with wrong return type throws appropriate error
+        $wrongReturnTypes = [
+            function ($a, $b) {}, // null
+            function ($a, $b) { return ''; }, // string
+            function ($a, $b) { return function () {}; }, // callable
+        ];
+        foreach ($wrongReturnTypes as $wrongReturnType) {
+            try {
+                $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongReturnType);
+                $this->expectException(Exception::class);
+            } catch (Exception $e) {
+                $this->assertInstanceOf(Exception::class, $e);
+                $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
+            }
         }
 
-        // test function with bad arguments
-        $badFn = function () {
-        };
+        // Correct error is thrown when property does not exist
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
+            $this->injectStoredValues(
+                '(the test_property_1 of the testObj)',
+                null,
+                function ($a, $b) { return false; }
+            );
             $this->expectException(Exception::class);
         } catch (Exception $e) {
             $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
+            $this->assertEquals('testObj does not have a test_property_1 property', $e->getMessage());
         }
 
-        $badFn = function ($a) {
-        };
-        try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
-            $this->expectException(Exception::class);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
-        }
-
-        $badFn = function ($a, $b, $c) {
-        };
-        try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
-            $this->expectException(Exception::class);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
-        }
-
-        // test function with no return
-        $badFn = function ($thing, $property) {
-        };
-        try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
-            $this->expectException(Exception::class);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
-        }
-
-        // test function with bad return
-        $badFn = function ($thing, $property) {
-            return 'bad return';
-        };
-        try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
-            $this->expectException(Exception::class);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
-        }
-
-        $badFn = function ($thing, $property) {
-            return function () {
-            };
-        };
-        try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $badFn);
-            $this->expectException(Exception::class);
-        } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
-            $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
-        }
-
-        // test with property
-        $goodFn = function ($thing, $property) {
-            return isset($thing->$property);
-        };
+        // Property is injected correctly when property exists
         $this->assertEquals(
             'overwritten',
-            $this->injectStoredValues('(the test_property_1 of the testObj)', null, $goodFn)
+            $this->injectStoredValues(
+                '(the test_property_1 of the testObj)',
+                null,
+                function ($thing, $property) {
+                    return isset($thing->$property);
+                }
+            )
         );
     }
 

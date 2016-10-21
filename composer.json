@@ -1,8 +1,13 @@
 {
   "name": "medology/flexible-mink",
-  "type": "behat-extension",
-  "description": "Mink extension with patient assertions and object storage",
+  "type": "library",
+  "description": "Mink Extensions for Commonly Used Assertions and Object Storage",
+  "keywords": ["mink", "behat", "testing"],
   "license": "MIT",
+  "support": {
+    "issues": "https://github.com/Medology/FlexibleMink/issues",
+    "source": "https://github.com/Medology/FlexibleMink"
+  },
   "require": {
     "php": ">=5.4.41",
     "behat/behat": "^3.0",

@@ -26,7 +26,8 @@ trait SpinnerContext
                 $lastException = $e;
             }
 
-            sleep(1);
+            # sleep for 10^8 nanoseconds (0.1 second)
+            time_nanosleep(0, pow(10,8));
         }
 
         throw $lastException;

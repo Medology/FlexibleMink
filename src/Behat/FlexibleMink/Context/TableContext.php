@@ -76,14 +76,14 @@ trait TableContext
     }
 
     /**
-     * Retrieves a row from the table HEAD (thead) that has no cells with a colspan property. This row is assumed to be
-     * the column "titles".
+     * Retrieves a row from the table HEAD (thead) that has no cells with a colspan property that has a value of greater
+     * than 1. This row is assumed to be the column "titles".
      *
      * @param  NodeElement              $table The table to find the columns for
      * @throws InvalidArgumentException If {@paramref $table} is not an instance of NodeElement
      * @throws ElementNotFoundException If no HEAD (thead) rows are found in {@paramref $table}
-     * @throws ElementNotFoundException If all head rows have a td/th with colspan property
-     * @throws ElementNotFoundException If the row with no colspann'd td/th tags has no td/th at all
+     * @throws ElementNotFoundException If all head rows have a td/th with colspan property with a value greater than 1
+     * @throws ElementNotFoundException If the row has no td/th at all
      * @return NodeElement[]            The columns for {@paramref $table}
      */
     private function findHeadColumns($table)
@@ -101,8 +101,8 @@ trait TableContext
 
         $colRow = null;
         foreach ($rows as $row) {
-            // finds all td|th elements that have a colspan tag. We do this because we don't want any HEAD rows
-            // when some of the cells span multiple columns
+            // finds all td|th elements that have a colspan tag with a value greater than 1. We do this because we don't
+            // want any HEAD rows when some of the cells span multiple columns
             /** @var NodeElement[] $splitCell */
             $splitCell = $row->findAll('xpath', '/*[@colspan>\'1\' and (self::td or self::th)]');
 

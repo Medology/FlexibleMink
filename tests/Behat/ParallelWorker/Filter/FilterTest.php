@@ -3,14 +3,14 @@
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
 use Behat\Gherkin\Parser;
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_TestCase;
 
 /**
  * Class FilterTest.
  *
  * Base class for filter testing which sets up a Gherking Feature with several scenarios and a parser.
  */
-abstract class FilterTest extends TestCase
+abstract class FilterTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @return Parser

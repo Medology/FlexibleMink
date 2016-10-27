@@ -1,3 +1,5 @@
-.idea/*
-/vendor/*
+.idea/
+!.idea/php.xml
+
+/vendor/
 docker/.env

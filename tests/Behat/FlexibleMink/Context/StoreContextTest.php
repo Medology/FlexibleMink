@@ -2,13 +2,12 @@
 
 use Behat\FlexibleMink\Context\StoreContext;
 use Exception;
-use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_Error_Warning;
+use PHPUnit_Framework_Error;
+use PHPUnit_Framework_TestCase;
 use stdClass;
-use Tests\Behat\DefaultMocks\MagicMethods;
 use TypeError;
 
-class StoreContextTest extends TestCase
+class StoreContextTest extends PHPUnit_Framework_TestCase
 {
     use StoreContext;
 
@@ -59,17 +58,17 @@ class StoreContextTest extends TestCase
         // test invalid argument for $string
         try {
             $this->injectStoredValues([]);
-            $this->expectException(PHPUnit_Framework_Error_Warning::class);
+            $this->setExpectedException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
-            $this->assertInstanceOf(PHPUnit_Framework_Error_Warning::class, $e);
+            $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
         }
 
         try {
             $this->injectStoredValues(function () {
             });
-            $this->expectException(PHPUnit_Framework_Error_Warning::class);
+            $this->setExpectedException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
-            $this->assertInstanceOf(PHPUnit_Framework_Error_Warning::class, $e);
+            $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
         }
 
         // test reflection of non-matching inputs
@@ -88,9 +87,9 @@ class StoreContextTest extends TestCase
         $badName = 'FakeObj';
         try {
             $this->injectStoredValues("(the test_property_1 of the $badName)");
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals("Did not find $badName in the store", $e->getMessage());
         }
 
@@ -98,9 +97,9 @@ class StoreContextTest extends TestCase
         $badProperty = 'bad_property_1';
         try {
             $this->injectStoredValues("(the $badProperty of the $name)");
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals("$name does not have a $badProperty property", $e->getMessage());
         }
 
@@ -109,7 +108,6 @@ class StoreContextTest extends TestCase
             $testObj->test_property_1,
             $this->injectStoredValues('(the test_property_1 of the testObj)')
         );
-
 
         /***********************
          * Validate Second Argument
@@ -121,22 +119,22 @@ class StoreContextTest extends TestCase
         // test invalid values
         try {
             $this->injectStoredValues('', '');
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
+            $this->setExpectedException('TypeError');
+        } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
         }
 
         try {
             $this->injectStoredValues('', 0);
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
+            $this->setExpectedException('TypeError');
+        } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
         }
 
         try {
             $this->injectStoredValues('', $testObj);
-            $this->expectException(TypeError::class);
-        } catch (TypeError $e) {
+            $this->setExpectedException('TypeError');
+        } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
         }
 
@@ -145,9 +143,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('TypeError');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
         }
 
@@ -155,9 +153,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
         }
 
@@ -167,9 +165,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
         }
 
@@ -179,9 +177,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
         }
 
@@ -191,9 +189,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
         }
 
@@ -214,9 +212,9 @@ class StoreContextTest extends TestCase
         };
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('testObj does not have a test_property_1 property', $e->getMessage());
         }
 
@@ -253,14 +251,14 @@ class StoreContextTest extends TestCase
         foreach (['', 0, $testObj] as $nonCallable) {
             try {
                 $this->injectStoredValues('', null, $nonCallable);
-                $this->expectException(TypeError::class);
-            } catch (TypeError $e) {
+                $this->setExpectedException('TypeError');
+            } catch (PHPUnit_Framework_Error $e) {
                 $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
             }
         }
 
         // Lambda without two args throws appropriate error
-        $wrongArgCount = [
+        $wrongArgCounts = [
             function () {
             },
             function ($a) {
@@ -268,12 +266,12 @@ class StoreContextTest extends TestCase
             function ($a, $b, $c) {
             },
         ];
-        foreach ($wrongArgCount as $wrongArgCount) {
+        foreach ($wrongArgCounts as $wrongArgCount) {
             try {
                 $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
-                $this->expectException(Exception::class);
+                $this->setExpectedException('Exception');
             } catch (Exception $e) {
-                $this->assertInstanceOf(Exception::class, $e);
+                $this->assertInstanceOf('Exception', $e);
                 $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
             }
         }
@@ -293,9 +291,9 @@ class StoreContextTest extends TestCase
         foreach ($wrongReturnTypes as $wrongReturnType) {
             try {
                 $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongReturnType);
-                $this->expectException(Exception::class);
+                $this->setExpectedException('Exception');
             } catch (Exception $e) {
-                $this->assertInstanceOf(Exception::class, $e);
+                $this->assertInstanceOf('Exception', $e);
                 $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
             }
         }
@@ -309,9 +307,9 @@ class StoreContextTest extends TestCase
                     return false;
                 }
             );
-            $this->expectException(Exception::class);
+            $this->setExpectedException('Exception');
         } catch (Exception $e) {
-            $this->assertInstanceOf(Exception::class, $e);
+            $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('testObj does not have a test_property_1 property', $e->getMessage());
         }
 
@@ -334,7 +332,7 @@ class StoreContextTest extends TestCase
     public function testInjectStoredValuesMagicProperties()
     {
         $name = 'magicMock';
-        $mock = $this->getMockBuilder(MagicMethods::class)
+        $mock = $this->getMockBuilder('Tests\Behat\DefaultMocks\MagicMethods')
             ->setMethods(['__get', '__isset'])
             ->getMock();
 
@@ -348,7 +346,7 @@ class StoreContextTest extends TestCase
         $mock->expects($this->once())
             ->method('__get')
             ->with($this->equalTo('test_property_1'))
-            ->will($this->returnValue('test_value_1'));
+            ->willReturn('test_value_1');
 
         $this->put($mock, $name);
 

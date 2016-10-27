@@ -23,8 +23,4 @@ class MagicMethods
     public function __call($method, $arguments)
     {
     }
-
-    public function __toString()
-    {
-    }
 }

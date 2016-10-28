@@ -104,13 +104,15 @@ class FlexibleContext extends MinkContext
      */
     public function waitForPageNotContainsText($text)
     {
+        $text = $this->injectStoredValues($text);
+
         $this->waitFor(function () use ($text) {
             parent::assertPageContainsText($text);
         }, 15);
 
         try {
             $this->waitFor(function () use ($text) {
-                parent::assertPageContainsText($text);
+                parent::assertPageNotContainsText($text);
             }, 15);
         } catch (ExpectationException $e) {
             throw new ResponseTextException(

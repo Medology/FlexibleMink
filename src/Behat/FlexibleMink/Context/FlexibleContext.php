@@ -100,9 +100,9 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      *
-     * @When I wait until I see and then do not see :text
+     * @Then I should see :text appear, then disappear
      */
-    public function waitForPageNotContainsText($text)
+    public function assertPageContainsTextTemporarily($text)
     {
         $text = $this->injectStoredValues($text);
 

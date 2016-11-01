@@ -73,12 +73,13 @@ trait FlexibleContextInterface
      * This method will wait to see the text specified for 15 seconds, and then wait another 15 seconds for the text
      * to no longer appear on the page.
      *
+     * @see assertPageContainsText()
      * @see assertPageNotContainsText()
      * @param  string                $text The text to wait on to not show up on the page anymore.
      * @throws ResponseTextException If the text is not found initially or if the text was still visible after seeing
      *                                    it and waiting for 15 seconds.
      */
-    abstract public function waitForPageNotContainsText($text);
+    abstract public function assertPageContainsTextTemporarily($text);
 
     /**
      * This method overrides the MinkContext::assertElementContainsText() default behavior for

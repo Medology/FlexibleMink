@@ -4,6 +4,7 @@ namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
@@ -268,18 +269,22 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
-    public function assertFieldExists($fieldName)
+    public function assertFieldExists($fieldName, DocumentElement $context = null)
     {
+        if (!$context) {
+            $context = $this->getSession()->getPage();
+        }
+
         /** @var NodeElement[] $fields */
-        $fields = $this->getSession()->getPage()->findAll('named', ['field', $fieldName]);
+        $fields = $context->findAll('named', ['field', $fieldName]);
         if (count($fields) == 0) {
             // If the field was not found with the usual way above, attempt to find with label name as last resort
-            $label = $this->getSession()->getPage()->find('xpath', "//label[contains(text(), '$fieldName')]");
+            $label = $context->find('xpath', "//label[contains(text(), '$fieldName')]");
             if (!$label) {
                 throw new ExpectationException("No input label '$fieldName' found", $this->getSession());
             }
             $name = $label->getAttribute('for');
-            $fields = [$this->getSession()->getPage()->findField($name)];
+            $fields = [$context->findField($name)];
         }
         if (count($fields) > 0) {
             foreach ($fields as $field) {

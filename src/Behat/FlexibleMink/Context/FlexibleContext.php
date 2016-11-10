@@ -144,7 +144,11 @@ class FlexibleContext extends MinkContext
      */
     public function checkOption($locator)
     {
-        $this->assertVisibleOption($locator)->check();
+        $element = $this->waitFor(function() use($locator) {
+           return $this->assertVisibleOption($locator);
+        });
+
+        $element->check();
     }
 
     /**

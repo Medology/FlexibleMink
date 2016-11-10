@@ -105,7 +105,7 @@ trait FlexibleContextInterface
      * Clicks a visible checkbox with specified id|title|alt|text.
      *
      * This method overrides the MinkContext::checkOption() default behavior for checkOption to ensure that only visible
-     * options are checked.
+     * options are checked and that it waits for the option to be available with a max time limit.
      * @see MinkContext::checkOption
      * @param string $locator The id|title|alt|text of the option to be clicked.
      */

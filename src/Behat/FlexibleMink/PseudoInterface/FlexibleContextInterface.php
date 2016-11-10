@@ -249,7 +249,7 @@ trait FlexibleContextInterface
      * Presses the visible button with specified id|name|title|alt|value.
      *
      * This method overrides the MinkContext::pressButton() default behavior for pressButton to ensure that only visible
-     * buttons are pressed.
+     * buttons are pressed and that it waits for the button to be available with a max time limit.
      *
      * @see MinkContext::pressButton
      * @param  string               $button button id, inner text, value or alt

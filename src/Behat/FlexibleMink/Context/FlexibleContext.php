@@ -500,7 +500,11 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        $this->assertVisibleButton($locator)->press();
+        $element = $this->waitFor(function () use ($locator) {
+            return $this->assertVisibleButton($locator);
+        });
+
+        $element->press();
     }
 
     /**

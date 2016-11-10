@@ -159,8 +159,8 @@ trait FlexibleContextInterface
     /**
      * Checks that the page contains a visible input field and then returns it.
      *
-     * @param string               $fieldName The input name.
-     * @param DocumentElement|null $context   The context to search in, if not provided defaults to page.
+     * @param  string               $fieldName The input name.
+     * @param  DocumentElement|null $context   The context to search in, if not provided defaults to page.
      * @throws ExpectationException If a visible input field is not found.
      * @return NodeElement          The found input field.
      */

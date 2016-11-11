@@ -4,8 +4,8 @@ namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Element\TraversableElement;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
@@ -269,7 +269,7 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
-    public function assertFieldExists($fieldName, DocumentElement $context = null)
+    public function assertFieldExists($fieldName, TraversableElement $context = null)
     {
         if (!$context) {
             $context = $this->getSession()->getPage();

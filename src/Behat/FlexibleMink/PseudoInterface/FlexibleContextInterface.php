@@ -3,8 +3,8 @@
 namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Gherkin\Node\TableNode;
-use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Element\TraversableElement;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
@@ -159,12 +159,12 @@ trait FlexibleContextInterface
     /**
      * Checks that the page contains a visible input field and then returns it.
      *
-     * @param  string               $fieldName The input name.
-     * @param  DocumentElement|null $context   The context to search in, if not provided defaults to page.
-     * @throws ExpectationException If a visible input field is not found.
-     * @return NodeElement          The found input field.
+     * @param  string                  $fieldName The input name.
+     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
+     * @throws ExpectationException    If a visible input field is not found.
+     * @return NodeElement             The found input field.
      */
-    abstract public function assertFieldExists($fieldName, DocumentElement $context = null);
+    abstract public function assertFieldExists($fieldName, TraversableElement $context = null);
 
     /**
      * Checks that the page not contain a visible input field.

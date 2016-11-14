@@ -83,4 +83,13 @@ trait TableContextInterface
      * @return mixed
      */
     abstract public function assertTableWithStructureExists(TableNode $tableNode);
+
+    /**
+     * Asserts that the table contains a row with the provided values.
+     *
+     * @param  string               $name      The name of the table
+     * @param  TableNode            $tableNode The list of values to search.
+     * @throws ExpectationException If the values are not found in the table.
+     */
+    abstract public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode);
 }

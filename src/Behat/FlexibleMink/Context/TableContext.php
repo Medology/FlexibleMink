@@ -441,4 +441,33 @@ trait TableContext
             );
         });
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @Then  the table :name should have the following values:
+     */
+    public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode)
+    {
+        $actualTable = $this->getTableFromName($name);
+        $expectedRow = $tableNode->getRowsHash();
+        $colHeaders = $actualTable['colHeaders'];
+
+        array_walk($actualTable['body'], function (&$row) use ($colHeaders) {
+            $row = array_combine($colHeaders, $row);
+        });
+
+        $expectedColumnsCount = count($expectedRow);
+
+        foreach ($actualTable['body'] as $row) {
+            if (count(array_intersect_assoc($expectedRow, $row)) == $expectedColumnsCount) {
+                return;
+            }
+        }
+
+        throw new ExpectationException(
+            'A row matching the supplied values could not be found.',
+            $this->getSession()
+        );
+    }
 }

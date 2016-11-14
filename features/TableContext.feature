@@ -24,3 +24,9 @@ Feature: Table Context
      Then the table "population-table" should have "Country" at (1,1) in the header
       And the table "population-table" should have "1,341,335,152" at (1,4) in the body
       And the table "population-table" should have "2,876,333,427" at (1,4) in the footer
+
+  Scenario: Developer Can Test for Row Values in the Table
+      Then the table "population-table" should have the following values:
+        | Country           | India       |
+        | Female Population | 592,067,546 |
+

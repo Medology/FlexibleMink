@@ -30,3 +30,24 @@ Feature: Table Context
         | Country           | India       |
         | Female Population | 592,067,546 |
 
+  Scenario: Throw exception if the named table does not exist
+    When I assert that I should see table "pupil-table"
+    Then the assertion should throw an ExpectationException
+     And the assertion should fail with the message "Could not find table with name 'pupil-table'."
+
+  Scenario: Throw exception if the named table is not visible
+    When I assert that I should see table "voter-turnout-table"
+    Then the assertion should throw an RuntimeException
+     And the assertion should fail with the message "Found table 'voter-turnout-table', but it is not visible!"
+
+  Scenario: Throw exception if the named table does not have a header
+     When I assert that the table "headless-table" should have "Country" at (1,1) in the body
+     Then the assertion should throw an ElementNotFoundException
+      And the assertion should fail with the message "Tr not found."
+
+  Scenario: Throw exception if the named table does not have the expected values
+    When I assert that the table "population-table" should have the following values:
+      | Country           | Pluto       |
+      | Female Population | 412,064,436 |
+    Then the assertion should throw an ExpectationException
+     And the assertion should fail with the message "A row matching the supplied values could not be found."

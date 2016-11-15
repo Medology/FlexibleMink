@@ -37,8 +37,8 @@ Feature:  Assert Fields exists
        | Pizza     |
        | Hamburger |
        | Hot Dog   |
-    Then I check "Pizza"
-    Then I check "Hamburger"
-    Then I check "Hot Dog"
+    When I check "Pizza"
+     And I check "Hamburger"
+     And I check "Hot Dog"
      And I press "Submit Favorites"
     Then I should see "Selected: Pizza, Hamburger, Hot Dog"

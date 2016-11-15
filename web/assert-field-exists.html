@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assert Field Exists</title>
+    <style type="text/css">
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Assert Field Exists</h1>
+<section>
+    <form>
+        <label for="state">State</label>
+        <select id="state">
+            <option disabled selected>- Select State -</option>
+            <option>Texas</option>
+            <option>Not Texas</option>
+        </select>
+    </form>
+</section>
+<section>
+    <form onsubmit="foodSubmit(); return false;">
+        <h2>Favorite Foods</h2>
+        <label><input type="checkbox" name="favoriteFood" value="Pizza"> Pizza</label>
+        <input type="checkbox" name="favoriteFood" value="Sushi"> Sushi
+        <label for="Hamburger"><input type="checkbox" name="favoriteFood" value="Hamburger" id="Hamburger">
+            Hamburger</label>
+        <label for="Spaghetti"><input type="checkbox" name="favoriteFood" value="Spaghetti" id="Spaghetti">
+            Spaghetti</label>
+        <input type="checkbox" name="favoriteFood" value="Hot Dog" id="Hot Dog"> <label for="Hot Dog">Hot Dog</label>
+        <input type="checkbox" name="favoriteFood" value="Chocolate" id="Chocolate">
+            <label for="Chocolate">Chocolate</label>
+        <label class="hidden"><input type="checkbox" name="favoriteFood" value="Kale Salad"> Kale Salad</label>
+        <button type="submit">Submit Favorites</button>
+        <div id="foodSelected"></div>
+    </form>
+</section>
+<script>
+    function foodSubmit() {
+        var checkedElements = document.querySelectorAll('input[name="favoriteFood"]:checked');
+        var foods = [];
+        for (var i = 0; i < checkedElements.length; i++) {
+            foods.push(checkedElements[i].value);
+        }
+        document.getElementById('foodSelected').innerText = 'Selected: ' + foods.join(', ');
+    }
+</script>
+</body>
+</html>

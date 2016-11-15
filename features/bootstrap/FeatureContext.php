@@ -95,8 +95,9 @@ JS
      * Asserts that the prompt from ensureAlertExists returns the correct value.
      *
      * @Then /^the (?P<type>alert|confirm|prompt) should return (?P<value>.+)$/
-     * @param string $type   The type of popup to check results for.
-     * @param mixed  $result The expected result.
+     * @param  string               $type   The type of popup to check results for.
+     * @param  mixed                $result The expected result.
+     * @throws ExpectationException if the actual result does not match the expected results.
      */
     public function assertAlertResult($type, $result)
     {

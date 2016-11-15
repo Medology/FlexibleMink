@@ -284,7 +284,9 @@ class FlexibleContext extends MinkContext
                 throw new ExpectationException("No input label '$fieldName' found", $this->getSession());
             }
             $name = $label->getAttribute('for');
-            $fields = [$context->findField($name)];
+            if (($element = $context->findField($name))) {
+                $fields = [$element];
+            }
         }
         if (count($fields) > 0) {
             foreach ($fields as $field) {
@@ -398,7 +400,7 @@ class FlexibleContext extends MinkContext
             throw new ExpectationException("The option '" . $option . "' exist in the select", $this->getSession());
         }
         if (!$existence && !$opt) {
-            throw new ExpectationException("The option '" . $option . "' not exist in the select", $this->getSession());
+            throw new ExpectationException("The option '" . $option . "' does not exist in the select", $this->getSession());
         }
     }
 

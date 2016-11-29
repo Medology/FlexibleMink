@@ -1,6 +1,4 @@
-<?php
-
-namespace Behat\FlexibleMink\PseudoInterface;
+<?php namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Behat\Hook\Scope\AfterStepScope;
 

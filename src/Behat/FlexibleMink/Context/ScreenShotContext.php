@@ -1,6 +1,9 @@
-<?php namespace Behat\FlexibleMink\PseudoInterface;
+<?php namespace Behat\FlexibleMink\Context;
 
 use Behat\Behat\Hook\Scope\AfterStepScope;
+use Behat\FlexibleMink\PseudoInterface\MinkContextInterface;
+use Behat\FlexibleMink\PseudoInterface\ScreenShotContextInterface;
+use Behat\FlexibleMink\PseudoInterface\TestArtifactContextInterface;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\Testwork\Tester\Result\TestResult;
 

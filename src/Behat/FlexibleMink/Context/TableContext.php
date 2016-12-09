@@ -16,7 +16,6 @@ trait TableContext
 {
     // Depends.
     use FlexibleContextInterface;
-
     // Implements.
     use TableContextInterface;
 

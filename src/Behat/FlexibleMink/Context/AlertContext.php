@@ -14,7 +14,6 @@ trait AlertContext
 {
     // Implements.
     use AlertContextInterface;
-
     // Depends.
     use FlexibleContextInterface;
 

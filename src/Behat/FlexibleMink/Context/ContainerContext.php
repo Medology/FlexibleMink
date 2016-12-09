@@ -12,7 +12,6 @@ trait ContainerContext
 {
     // Implements.
     use ContainerContextInterface;
-
     // Depends.
     use FlexibleContextInterface;
     use SpinnerContextInterface;

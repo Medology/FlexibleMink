@@ -46,7 +46,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $name = 'testObj';
         $this->put($testObj, $name);
 
-
         /***********************
          * Validate First Argument
          ***********************/
@@ -367,7 +366,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['not_right_1st', null], $this->parseKey('not_right_1st'));
         $this->assertEquals(['not right 1st', null], $this->parseKey('not right 1st'));
 
-
         /***********************
          * Basic 1st, 2nd, 3rd, etc.
          ***********************/
@@ -377,14 +375,12 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['University', 21], $this->parseKey('21st University'));
         $this->assertEquals(['University', 500], $this->parseKey('500th University'));
 
-
         /***********************
          * Strange Key Names
          ***********************/
         $this->assertEquals(['lol$@!@#$', 1], $this->parseKey('1st lol$@!@#$'));
         $this->assertEquals(['%%%%%', 1], $this->parseKey('1st %%%%%'));
         $this->assertEquals(['     ', 42], $this->parseKey('42nd      '));
-
 
         /***********************
          * No suffix on numbers

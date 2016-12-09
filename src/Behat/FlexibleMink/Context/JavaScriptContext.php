@@ -14,7 +14,6 @@ trait JavaScriptContext
 {
     // Depends.
     use FlexibleContextInterface;
-
     // Implements.
     use JavaScriptContextInterface;
 

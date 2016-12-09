@@ -15,7 +15,6 @@ trait CsvContext
 {
     // Implements
     use CsvContextInterface;
-
     // Depends
     use FlexibleContextInterface;
     use StoreContextInterface;

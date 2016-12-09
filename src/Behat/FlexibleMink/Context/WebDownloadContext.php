@@ -16,7 +16,6 @@ trait WebDownloadContext
 {
     // Implements
     use WebDownloadContextInterface;
-
     // Depends
     use FlexibleContextInterface;
     use StoreContextInterface;

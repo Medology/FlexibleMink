@@ -15,7 +15,6 @@ trait ScreenShotContext
     // Depends
     use MinkContextInterface;
     use TestArtifactContextInterface;
-
     // Implements
     use ScreenShotContextInterface;
 

@@ -152,7 +152,12 @@ class FlexibleContext extends MinkContext
      */
     public function clickLink($locator)
     {
-        $this->assertVisibleLink($locator)->click();
+        $locator = $this->injectStoredValues($locator);
+        $element = $this->waitFor(function () use ($locator) {
+            return $this->assertVisibleLink($locator);
+        });
+
+        $element->click();
     }
 
     /**

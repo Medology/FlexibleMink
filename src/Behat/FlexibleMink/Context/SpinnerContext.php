@@ -3,6 +3,7 @@
 namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\SpinnerContextInterface;
+use Exception;
 
 trait SpinnerContext
 {
@@ -14,7 +15,7 @@ trait SpinnerContext
      */
     public function waitFor(callable $lambda, $timeout = 30)
     {
-        $lastException = new \Exception(
+        $lastException = new Exception(
             'Timeout expired before a single try could be attempted. Is your timeout too short?'
         );
 
@@ -22,7 +23,7 @@ trait SpinnerContext
         while (time() - $start < $timeout) {
             try {
                 return $lambda();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $lastException = $e;
             }
 

@@ -11,7 +11,7 @@
   "require": {
     "php": ">=5.4",
     "behat/behat": "^3.0",
-    "symfony/config": "~2.8",
+    "symfony/config": ">=2.8",
     "behat/mink-extension": "^2.0"
   },
   "require-dev": {

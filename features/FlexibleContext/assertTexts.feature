@@ -17,10 +17,13 @@ Feature: Assert Page Contains Texts
       | first_entry  | Line one   |
       | second_entry | Line two   |
       | third_entry  | Line three |
+      | fourth_entry | Line four  |
      Then I should see the following:
       | (the first entry of the list)  |
       | (the second entry of the list) |
       | (the third entry of the list)  |
+      And I should not see the following:
+      | (the fourth entry of the list)  |
 
   Scenario: Assertion fails reliably if a given line is not present
     When I assert that I should see the following:

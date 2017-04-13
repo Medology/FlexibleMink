@@ -31,9 +31,10 @@ trait FlexibleContextInterface
      * Asserts that the page contains a list of strings.
      *
      * @param  TableNode             $table The list of strings to find.
+     * @param  String                $not   A flag to assert not containing text.
      * @throws ResponseTextException If the text is not found.
      */
-    abstract public function assertPageContainsTexts(TableNode $table);
+    abstract public function assertPageContainsTexts(TableNode $table, $not = null);
 
     /**
      * This method overrides the MinkContext::assertPageAddress() default behavior by adding a waitFor to ensure that

@@ -75,16 +75,20 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      *
-     * @Then I should see the following:
+     * @Then /^I should (?:|(?P<not>not ))see the following:$/
      */
-    public function assertPageContainsTexts(TableNode $table)
+    public function assertPageContainsTexts(TableNode $table, $not = null)
     {
         if (count($table->getRow(0)) > 1) {
             throw new InvalidArgumentException('Arguments must be a single-column list of items');
         }
 
         foreach ($table->getRows() as $text) {
-            $this->assertPageContainsText($text[0]);
+            if ($not) {
+                $this->assertPageNotContainsText($text[0]);
+            } else {
+                $this->assertPageContainsText($text[0]);
+            }
         }
     }
 

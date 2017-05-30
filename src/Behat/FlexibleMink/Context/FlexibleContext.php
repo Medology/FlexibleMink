@@ -182,6 +182,19 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
+    public function fillField($field, $value)
+    {
+        $field = $this->injectStoredValues($field);
+        $element = $this->waitFor(function () use ($field) {
+            return $this->assertVisibleOption($field);
+        });
+
+        $element->setValue($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function uncheckOption($locator)
     {
         $locator = $this->injectStoredValues($locator);

@@ -123,6 +123,17 @@ trait FlexibleContextInterface
     abstract public function checkOption($locator);
 
     /**
+     * Clicks a visible field with specified id|title|alt|text.
+     *
+     * This method overrides the MinkContext::fillField() default behavior for fill a field to ensure that only visible
+     * field is filled.
+     * @see MinkContext::fillField
+     * @param string $field The id|title|alt|text of the field to be filled.
+     * @param string $value The value to be set on the field.
+     */
+    abstract public function fillField($field, $value);
+
+    /**
      * Unchecks checkbox with specified id|name|label|value.
      *
      * @see MinkContext::uncheckOption

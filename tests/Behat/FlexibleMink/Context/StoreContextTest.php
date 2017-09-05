@@ -84,6 +84,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test non-existing store key
         $badName = 'FakeObj';
+
         try {
             $this->injectStoredValues("(the test_property_1 of the $badName)");
             $this->setExpectedException('Exception');
@@ -94,6 +95,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test bad property
         $badProperty = 'bad_property_1';
+
         try {
             $this->injectStoredValues("(the $badProperty of the $name)");
             $this->setExpectedException('Exception');
@@ -140,6 +142,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // test function with bad arguments
         $badFn = function () {
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('TypeError');
@@ -150,6 +153,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         $badFn = function ($a, $b) {
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
@@ -162,6 +166,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $badFn = function ($a) {
             $a = 1;
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
@@ -174,6 +179,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $badFn = function ($a) {
             return 'bad return';
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
@@ -186,6 +192,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             return function () {
             };
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
@@ -209,6 +216,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
             return $thing;
         };
+
         try {
             $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
             $this->setExpectedException('Exception');

@@ -78,11 +78,13 @@ trait CsvContext
 
         if ($diff = array_diff($expectedHeaders, $actualHeaders)) {
             $missing = implode("', '", $diff);
+
             throw new Exception("CSV '$key' is missing headers '$missing'");
         }
 
         if ($diff = array_diff($actualHeaders, $expectedHeaders)) {
             $extra = implode("', '", $diff);
+
             throw new Exception("CSV '$key' contains extra headers '$extra'");
         }
     }

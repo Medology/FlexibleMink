@@ -350,6 +350,7 @@ class FlexibleContext extends MinkContext
                 }
             }
         }
+
         throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
     }
 
@@ -598,20 +599,20 @@ class FlexibleContext extends MinkContext
         $this->assertFieldExists($locator)->focus();
     }
 
-     /**
-      * {@inheritdoc}
-      *
-      * @When /^(?:I |)(?:hit|press) (?:the |)"(?P<key>[^"]+)" key$/
-      */
-     public function hitKey($key)
-     {
-         if (!array_key_exists($key, self::$keyCodes)) {
-             throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
-         }
+    /**
+     * {@inheritdoc}
+     *
+     * @When /^(?:I |)(?:hit|press) (?:the |)"(?P<key>[^"]+)" key$/
+     */
+    public function hitKey($key)
+    {
+        if (!array_key_exists($key, self::$keyCodes)) {
+            throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
+        }
 
-         $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
-         $this->getSession()->evaluateScript($script);
-     }
+        $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
+        $this->getSession()->evaluateScript($script);
+    }
 
     /**
      * {@inheritdoc}

@@ -464,10 +464,9 @@ trait TableContext
     public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode)
     {
         $expectedRow = $tableNode->getRowsHash();
-        $table = $this->findNamedTable($name);
 
-        $this->waitFor(function () use ($name, $table, $expectedRow) {
-            $actualTable = $this->buildTableFromHtml($table);
+        $this->waitFor(function () use ($name, $expectedRow) {
+            $actualTable = $this->getTableFromName($name, true);
             $colHeaders = $actualTable['colHeaders'];
 
             array_walk($actualTable['body'], function (&$row) use ($colHeaders) {

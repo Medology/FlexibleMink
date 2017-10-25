@@ -4,6 +4,7 @@ default:
       path: %paths.base%/features
       contexts:
         - FeatureContext
+        - Medology\Behat\Mink\AlertContext
         - Medology\Behat\Mink\ScreenShotContext
   extensions:
     Behat\MinkExtension:

@@ -2,7 +2,6 @@
 
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\Context\CsvContext;
 use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\FlexibleMink\Context\WebDownloadContext;
 use Behat\Gherkin\Node\PyStringNode;
@@ -18,7 +17,6 @@ class FeatureContext extends FlexibleContext implements GathersContexts
 {
     // Depends
     use AssertionContext;
-    use CsvContext;
     use TypeCaster;
     use WebDownloadContext;
 

@@ -1,25 +1,20 @@
-<?php
+<?php namespace Medology\Behat;
 
-namespace Behat\FlexibleMink\Context;
-
+use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\PseudoInterface\CsvContextInterface;
-use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
+use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
-use Medology\Behat\StoreContext;
 use RuntimeException;
 
 /**
- * {@inheritdoc}
+ * Provides functionality for working with CSV data.
  */
-trait CsvContext
+class CsvContext implements Context, GathersContexts
 {
-    // Implements
-    use CsvContextInterface;
-    // Depends
-    use FlexibleContextInterface;
+    /** @var FlexibleContext */
+    protected $flexibleContext;
 
     /** @var StoreContext */
     protected $storeContext;
@@ -38,15 +33,24 @@ trait CsvContext
           );
         }
 
+        if (!$this->flexibleContext = $environment->getContext(FlexibleContext::class)) {
+            throw new RuntimeException('Failed to gather FlexibleContext');
+        }
+
         if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
             throw new RuntimeException('Failed to gather StoreContext');
         }
     }
 
     /**
-     * {@inheritdoc}
+     * Ensures that the given variable in the store is a CSV containing the given rows.
+     * The given rows do not have to contain all columns in the store, but the CSV in the store
+     * must contain all of the columns in the expected rows.
      *
-     * @Then /^the "(?P<key>[^"]+)" should be CSV data as follows:$/
+     * @Then   /^the "(?P<key>[^"]+)" should be CSV data as follows:$/
+     * @param  string    $key   The key the CSV is stored under.
+     * @param  TableNode $table The rows expected in the CSV.
+     * @throws Exception if the given rows are not present in the CSV.
      */
     public function assertThingIsCSVWithData($key, TableNode $table)
     {
@@ -90,9 +94,13 @@ trait CsvContext
     }
 
     /**
-     * {@inheritdoc}
+     * Ensures that the given variable in the store is a CSV with the given column headers.
+     * The CSV must contain exactly the rows given, and no more.
      *
-     * @Then /^the "(?P<key>[^"]+)" should be CSV data with the following headers:$/
+     * @Then   /^the "(?P<key>[^"]+)" should be CSV data with the following headers:$/
+     * @param  string    $key   The key the CSV is stored under.
+     * @param  TableNode $table A list of headers that the CSV must match.
+     * @throws Exception if the given headers are not an exact match with the CSV headers.
      */
     public function assertThingIsCSVWithRows($key, TableNode $table)
     {

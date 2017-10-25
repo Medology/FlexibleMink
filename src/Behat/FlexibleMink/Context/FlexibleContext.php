@@ -12,6 +12,7 @@ use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use Medology\Behat\TypeCaster;
 use Medology\Spinner;
 use ZipArchive;
 

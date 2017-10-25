@@ -763,4 +763,16 @@ class FlexibleContext extends MinkContext
 
         return $aRect['top'] - $bRect['top'];
     }
+
+    /**
+     * Provides the directory that test artifacts should be stored to.
+     *
+     * This should be overridden when FlexibleMink is used in a project.
+     *
+     * @return string the fully qualified directory, with no trailing directory separator.
+     */
+    public function getArtifactsDir()
+    {
+        return realpath(__DIR__ . '/../../../../artifacts');
+    }
 }

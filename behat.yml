@@ -5,6 +5,7 @@ default:
       contexts:
         - FeatureContext
         - Medology\Behat\Mink\AlertContext
+        - Medology\Behat\Mink\JavaScriptContext
         - Medology\Behat\Mink\ScreenShotContext
   extensions:
     Behat\MinkExtension:

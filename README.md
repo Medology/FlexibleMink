@@ -27,3 +27,5 @@ Once the setup is complete, usage is quite simple. Run the following in the proj
 
 ## Debugging
 Selenium is configured for VNC on the default port (5900). If you have a VNC client, simply point it to ```vnc://localhost``` on port 5900. The password is the default password provided by Selenium, which is `secret` (as documented on [Selenium](https://github.com/SeleniumHQ/docker-selenium)).
+
+.

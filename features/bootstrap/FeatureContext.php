@@ -1,5 +1,7 @@
 <?php
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\Context\CsvContext;
 use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\FlexibleMink\Context\WebDownloadContext;
@@ -7,16 +9,40 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use features\Extensions\Assertion\AssertionContext;
+use Medology\Behat\GathersContexts;
+use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Spinner;
 
-class FeatureContext extends FlexibleContext
+class FeatureContext extends FlexibleContext implements GathersContexts
 {
     // Depends
     use AssertionContext;
     use CsvContext;
     use TypeCaster;
     use WebDownloadContext;
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * Places an object with the given structure into the store.
@@ -27,7 +53,7 @@ class FeatureContext extends FlexibleContext
      */
     public function putStoreStep($key, TableNode $attributes)
     {
-        $this->put((object) ($attributes->getRowsHash()), $key);
+        $this->storeContext->put((object) ($attributes->getRowsHash()), $key);
     }
 
     /**
@@ -44,7 +70,7 @@ class FeatureContext extends FlexibleContext
             $value = $value->getRaw();
         }
 
-        $this->put($value, $key);
+        $this->storeContext->put($value, $key);
     }
 
     /**

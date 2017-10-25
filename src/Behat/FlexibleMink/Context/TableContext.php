@@ -1,5 +1,7 @@
 <?php namespace Behat\FlexibleMink\Context;
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\FlexibleMink\PseudoInterface\TableContextInterface;
 use Behat\Gherkin\Node\TableNode;
@@ -7,6 +9,7 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use InvalidArgumentException;
+use Medology\Behat\StoreContext;
 use Medology\Spinner;
 use RuntimeException;
 
@@ -19,6 +22,28 @@ trait TableContext
     use FlexibleContextInterface;
     // Implements.
     use TableContextInterface;
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * Finds a table with a given data-qa-id, name, or id. data-qa-id is given preference and matched exactly, while
@@ -62,15 +87,15 @@ trait TableContext
     protected function getTableFromName($name, $forceFresh = false)
     {
         // retrieve table from the store if it exists there
-        if ($this->isStored($name) && !$forceFresh) {
-            return $this->get($name);
+        if ($this->storeContext->isStored($name) && !$forceFresh) {
+            return $this->storeContext->get($name);
         }
 
         // find the table node and parse it's contents
         $table = $this->findNamedTable($name);
         $tableData = $this->buildTableFromHtml($table);
 
-        $this->put($tableData, $name);
+        $this->storeContext->put($tableData, $name);
 
         return $tableData;
     }
@@ -207,7 +232,7 @@ trait TableContext
 
         // if a key name was provided, we can store this array for quick access next time
         if ($keyName) {
-            $this->put($tableData, $keyName);
+            $this->storeContext->put($tableData, $keyName);
         }
 
         return $tableData;

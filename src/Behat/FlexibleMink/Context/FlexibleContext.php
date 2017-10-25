@@ -2,6 +2,8 @@
 
 namespace Behat\FlexibleMink\Context;
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
@@ -12,21 +14,23 @@ use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use Medology\Behat\GathersContexts;
+use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Spinner;
+use RuntimeException;
 use ZipArchive;
 
 /**
  * Overwrites some MinkContext step definitions to make them more resilient to failures caused by browser/driver
  * discrepancies and unpredictable load times.
  */
-class FlexibleContext extends MinkContext
+class FlexibleContext extends MinkContext implements GathersContexts
 {
     // Implements.
     use FlexibleContextInterface;
     // Depends.
     use ContainerContext;
-    use StoreContext;
     use TableContext;
     use TypeCaster;
 
@@ -38,6 +42,28 @@ class FlexibleContext extends MinkContext
         'shift tab'  => 2228233,
         'tab'        => 9,
     ];
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -64,7 +90,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageContainsText($text)
     {
-        $text = $this->injectStoredValues($text);
+        $text = $this->storeContext->injectStoredValues($text);
 
         Spinner::waitFor(function () use ($text) {
             parent::assertPageContainsText($text);
@@ -96,7 +122,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageNotContainsText($text)
     {
-        $text = $this->injectStoredValues($text);
+        $text = $this->storeContext->injectStoredValues($text);
         Spinner::waitFor(function () use ($text) {
             parent::assertPageNotContainsText($text);
         });
@@ -109,7 +135,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageContainsTextTemporarily($text)
     {
-        $text = $this->injectStoredValues($text);
+        $text = $this->storeContext->injectStoredValues($text);
 
         Spinner::waitFor(function () use ($text) {
             parent::assertPageContainsText($text);
@@ -131,8 +157,8 @@ class FlexibleContext extends MinkContext
      */
     public function assertElementContainsText($element, $text)
     {
-        $element = $this->injectStoredValues($element);
-        $text = $this->injectStoredValues($text);
+        $element = $this->storeContext->injectStoredValues($element);
+        $text = $this->storeContext->injectStoredValues($text);
 
         Spinner::waitFor(function () use ($element, $text) {
             parent::assertElementContainsText($element, $text);
@@ -144,8 +170,8 @@ class FlexibleContext extends MinkContext
      */
     public function assertElementNotContainsText($element, $text)
     {
-        $element = $this->injectStoredValues($element);
-        $text = $this->injectStoredValues($text);
+        $element = $this->storeContext->injectStoredValues($element);
+        $text = $this->storeContext->injectStoredValues($text);
 
         Spinner::waitFor(function () use ($element, $text) {
             parent::assertElementNotContainsText($element, $text);
@@ -157,7 +183,7 @@ class FlexibleContext extends MinkContext
      */
     public function clickLink($locator)
     {
-        $locator = $this->injectStoredValues($locator);
+        $locator = $this->storeContext->injectStoredValues($locator);
         $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleLink($locator);
         });
@@ -170,7 +196,7 @@ class FlexibleContext extends MinkContext
      */
     public function checkOption($locator)
     {
-        $locator = $this->injectStoredValues($locator);
+        $locator = $this->storeContext->injectStoredValues($locator);
         $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleOption($locator);
         });
@@ -183,7 +209,7 @@ class FlexibleContext extends MinkContext
      */
     public function fillField($field, $value)
     {
-        $field = $this->injectStoredValues($field);
+        $field = $this->storeContext->injectStoredValues($field);
         $element = Spinner::waitFor(function () use ($field) {
             return $this->assertVisibleOption($field);
         });
@@ -196,7 +222,7 @@ class FlexibleContext extends MinkContext
      */
     public function uncheckOption($locator)
     {
-        $locator = $this->injectStoredValues($locator);
+        $locator = $this->storeContext->injectStoredValues($locator);
         $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleOption($locator);
         });
@@ -400,7 +426,7 @@ class FlexibleContext extends MinkContext
         $lastPosition = -1;
 
         foreach ($lines as $line) {
-            $line = $this->injectStoredValues($line);
+            $line = $this->storeContext->injectStoredValues($line);
 
             $position = strpos($page, $line);
 
@@ -470,10 +496,10 @@ class FlexibleContext extends MinkContext
             throw new InvalidArgumentException('Arguments must be a single-column list of items');
         }
 
-        $expectedOptTexts = array_map([$this, 'injectStoredValues'], $tableNode->getColumn(0));
+        $expectedOptTexts = array_map([$this->storeContext, 'injectStoredValues'], $tableNode->getColumn(0));
 
         $select = $this->fixStepArgument($select);
-        $select = $this->injectStoredValues($select);
+        $select = $this->storeContext->injectStoredValues($select);
         $selectField = $this->assertFieldExists($select);
         $actualOpts = $selectField->findAll('xpath', '//option');
 
@@ -643,7 +669,7 @@ class FlexibleContext extends MinkContext
      */
     public function visit($page)
     {
-        parent::visit($this->injectStoredValues($page));
+        parent::visit($this->storeContext->injectStoredValues($page));
     }
 
     /**
@@ -651,7 +677,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertCheckboxChecked($checkbox)
     {
-        $checkbox = $this->injectStoredValues($checkbox);
+        $checkbox = $this->storeContext->injectStoredValues($checkbox);
         parent::assertCheckboxChecked($checkbox);
     }
 
@@ -660,7 +686,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertCheckboxNotChecked($checkbox)
     {
-        $checkbox = $this->injectStoredValues($checkbox);
+        $checkbox = $this->storeContext->injectStoredValues($checkbox);
         parent::assertCheckboxNotChecked($checkbox);
     }
 
@@ -706,7 +732,7 @@ class FlexibleContext extends MinkContext
      */
     protected function findRadioButton($label)
     {
-        $label = $this->injectStoredValues($label);
+        $label = $this->storeContext->injectStoredValues($label);
         $this->fixStepArgument($label);
 
         $radioButton = Spinner::waitFor(function () use ($label) {

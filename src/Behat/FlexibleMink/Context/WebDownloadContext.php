@@ -2,13 +2,16 @@
 
 namespace Behat\FlexibleMink\Context;
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
-use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
 use Behat\FlexibleMink\PseudoInterface\WebDownloadContextInterface;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Exception;
+use Medology\Behat\StoreContext;
 use Medology\Spinner;
+use RuntimeException;
 
 /**
  * {@inheritdoc}
@@ -19,9 +22,30 @@ trait WebDownloadContext
     use WebDownloadContextInterface;
     // Depends
     use FlexibleContextInterface;
-    use StoreContextInterface;
 
     protected static $baseUrlRegExp = '/^((http(s|):[\/]{2}|)([a-zA-Z]+\.|)[a-zA-Z0-9]+\.[a-zA-Z]+(\:[\d]+|)|[a-zA-Z0-9]+)/';
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -79,7 +103,7 @@ trait WebDownloadContext
         $response = curl_exec($ch);
 
         // Put response into object store.
-        $this->put($response, $key);
+        $this->storeContext->put($response, $key);
 
         return $response;
     }

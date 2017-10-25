@@ -2,11 +2,14 @@
 
 namespace Behat\FlexibleMink\Context;
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\PseudoInterface\ContainerContextInterface;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
-use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
 use Behat\Mink\Exception\ExpectationException;
+use Medology\Behat\StoreContext;
 use Medology\Spinner;
+use RuntimeException;
 
 trait ContainerContext
 {
@@ -14,7 +17,28 @@ trait ContainerContext
     use ContainerContextInterface;
     // Depends.
     use FlexibleContextInterface;
-    use StoreContextInterface;
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -23,8 +47,8 @@ trait ContainerContext
     public function assertTextInContainer($text, $containerLabel)
     {
         Spinner::waitFor(function () use ($text, $containerLabel) {
-            $text = $this->injectStoredValues($text);
-            $containerLabel = $this->injectStoredValues($containerLabel);
+            $text = $this->storeContext->injectStoredValues($text);
+            $containerLabel = $this->storeContext->injectStoredValues($containerLabel);
             $node = $this->getSession()->getPage()->find('xpath', "//*[contains(text(),'$containerLabel')]");
             if (!$node) {
                 throw new ExpectationException("The '$containerLabel' container was not found", $this->getSession());

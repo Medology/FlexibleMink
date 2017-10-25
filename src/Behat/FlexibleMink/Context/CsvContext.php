@@ -2,11 +2,14 @@
 
 namespace Behat\FlexibleMink\Context;
 
+use Behat\Behat\Context\Environment\InitializedContextEnvironment;
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\PseudoInterface\CsvContextInterface;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
-use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
+use Medology\Behat\StoreContext;
+use RuntimeException;
 
 /**
  * {@inheritdoc}
@@ -17,7 +20,28 @@ trait CsvContext
     use CsvContextInterface;
     // Depends
     use FlexibleContextInterface;
-    use StoreContextInterface;
+
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        if (!($environment instanceof InitializedContextEnvironment)) {
+            throw new RuntimeException(
+                'Expected Environment to be ' . InitializedContextEnvironment::class .
+                    ', but got ' . get_class($environment)
+          );
+        }
+
+        if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
+            throw new RuntimeException('Failed to gather StoreContext');
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -29,7 +53,7 @@ trait CsvContext
         $expectedData = $table->getRows();
 
         // Use str_getcsv to first split the CSV data into rows, then again to process each row.
-        $actualData = array_map('str_getcsv', str_getcsv($this->get($key), "\n"));
+        $actualData = array_map('str_getcsv', str_getcsv($this->storeContext->get($key), "\n"));
 
         if (($expectedCount = count($expectedData)) !== ($actualCount = count($actualData))) {
             throw new Exception("Expected $expectedCount rows, but found $actualCount");
@@ -74,7 +98,7 @@ trait CsvContext
     {
         $expectedHeaders = $table->getColumn(0);
 
-        $actualHeaders = str_getcsv(str_getcsv($this->get($key), "\n")[0]);
+        $actualHeaders = str_getcsv(str_getcsv($this->storeContext->get($key), "\n")[0]);
 
         if ($diff = array_diff($expectedHeaders, $actualHeaders)) {
             $missing = implode("', '", $diff);

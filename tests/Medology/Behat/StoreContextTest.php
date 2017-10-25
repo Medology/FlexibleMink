@@ -1,7 +1,7 @@
-<?php namespace Tests\Behat\FlexibleMink\Context;
+<?php namespace Tests\Medology\Behat;
 
-use Behat\FlexibleMink\Context\StoreContext;
 use Exception;
+use Medology\Behat\StoreContext;
 use PHPUnit_Framework_Error;
 use PHPUnit_Framework_TestCase;
 use stdClass;
@@ -9,7 +9,16 @@ use TypeError;
 
 class StoreContextTest extends PHPUnit_Framework_TestCase
 {
-    use StoreContext;
+    /** @var StoreContext */
+    protected $storeContext;
+
+    /**
+     * Sets up the environment before each test.
+     */
+    public function setUp()
+    {
+        $this->storeContext = new StoreContext();
+    }
 
     /**
      * Creates a simple mock object.
@@ -44,26 +53,26 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         $testObj = $this->getMockObject();
         $name = 'testObj';
-        $this->put($testObj, $name);
+        $this->storeContext->put($testObj, $name);
 
         /***********************
          * Validate First Argument
          ***********************/
 
         // test empty string and variations
-        $this->assertEmpty($this->injectStoredValues(''));
-        $this->assertEmpty($this->injectStoredValues(null));
+        $this->assertEmpty($this->storeContext->injectStoredValues(''));
+        $this->assertEmpty($this->storeContext->injectStoredValues(null));
 
         // test invalid argument for $string
         try {
-            $this->injectStoredValues([]);
+            $this->storeContext->injectStoredValues([]);
             $this->setExpectedException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
             $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
         }
 
         try {
-            $this->injectStoredValues(function () {
+            $this->storeContext->injectStoredValues(function () {
             });
             $this->setExpectedException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
@@ -71,22 +80,22 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         }
 
         // test reflection of non-matching inputs
-        $this->assertEquals(1452, $this->injectStoredValues(1452));
-        $this->assertEquals('lol', $this->injectStoredValues('lol'));
-        $this->assertEquals('the total_cost of the Order', $this->injectStoredValues('the total_cost of the Order'));
-        $this->assertEquals('(the total_cost of the Order', $this->injectStoredValues('(the total_cost of the Order'));
-        $this->assertEquals('the total_cost of the Order)', $this->injectStoredValues('the total_cost of the Order)'));
+        $this->assertEquals(1452, $this->storeContext->injectStoredValues(1452));
+        $this->assertEquals('lol', $this->storeContext->injectStoredValues('lol'));
+        $this->assertEquals('the total_cost of the Order', $this->storeContext->injectStoredValues('the total_cost of the Order'));
+        $this->assertEquals('(the total_cost of the Order', $this->storeContext->injectStoredValues('(the total_cost of the Order'));
+        $this->assertEquals('the total_cost of the Order)', $this->storeContext->injectStoredValues('the total_cost of the Order)'));
         $this->assertEquals(
             'the (total_cost of the Order)',
-            $this->injectStoredValues('the (total_cost of the Order)')
+            $this->storeContext->injectStoredValues('the (total_cost of the Order)')
         );
-        $this->assertEquals('(the total_cost of Order)', $this->injectStoredValues('(the total_cost of Order)'));
+        $this->assertEquals('(the total_cost of Order)', $this->storeContext->injectStoredValues('(the total_cost of Order)'));
 
         // test non-existing store key
         $badName = 'FakeObj';
 
         try {
-            $this->injectStoredValues("(the test_property_1 of the $badName)");
+            $this->storeContext->injectStoredValues("(the test_property_1 of the $badName)");
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -97,7 +106,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $badProperty = 'bad_property_1';
 
         try {
-            $this->injectStoredValues("(the $badProperty of the $name)");
+            $this->storeContext->injectStoredValues("(the $badProperty of the $name)");
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -107,7 +116,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // test valid property and key
         $this->assertEquals(
             $testObj->test_property_1,
-            $this->injectStoredValues('(the test_property_1 of the testObj)')
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)')
         );
 
         /***********************
@@ -115,25 +124,25 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          ***********************/
 
         // test null values
-        $this->assertEmpty($this->injectStoredValues('', null));
+        $this->assertEmpty($this->storeContext->injectStoredValues('', null));
 
         // test invalid values
         try {
-            $this->injectStoredValues('', '');
+            $this->storeContext->injectStoredValues('', '');
             $this->setExpectedException('TypeError');
         } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
         }
 
         try {
-            $this->injectStoredValues('', 0);
+            $this->storeContext->injectStoredValues('', 0);
             $this->setExpectedException('TypeError');
         } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
         }
 
         try {
-            $this->injectStoredValues('', $testObj);
+            $this->storeContext->injectStoredValues('', $testObj);
             $this->setExpectedException('TypeError');
         } catch (PHPUnit_Framework_Error $e) {
             $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
@@ -144,7 +153,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('TypeError');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -155,7 +164,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -168,7 +177,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -181,7 +190,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -194,7 +203,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -207,7 +216,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
         $this->assertEquals(
             'test_value_1',
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
         );
 
         // test accessing property after unsetting with callback
@@ -218,7 +227,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
 
         try {
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -233,7 +242,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
         $this->assertEquals(
             'test_value_4',
-            $this->injectStoredValues('(the test_property_4 of the testObj)', $goodFn)
+            $this->storeContext->injectStoredValues('(the test_property_4 of the testObj)', $goodFn)
         );
 
         // test overwriting property
@@ -244,7 +253,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         };
         $this->assertEquals(
             'overwritten',
-            $this->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $goodFn)
         );
 
         /******************************
@@ -252,12 +261,12 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          *****************************/
 
         // Null $hasValue should default to using isset
-        $this->assertEmpty($this->injectStoredValues('', null, null));
+        $this->assertEmpty($this->storeContext->injectStoredValues('', null, null));
 
         // Non-callable $hasValue throws appropriate error
         foreach (['', 0, $testObj] as $nonCallable) {
             try {
-                $this->injectStoredValues('', null, $nonCallable);
+                $this->storeContext->injectStoredValues('', null, $nonCallable);
                 $this->setExpectedException('TypeError');
             } catch (PHPUnit_Framework_Error $e) {
                 $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
@@ -275,7 +284,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         ];
         foreach ($wrongArgCounts as $wrongArgCount) {
             try {
-                $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
+                $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
                 $this->setExpectedException('Exception');
             } catch (Exception $e) {
                 $this->assertInstanceOf('Exception', $e);
@@ -297,7 +306,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         ];
         foreach ($wrongReturnTypes as $wrongReturnType) {
             try {
-                $this->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongReturnType);
+                $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongReturnType);
                 $this->setExpectedException('Exception');
             } catch (Exception $e) {
                 $this->assertInstanceOf('Exception', $e);
@@ -307,7 +316,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // Correct error is thrown when property does not exist
         try {
-            $this->injectStoredValues(
+            $this->storeContext->injectStoredValues(
                 '(the test_property_1 of the testObj)',
                 null,
                 function ($a, $b) {
@@ -323,7 +332,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // Property is injected correctly when property exists
         $this->assertEquals(
             'overwritten',
-            $this->injectStoredValues(
+            $this->storeContext->injectStoredValues(
                 '(the test_property_1 of the testObj)',
                 null,
                 function ($thing, $property) {
@@ -355,9 +364,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('test_property_1'))
             ->willReturn('test_value_1');
 
-        $this->put($mock, $name);
+        $this->storeContext->put($mock, $name);
 
-        $this->assertEquals('test_value_1', $this->injectStoredValues("(the test_property_1 of the $name)"));
+        $this->assertEquals('test_value_1', $this->storeContext->injectStoredValues("(the test_property_1 of the $name)"));
     }
 
     /**
@@ -368,32 +377,32 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         /***********************
          * Invalid Format Reflects Back
          ***********************/
-        $this->assertEquals(['not right', null], $this->parseKey('not right'));
-        $this->assertEquals(['not_right', null], $this->parseKey('not_right'));
-        $this->assertEquals(['1st_not right', null], $this->parseKey('1st_not right'));
-        $this->assertEquals(['not_right_1st', null], $this->parseKey('not_right_1st'));
-        $this->assertEquals(['not right 1st', null], $this->parseKey('not right 1st'));
+        $this->assertEquals(['not right', null], $this->storeContext->parseKey('not right'));
+        $this->assertEquals(['not_right', null], $this->storeContext->parseKey('not_right'));
+        $this->assertEquals(['1st_not right', null], $this->storeContext->parseKey('1st_not right'));
+        $this->assertEquals(['not_right_1st', null], $this->storeContext->parseKey('not_right_1st'));
+        $this->assertEquals(['not right 1st', null], $this->storeContext->parseKey('not right 1st'));
 
         /***********************
          * Basic 1st, 2nd, 3rd, etc.
          ***********************/
-        $this->assertEquals(['University', 1], $this->parseKey('1st University'));
-        $this->assertEquals(['University', 2], $this->parseKey('2nd University'));
-        $this->assertEquals(['University', 3], $this->parseKey('3rd University'));
-        $this->assertEquals(['University', 21], $this->parseKey('21st University'));
-        $this->assertEquals(['University', 500], $this->parseKey('500th University'));
+        $this->assertEquals(['University', 1], $this->storeContext->parseKey('1st University'));
+        $this->assertEquals(['University', 2], $this->storeContext->parseKey('2nd University'));
+        $this->assertEquals(['University', 3], $this->storeContext->parseKey('3rd University'));
+        $this->assertEquals(['University', 21], $this->storeContext->parseKey('21st University'));
+        $this->assertEquals(['University', 500], $this->storeContext->parseKey('500th University'));
 
         /***********************
          * Strange Key Names
          ***********************/
-        $this->assertEquals(['lol$@!@#$', 1], $this->parseKey('1st lol$@!@#$'));
-        $this->assertEquals(['%%%%%', 1], $this->parseKey('1st %%%%%'));
-        $this->assertEquals(['     ', 42], $this->parseKey('42nd      '));
+        $this->assertEquals(['lol$@!@#$', 1], $this->storeContext->parseKey('1st lol$@!@#$'));
+        $this->assertEquals(['%%%%%', 1], $this->storeContext->parseKey('1st %%%%%'));
+        $this->assertEquals(['     ', 42], $this->storeContext->parseKey('42nd      '));
 
         /***********************
          * No suffix on numbers
          ***********************/
-        $this->assertEquals(['1 University', null], $this->parseKey('1 University'));
-        $this->assertEquals(['2 University', null], $this->parseKey('2 University'));
+        $this->assertEquals(['1 University', null], $this->storeContext->parseKey('1 University'));
+        $this->assertEquals(['2 University', null], $this->storeContext->parseKey('2 University'));
     }
 }

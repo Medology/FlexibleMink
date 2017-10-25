@@ -8,6 +8,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use features\Extensions\Assertion\AssertionContext;
+use Medology\Spinner;
 
 class FeatureContext extends FlexibleContext
 {
@@ -47,13 +48,13 @@ class FeatureContext extends FlexibleContext
     }
 
     /**
-     * {@inheritdoc}
-     *
      * Decreases the default timeout for the sake of testing failing assertions more quickly.
+     *
+     * @BeforeSuite
      */
-    public function waitFor(callable $lambda, $timeout = 5)
+    public static function setSpinnerTimeout()
     {
-        return parent::waitFor($lambda, $timeout);
+        Spinner::$default_timeout = 5;
     }
 
     /**

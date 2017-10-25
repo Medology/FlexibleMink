@@ -5,6 +5,7 @@ namespace Behat\FlexibleMink\Context;
 use Behat\FlexibleMink\PseudoInterface\AlertContextInterface;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\Mink\Exception\ExpectationException;
+use Medology\Spinner;
 use WebDriver\Exception\NoAlertOpenError;
 
 /**
@@ -63,7 +64,7 @@ trait AlertContext
      */
     public function assertAlertMessage($expected)
     {
-        $this->waitFor(function () use ($expected) {
+        Spinner::waitFor(function () use ($expected) {
             try {
                 $actual = $this->getSession()->getDriver()->getWebDriverSession()->getAlert_text();
             } catch (NoAlertOpenError $e) {

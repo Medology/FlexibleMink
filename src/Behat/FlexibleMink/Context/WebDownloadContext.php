@@ -8,6 +8,7 @@ use Behat\FlexibleMink\PseudoInterface\WebDownloadContextInterface;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Exception;
+use Medology\Spinner;
 
 /**
  * {@inheritdoc}
@@ -91,7 +92,7 @@ trait WebDownloadContext
         $driver = $this->getSession()->getDriver();
         $xpath = str_replace('"', "'", $xpath);
 
-        $result = $this->waitFor(function () use ($driver, $xpath) {
+        $result = Spinner::waitFor(function () use ($driver, $xpath) {
             if (!$driver->find($xpath)) {
                 throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
             }

@@ -7,6 +7,7 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use InvalidArgumentException;
+use Medology\Spinner;
 use RuntimeException;
 
 /**
@@ -34,7 +35,7 @@ trait TableContext
         $namePiece = "contains(normalize-space(@name), '$name')";
 
         /** @var NodeElement $table */
-        $table = $this->waitFor(function () use ($idPiece, $namePiece) {
+        $table = Spinner::waitFor(function () use ($idPiece, $namePiece) {
             return $this->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
         });
 
@@ -408,7 +409,7 @@ trait TableContext
     {
         $table = $tableNode->getRows();
 
-        $this->waitFor(function () use ($table) {
+        Spinner::waitFor(function () use ($table) {
             $page = $this->getSession()->getPage();
 
             /** @var NodeElement[] $domTables */
@@ -465,7 +466,7 @@ trait TableContext
     {
         $expectedRow = $tableNode->getRowsHash();
 
-        $this->waitFor(function () use ($name, $expectedRow) {
+        Spinner::waitFor(function () use ($name, $expectedRow) {
             $actualTable = $this->getTableFromName($name, true);
             $colHeaders = $actualTable['colHeaders'];
 

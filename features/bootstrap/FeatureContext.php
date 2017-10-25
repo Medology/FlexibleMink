@@ -2,12 +2,12 @@
 
 use Behat\FlexibleMink\Context\CsvContext;
 use Behat\FlexibleMink\Context\FlexibleContext;
-use Behat\FlexibleMink\Context\TypeCaster;
 use Behat\FlexibleMink\Context\WebDownloadContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use features\Extensions\Assertion\AssertionContext;
+use Medology\Behat\TypeCaster;
 use Medology\Spinner;
 
 class FeatureContext extends FlexibleContext

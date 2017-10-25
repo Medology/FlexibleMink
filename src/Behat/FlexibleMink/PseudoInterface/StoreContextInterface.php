@@ -13,7 +13,7 @@ trait StoreContextInterface
      * Asserts that the thing under the specified key equals the specified value.
      *
      * This method uses strict type checking, and as such you will need to ensure
-     * your context is using the Behat\FlexibleMink\Context\TypeCaster trait.
+     * your context is using the Medology\Behat\TypeCaster trait.
      *
      * @param string $key      the key to compare.
      * @param mixed  $expected the value to compare with.

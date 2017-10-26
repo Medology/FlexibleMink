@@ -298,7 +298,6 @@ class TableContext implements Context, GathersContexts
     /**
      * Asserts that a table with the given name exists.
      *
-     * @Given  I have a table :name
      * @Then   I should see table :name
      * @param  string               $name The name of the table to find
      * @throws ExpectationException If no table is found with id or name matching $name
@@ -321,8 +320,6 @@ class TableContext implements Context, GathersContexts
     /**
      * Asserts that a table has a certain number of BODY (tbody) rows or total rows (including HEAD and FOOT).
      *
-     * @Given the table :name has 1 row
-     * @Given the table :name has :num rows
      * @Then  the table :name should have 1 row
      * @Then  the table :name should have :num rows
      * @param string $name      The name of the table
@@ -360,8 +357,6 @@ class TableContext implements Context, GathersContexts
     /**
      * Asserts that a table has a certain number of columns.
      *
-     * @Given the table :name has 1 column
-     * @Given the table :name has :num columns
      * @Then  the table :name should have 1 column
      * @Then  the table :name should have :num columns
      * @param string $name The name of the table
@@ -392,7 +387,6 @@ class TableContext implements Context, GathersContexts
     /**
      * This method asserts a set of titles exists in cells in the table header (thead).
      *
-     * @Given  the table :name has the following column titles:
      * @Then   the table :name should have the following column titles:
      * @param  TableNode            $attributes A list of titles to search for in the header (ignoring blanks)
      * @param  string               $name       The name of the table
@@ -434,7 +428,6 @@ class TableContext implements Context, GathersContexts
     /**
      * This method asserts if a particular value exists in a cell in the table's BODY.
      *
-     * @Given  /^the table (?P<name>"[^"]+") has (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
      * @Then   /^the table (?P<name>"[^"]+") should have (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
      * @param  string               $name  The name of the table
      * @param  string               $val   The expected value of the cell

@@ -9,6 +9,7 @@ default:
         - Medology\Behat\Mink\AlertContext
         - Medology\Behat\Mink\JavaScriptContext
         - Medology\Behat\Mink\ScreenShotContext
+        - Medology\Behat\Mink\TableContext
   extensions:
     Behat\MinkExtension:
       base_url: http://web/

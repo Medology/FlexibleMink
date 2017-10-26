@@ -1,14 +1,15 @@
-<?php namespace Behat\FlexibleMink\Context;
+<?php namespace Medology\Behat\Mink;
 
+use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
-use Behat\FlexibleMink\PseudoInterface\TableContextInterface;
+use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use InvalidArgumentException;
+use Medology\Behat\GathersContexts;
 use Medology\Behat\StoreContext;
 use Medology\Spinner;
 use RuntimeException;
@@ -16,15 +17,13 @@ use RuntimeException;
 /**
  * Class TableContext.
  */
-trait TableContext
+class TableContext implements Context, GathersContexts
 {
-    // Depends.
-    use FlexibleContextInterface;
-    // Implements.
-    use TableContextInterface;
-
     /** @var StoreContext */
     protected $storeContext;
+
+    /** @var FlexibleContext */
+    protected $flexibleContext;
 
     /**
      * {@inheritdoc}
@@ -43,6 +42,10 @@ trait TableContext
         if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
             throw new RuntimeException('Failed to gather StoreContext');
         }
+
+        if (!$this->flexibleContext = $environment->getContext(FlexibleContext::class)) {
+            throw new RuntimeException('Failed to gather FlexibleContext');
+        }
     }
 
     /**
@@ -50,7 +53,7 @@ trait TableContext
      * name and id are matched partially.
      *
      * @param  string                   $name The name of the table. Will be matched against id or name properties.
-     * @throws ElementNotFoundException If not table is found with id or name {@paramref $name}
+     * @throws ElementNotFoundException If a table with an id or name matching the specified name is not found.
      * @throws RuntimeException         If a table is found, but is not visible
      * @return NodeElement              The matched table
      */
@@ -61,11 +64,13 @@ trait TableContext
 
         /** @var NodeElement $table */
         $table = Spinner::waitFor(function () use ($idPiece, $namePiece) {
-            return $this->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
+            return $this->flexibleContext->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
         });
 
         if (!$table) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'table', 'xpath', 'id, name');
+            throw new ElementNotFoundException(
+                $this->flexibleContext->getSession()->getDriver(), 'table', 'xpath', 'id, name'
+            );
         }
 
         if (!$table->isVisible()) {
@@ -105,23 +110,18 @@ trait TableContext
      * than 1. This row is assumed to be the column "titles".
      *
      * @param  NodeElement              $table The table to find the columns for
-     * @throws InvalidArgumentException If {@paramref $table} is not an instance of NodeElement
-     * @throws ElementNotFoundException If no HEAD (thead) rows are found in {@paramref $table}
+     * @throws ElementNotFoundException If no HEAD (thead) rows are found in $table
      * @throws ElementNotFoundException If all head rows have a td/th with colspan property with a value greater than 1
      * @throws ElementNotFoundException If the row has no td/th at all
-     * @return NodeElement[]            The columns for {@paramref $table}
+     * @return NodeElement[]            The columns for $table
      */
-    private function findHeadColumns($table)
+    private function findHeadColumns(NodeElement $table)
     {
-        if (!($table instanceof NodeElement)) {
-            throw new InvalidArgumentException('Parameter $table must be an instance of NodeElement.');
-        }
-
         /** @var NodeElement[] $rows */
         $rows = $table->findAll('xpath', '/thead/tr');
 
         if (!$rows) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'tr', 'xpath');
+            throw new ElementNotFoundException($this->flexibleContext->getSession()->getDriver(), 'tr', 'xpath');
         }
 
         $colRow = null;
@@ -140,7 +140,7 @@ trait TableContext
         // we couldn't find a HEAD row that didn't have split columns
         if (!$colRow) {
             throw new ElementNotFoundException(
-                $this->getSession()->getDriver(),
+                $this->flexibleContext->getSession()->getDriver(),
                 'tr/(td or th)',
                 'xpath',
                 'not(@colspan>\'1\')'
@@ -152,7 +152,7 @@ trait TableContext
         $columns = $colRow->findAll('xpath', '/*[self::td or self::th]');
 
         if (!$columns) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'td or th', 'xpath');
+            throw new ElementNotFoundException($this->flexibleContext->getSession()->getDriver(), 'td or th', 'xpath');
         }
 
         return $columns;
@@ -171,7 +171,7 @@ trait TableContext
      */
     private function buildTableFromHtml($table, $keyName = '')
     {
-        $colTitles = array_map(function ($ele) {
+        $colTitles = array_map(function (NodeElement $ele) {
             return trim($ele->getText());
         }, $this->findHeadColumns($table));
 
@@ -185,14 +185,15 @@ trait TableContext
         $footRows = $table->findAll('xpath', '/tfoot/tr');
 
         /*
-         * Anonymous function to retrieve cell values from an array of row nodes. Does not support row and colspans!
+         * Anonymous function to retrieve cell values from an array of row nodes. Does not support row or colspan!
          *
          * @param NodeElement[] $rows The rows to parse
          * @return array The cell values for the rows numerically indexed as [row][col]
          */
-        $parser = function ($rows) {
+        $parser = function (array $rows) {
             $data = [];
 
+            /** @var NOdeElement[] $rows */
             for ($i = 0; $i < count($rows); $i++) {
                 $row = $rows[$i];
                 /** @var NodeElement[] $cells */
@@ -270,22 +271,24 @@ trait TableContext
         if (count($table[$piece]) < $rIdx) {
             throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has " .
                 count($table[$piece]) . ' rows.',
-                $this->getSession());
+                $this->flexibleContext->getSession());
         }
 
         if (count($table[$piece][$rIdx - 1]) < $cIdx) {
             throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has " .
                 count($table[$piece][$rIdx - 1]) . ' cols.',
-                $this->getSession());
+                $this->flexibleContext->getSession());
         }
 
         return $table[$piece][$rIdx - 1][$cIdx - 1];
     }
 
     /**
-     * {@inheritdoc}
+     * Re-parses the table give by $name ensuring the key store is up to date.
      *
-     * @Then the table :name is updated
+     * @Then   the table :name is updated
+     * @param  string $name The name of the table
+     * @return array  An array of the parsed table as returned by $this->buildTableFromHtml
      */
     public function refreshTable($name)
     {
@@ -293,29 +296,42 @@ trait TableContext
     }
 
     /**
-     * {@inheritdoc}
+     * Asserts that a table with the given name exists.
      *
-     * @Given I have a table :name
-     * @Then I should see table :name
+     * @Given  I have a table :name
+     * @Then   I should see table :name
+     * @param  string               $name The name of the table to find
+     * @throws ExpectationException If no table is found with id or name matching $name
+     * @return NodeElement          The matching table with name $name
      */
     public function assertTableExists($name)
     {
         try {
             $table = $this->findNamedTable($name);
         } catch (ElementNotFoundException $e) {
-            throw new ExpectationException("Could not find table with name '$name'.", $this->getSession());
+            throw new ExpectationException(
+                "Could not find table with name '$name'.",
+                $this->flexibleContext->getSession()
+            );
         }
 
         return $table;
     }
 
     /**
-     * {@inheritdoc}
+     * Asserts that a table has a certain number of BODY (tbody) rows or total rows (including HEAD and FOOT).
      *
      * @Given the table :name has 1 row
      * @Given the table :name has :num rows
-     * @Then the table :name should have 1 row
-     * @Then the table :name should have :num rows
+     * @Then  the table :name should have 1 row
+     * @Then  the table :name should have :num rows
+     * @param string $name      The name of the table
+     * @param int    $num       The number of BODY rows $name table should have
+     * @param bool   $fullTable By default, only table body rows are used. Setting this to true will count the whole
+     *                          table
+     * @returns true
+     * @throws InvalidArgumentException If $num is not an integer
+     * @throws ExpectationException     If the number of found rows was not $num
      */
     public function assertTableHasRows($name, $num = 1, $fullTable = false)
     {
@@ -332,19 +348,27 @@ trait TableContext
         }
 
         if ($rowCount != $num) {
-            throw new ExpectationException("Expected $num row(s) for table '$name'. Instead got $rowCount.", $this->getSession());
+            throw new ExpectationException(
+                "Expected $num row(s) for table '$name'. Instead got $rowCount.",
+                $this->flexibleContext->getSession()
+            );
         }
 
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * Asserts that a table has a certain number of columns.
      *
      * @Given the table :name has 1 column
      * @Given the table :name has :num columns
-     * @Then the table :name should have 1 column
-     * @Then the table :name should have :num columns
+     * @Then  the table :name should have 1 column
+     * @Then  the table :name should have :num columns
+     * @param string $name The name of the table
+     * @param int    $num  The number of columns the table should have
+     * @returns true
+     * @throws InvalidArgumentException If $num is not an integer
+     * @throws ExpectationException     If the number of found columns was not $num
      */
     public function assertTableHasColumns($name, $num = 1)
     {
@@ -356,17 +380,25 @@ trait TableContext
         $colCount = count($table['body'][0]);
 
         if ($colCount != $num) {
-            throw new ExpectationException("Expected $num column(s) for table '$name'. Instead got $colCount.", $this->getSession());
+            throw new ExpectationException(
+                "Expected $num column(s) for table '$name'. Instead got $colCount.",
+                $this->flexibleContext->getSession()
+            );
         }
 
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * This method asserts a set of titles exists in cells in the table header (thead).
      *
-     * @Given the table :name has the following column titles:
-     * @Then the table :name should have the following column titles:
+     * @Given  the table :name has the following column titles:
+     * @Then   the table :name should have the following column titles:
+     * @param  TableNode            $attributes A list of titles to search for in the header (ignoring blanks)
+     * @param  string               $name       The name of the table
+     * @throws ExpectationException if a column was found that was not listed in $attributes
+     * @throws ExpectationException if any $attributes was not matched to a column
+     * @return true
      */
     public function assertTableColumnTitles(TableNode $attributes, $name)
     {
@@ -380,24 +412,37 @@ trait TableContext
 
         foreach ($table['colHeaders'] as $colText) {
             if ($colText && !in_array($colText, $expectedCols)) {
-                throw new ExpectationException("Found column title $colText, but was not expecting it.", $this->getSession());
+                throw new ExpectationException(
+                    "Found column title $colText, but was not expecting it.",
+                    $this->flexibleContext->getSession()
+                );
             }
 
             $remainingCols = array_diff($remainingCols, [$colText]);
         }
 
         if ($remainingCols) {
-            throw new ExpectationException("Did not find matches for '" . explode($remainingCols, ',') . "'.", $this->getSession());
+            throw new ExpectationException(
+                "Did not find matches for '" . implode($remainingCols, ',') . "'.",
+                $this->flexibleContext->getSession()
+            );
         }
 
         return true;
     }
 
     /**
-     * {@inheritdoc}
+     * This method asserts if a particular value exists in a cell in the table's BODY.
      *
-     * @Given /^the table (?P<name>"[^"]+") has (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
-     * @Then /^the table (?P<name>"[^"]+") should have (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
+     * @Given  /^the table (?P<name>"[^"]+") has (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
+     * @Then   /^the table (?P<name>"[^"]+") should have (?P<val>"[^"]+") at \((?P<rIdx>\d+),(?P<cIdx>\d+)\) in the (?P<piece>header|body|footer)$/
+     * @param  string               $name  The name of the table
+     * @param  string               $val   The expected value of the cell
+     * @param  int                  $rIdx  The row index of the cell to check (1-indexed)
+     * @param  int                  $cIdx  The column index of the cell to check (1-indexed)
+     * @param  string               $piece The section of the table (one of header/footer/body)
+     * @throws ExpectationException if $val does not match the value in the cell
+     * @return true
      */
     public function assertCellValue($name, $val, $rIdx, $cIdx, $piece)
     {
@@ -417,7 +462,7 @@ trait TableContext
         if ($cellVal != $val) {
             throw new ExpectationException(
                 "Expected $val at ($rIdx, $cIdx) in table $piece. Instead got $cellVal!",
-                $this->getSession()
+                $this->flexibleContext->getSession()
             );
         }
 
@@ -428,14 +473,14 @@ trait TableContext
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
      * @Then  there should be a table on the page with the following information:
-     * @param TableNode $tableNode The table to compare.
+     * @param TableNode $tableNode
      */
     public function assertTableWithStructureExists(TableNode $tableNode)
     {
         $table = $tableNode->getRows();
 
         Spinner::waitFor(function () use ($table) {
-            $page = $this->getSession()->getPage();
+            $page = $this->flexibleContext->getSession()->getPage();
 
             /** @var NodeElement[] $domTables */
             $domTables = $page->findAll('css', 'table');
@@ -477,15 +522,18 @@ trait TableContext
             // Oh no! No matches.
             throw new ExpectationException(
                 'A table matching the supplied structure could not be found.',
-                $this->getSession()
+                $this->flexibleContext->getSession()
             );
         });
     }
 
     /**
-     * {@inheritdoc}
+     * Asserts that the table contains a row with the provided values.
      *
-     * @Then  the table :name should have the following values:
+     * @Then   the table :name should have the following values:
+     * @param  string               $name      The name of the table
+     * @param  TableNode            $tableNode The list of values to search.
+     * @throws ExpectationException If the values are not found in the table.
      */
     public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode)
     {
@@ -509,7 +557,7 @@ trait TableContext
 
             throw new ExpectationException(
                 'A row matching the supplied values could not be found.',
-                $this->getSession()
+                $this->flexibleContext->getSession()
             );
         });
     }

@@ -10,6 +10,7 @@ default:
         - Medology\Behat\Mink\JavaScriptContext
         - Medology\Behat\Mink\ScreenShotContext
         - Medology\Behat\Mink\TableContext
+        - Medology\Behat\Mink\WebDownloadContext
   extensions:
     Behat\MinkExtension:
       base_url: http://web/

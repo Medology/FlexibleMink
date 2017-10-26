@@ -3,12 +3,12 @@
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\FlexibleMink\Context\FlexibleContext;
-use Behat\FlexibleMink\Context\WebDownloadContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use features\Extensions\Assertion\AssertionContext;
 use Medology\Behat\GathersContexts;
+use Medology\Behat\Mink\WebDownloadContext;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Spinner;
@@ -18,10 +18,12 @@ class FeatureContext extends FlexibleContext implements GathersContexts
     // Depends
     use AssertionContext;
     use TypeCaster;
-    use WebDownloadContext;
 
     /** @var StoreContext */
     protected $storeContext;
+
+    /** @var WebDownloadContext */
+    protected $webDownloadContext;
 
     /**
      * {@inheritdoc}
@@ -39,6 +41,10 @@ class FeatureContext extends FlexibleContext implements GathersContexts
 
         if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
             throw new RuntimeException('Failed to gather StoreContext');
+        }
+
+        if (!$this->webDownloadContext = $environment->getContext(WebDownloadContext::class)) {
+            throw new RuntimeException('Failed to gather WebDownloadContext');
         }
     }
 
@@ -160,7 +166,7 @@ JS
             throw new ExpectationException("Expected src '$imgSrc'. Instead got '" . $image->getAttribute('src') . "'.", $session);
         }
 
-        if (!$this->checkImageLoaded($image->getXpath())) {
+        if (!$this->webDownloadContext->checkImageLoaded($image->getXpath())) {
             throw new ExpectationException("Expected img '$locator' to load. Instead it did not!", $session);
         }
 
@@ -185,7 +191,7 @@ JS
             throw new ExpectationException("Expected an img tag with id '$locator'. Found none!", $this->getSession());
         }
 
-        if ($this->checkImageLoaded($image->getXpath())) {
+        if ($this->webDownloadContext->checkImageLoaded($image->getXpath())) {
             throw new ExpectationException("Expected img '$locator' to not load. Instead it did load!", $this->getSession());
         }
 

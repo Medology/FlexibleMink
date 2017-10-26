@@ -4,9 +4,9 @@ namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\ContainerContextInterface;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
-use Behat\FlexibleMink\PseudoInterface\SpinnerContextInterface;
 use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
 use Behat\Mink\Exception\ExpectationException;
+use Medology\Spinner;
 
 trait ContainerContext
 {
@@ -14,7 +14,6 @@ trait ContainerContext
     use ContainerContextInterface;
     // Depends.
     use FlexibleContextInterface;
-    use SpinnerContextInterface;
     use StoreContextInterface;
 
     /**
@@ -23,7 +22,7 @@ trait ContainerContext
      */
     public function assertTextInContainer($text, $containerLabel)
     {
-        $this->waitFor(function () use ($text, $containerLabel) {
+        Spinner::waitFor(function () use ($text, $containerLabel) {
             $text = $this->injectStoredValues($text);
             $containerLabel = $this->injectStoredValues($containerLabel);
             $node = $this->getSession()->getPage()->find('xpath', "//*[contains(text(),'$containerLabel')]");

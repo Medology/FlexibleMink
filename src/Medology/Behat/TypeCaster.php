@@ -1,6 +1,4 @@
-<?php
-
-namespace Behat\FlexibleMink\Context;
+<?php namespace Medology\Behat;
 
 /**
  * Adds type casting for step arguments.

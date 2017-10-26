@@ -12,6 +12,8 @@ use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use Medology\Behat\TypeCaster;
+use Medology\Spinner;
 use ZipArchive;
 
 /**
@@ -26,7 +28,6 @@ class FlexibleContext extends MinkContext
     use AlertContext;
     use ContainerContext;
     use JavaScriptContext;
-    use SpinnerContext;
     use StoreContext;
     use TableContext;
     use TypeCaster;
@@ -45,7 +46,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertFieldContains($field, $value)
     {
-        $this->waitFor(function () use ($field, $value) {
+        Spinner::waitFor(function () use ($field, $value) {
             parent::assertFieldContains($field, $value);
         });
     }
@@ -55,7 +56,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageAddress($page)
     {
-        $this->waitFor(function () use ($page) {
+        Spinner::waitFor(function () use ($page) {
             parent::assertPageAddress($page);
         });
     }
@@ -67,7 +68,7 @@ class FlexibleContext extends MinkContext
     {
         $text = $this->injectStoredValues($text);
 
-        $this->waitFor(function () use ($text) {
+        Spinner::waitFor(function () use ($text) {
             parent::assertPageContainsText($text);
         });
     }
@@ -98,7 +99,7 @@ class FlexibleContext extends MinkContext
     public function assertPageNotContainsText($text)
     {
         $text = $this->injectStoredValues($text);
-        $this->waitFor(function () use ($text) {
+        Spinner::waitFor(function () use ($text) {
             parent::assertPageNotContainsText($text);
         });
     }
@@ -112,12 +113,12 @@ class FlexibleContext extends MinkContext
     {
         $text = $this->injectStoredValues($text);
 
-        $this->waitFor(function () use ($text) {
+        Spinner::waitFor(function () use ($text) {
             parent::assertPageContainsText($text);
         }, 15);
 
         try {
-            $this->waitFor(function () use ($text) {
+            Spinner::waitFor(function () use ($text) {
                 parent::assertPageNotContainsText($text);
             }, 15);
         } catch (ExpectationException $e) {
@@ -135,7 +136,7 @@ class FlexibleContext extends MinkContext
         $element = $this->injectStoredValues($element);
         $text = $this->injectStoredValues($text);
 
-        $this->waitFor(function () use ($element, $text) {
+        Spinner::waitFor(function () use ($element, $text) {
             parent::assertElementContainsText($element, $text);
         });
     }
@@ -148,7 +149,7 @@ class FlexibleContext extends MinkContext
         $element = $this->injectStoredValues($element);
         $text = $this->injectStoredValues($text);
 
-        $this->waitFor(function () use ($element, $text) {
+        Spinner::waitFor(function () use ($element, $text) {
             parent::assertElementNotContainsText($element, $text);
         });
     }
@@ -159,7 +160,7 @@ class FlexibleContext extends MinkContext
     public function clickLink($locator)
     {
         $locator = $this->injectStoredValues($locator);
-        $element = $this->waitFor(function () use ($locator) {
+        $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleLink($locator);
         });
 
@@ -172,7 +173,7 @@ class FlexibleContext extends MinkContext
     public function checkOption($locator)
     {
         $locator = $this->injectStoredValues($locator);
-        $element = $this->waitFor(function () use ($locator) {
+        $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleOption($locator);
         });
 
@@ -185,7 +186,7 @@ class FlexibleContext extends MinkContext
     public function fillField($field, $value)
     {
         $field = $this->injectStoredValues($field);
-        $element = $this->waitFor(function () use ($field) {
+        $element = Spinner::waitFor(function () use ($field) {
             return $this->assertVisibleOption($field);
         });
 
@@ -198,7 +199,7 @@ class FlexibleContext extends MinkContext
     public function uncheckOption($locator)
     {
         $locator = $this->injectStoredValues($locator);
-        $element = $this->waitFor(function () use ($locator) {
+        $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleOption($locator);
         });
 
@@ -216,7 +217,7 @@ class FlexibleContext extends MinkContext
             $disabled = 'disabled' == $disabled;
         }
 
-        $this->waitFor(function () use ($locator, $disabled) {
+        Spinner::waitFor(function () use ($locator, $disabled) {
             $button = $this->getSession()->getPage()->findButton($locator);
 
             if (!$button) {
@@ -619,7 +620,7 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        $element = $this->waitFor(function () use ($locator) {
+        $element = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleButton($locator);
         });
 
@@ -710,7 +711,7 @@ class FlexibleContext extends MinkContext
         $label = $this->injectStoredValues($label);
         $this->fixStepArgument($label);
 
-        $radioButton = $this->waitFor(function () use ($label) {
+        $radioButton = Spinner::waitFor(function () use ($label) {
             /** @var NodeElement[] $radioButtons */
             $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $label]);
 
@@ -761,5 +762,17 @@ class FlexibleContext extends MinkContext
         $bRect = $driver->getXpathBoundingClientRect($b->getXpath());
 
         return $aRect['top'] - $bRect['top'];
+    }
+
+    /**
+     * Provides the directory that test artifacts should be stored to.
+     *
+     * This should be overridden when FlexibleMink is used in a project.
+     *
+     * @return string the fully qualified directory, with no trailing directory separator.
+     */
+    public function getArtifactsDir()
+    {
+        return realpath(__DIR__ . '/../../../../artifacts');
     }
 }

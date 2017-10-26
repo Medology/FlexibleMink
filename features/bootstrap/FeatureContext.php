@@ -1,23 +1,27 @@
 <?php
 
+use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
 use features\Extensions\Assertion\AssertionContext;
 use Medology\Behat\GathersContexts;
+use Medology\Behat\Mink\FlexibleContext;
 use Medology\Behat\Mink\WebDownloadContext;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Spinner;
 
-class FeatureContext extends FlexibleContext implements GathersContexts
+class FeatureContext implements Context, GathersContexts
 {
     // Depends
     use AssertionContext;
     use TypeCaster;
+
+    /** @var FlexibleContext */
+    protected $flexibleContext;
 
     /** @var StoreContext */
     protected $storeContext;
@@ -37,6 +41,10 @@ class FeatureContext extends FlexibleContext implements GathersContexts
                 'Expected Environment to be ' . InitializedContextEnvironment::class .
                     ', but got ' . get_class($environment)
           );
+        }
+
+        if (!$this->flexibleContext = $environment->getContext(FlexibleContext::class)) {
+            throw new RuntimeException('Failed to gather FlexibleContext');
         }
 
         if (!$this->storeContext = $environment->getContext(StoreContext::class)) {
@@ -99,7 +107,7 @@ class FeatureContext extends FlexibleContext implements GathersContexts
         $path = json_encode($path); // Quick and painless quotation wrapping + escaping.
         $timeout *= 1000;
 
-        $this->getSession()->executeScript(
+        $this->flexibleContext->getSession()->executeScript(
 <<<JS
             window.setTimeout(function() {
                 window.location = $path;
@@ -119,7 +127,7 @@ JS
     {
         $text = json_encode($text); // Free character escaping, quoting, etc.
 
-        $this->getSession()->executeScript("{$type}_result = $type($text)");
+        $this->flexibleContext->getSession()->executeScript("{$type}_result = $type($text)");
     }
 
     /**
@@ -132,13 +140,13 @@ JS
      */
     public function assertAlertResult($type, $result)
     {
-        $actual = $this->getSession()->evaluateScript("{$type}_result");
+        $actual = $this->flexibleContext->getSession()->evaluateScript("{$type}_result");
 
         if ($actual !== $result) {
             $expected = json_encode($result);
             $actual = json_encode($actual);
 
-            throw new ExpectationException("Expected $expected, got $actual", $this->getSession());
+            throw new ExpectationException("Expected $expected, got $actual", $this->flexibleContext->getSession());
         }
     }
 
@@ -155,7 +163,7 @@ JS
      */
     public function assertImageLoaded($imgSrc, $locator)
     {
-        $session = $this->getSession();
+        $session = $this->flexibleContext->getSession();
         $image = $session->getPage()->find('css', "img#$locator");
 
         if (!$image) {
@@ -185,14 +193,20 @@ JS
      */
     public function assertImageNotLoaded($locator)
     {
-        $image = $this->getSession()->getPage()->find('css', "img#$locator");
+        $image = $this->flexibleContext->getSession()->getPage()->find('css', "img#$locator");
 
         if (!$image) {
-            throw new ExpectationException("Expected an img tag with id '$locator'. Found none!", $this->getSession());
+            throw new ExpectationException(
+                "Expected an img tag with id '$locator'. Found none!",
+                $this->flexibleContext->getSession()
+            );
         }
 
         if ($this->webDownloadContext->checkImageLoaded($image->getXpath())) {
-            throw new ExpectationException("Expected img '$locator' to not load. Instead it did load!", $this->getSession());
+            throw new ExpectationException(
+                "Expected img '$locator' to not load. Instead it did load!",
+                $this->flexibleContext->getSession()
+            );
         }
 
         return true;

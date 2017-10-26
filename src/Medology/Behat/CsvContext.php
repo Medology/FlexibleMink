@@ -3,9 +3,9 @@
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
+use Medology\Behat\Mink\FlexibleContext;
 use RuntimeException;
 
 /**

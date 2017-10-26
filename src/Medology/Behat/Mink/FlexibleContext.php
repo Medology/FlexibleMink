@@ -1,14 +1,13 @@
-<?php
-
-namespace Behat\FlexibleMink\Context;
+<?php namespace Medology\Behat\Mink;
 
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;
+use Behat\Mink\Exception\DriverException;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
@@ -27,9 +26,6 @@ use ZipArchive;
  */
 class FlexibleContext extends MinkContext implements GathersContexts
 {
-    // Implements.
-    use FlexibleContextInterface;
-    // Depends.
     use TypeCaster;
 
     /** @var array map of common key names to key codes */
@@ -64,7 +60,14 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method overrides the MinkContext::assertPageContainsText() default behavior for assertFieldContains to
+     * ensure that it waits for the text to be available with a max time limit.
+     *
+     * @see    MinkContext::assertFieldContains
+     * @param  string               $field the name of the field to check
+     * @param  string               $value the expected value of the field
+     * @throws ExpectationException If the field can't be found
+     * @throws ExpectationException If the field doesn't match the value
      */
     public function assertFieldContains($field, $value)
     {
@@ -74,7 +77,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method overrides the MinkContext::assertPageAddress() default behavior by adding a waitFor to ensure that
+     * Behat waits for the page to load properly before failing out.
+     *
+     * @param string $page The address of the page to load
      */
     public function assertPageAddress($page)
     {
@@ -84,7 +90,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method overrides the MinkContext::assertPageContainsText() default behavior for assertPageContainsText to
+     * ensure that it waits for the text to be available with a max time limit.
+     *
+     * @see MinkContext::assertPageContainsText
+     * @param string $text Text to be searched in the page.
      */
     public function assertPageContainsText($text)
     {
@@ -96,9 +106,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Asserts that the page contains a list of strings.
      *
-     * @Then /^I should (?:|(?P<not>not ))see the following:$/
+     * @Then   /^I should (?:|(?P<not>not ))see the following:$/
+     * @param  TableNode             $table The list of strings to find.
+     * @param  string                $not   A flag to assert not containing text.
+     * @throws ResponseTextException If the text is not found.
      */
     public function assertPageContainsTexts(TableNode $table, $not = null)
     {
@@ -116,7 +129,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method overrides the MinkContext::assertPageNotContainsText() default behavior for assertPageNotContainsText
+     * to ensure that it waits for the item to not be available with a max time limit.
+     *
+     * @see MinkContext::assertPageNotContainsText
+     * @param string $text The text that should not be found on the page.
      */
     public function assertPageNotContainsText($text)
     {
@@ -127,9 +144,15 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method will wait to see the text specified for 15 seconds, and then wait another 15 seconds for the text
+     * to no longer appear on the page.
      *
      * @Then I should see :text appear, then disappear
+     * @see assertPageContainsText()
+     * @see assertPageNotContainsText()
+     * @param  string                $text The text to wait on to not show up on the page anymore.
+     * @throws ResponseTextException If the text is not found initially or if the text was still visible after seeing
+     *                                    it and waiting for 15 seconds.
      */
     public function assertPageContainsTextTemporarily($text)
     {
@@ -151,7 +174,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method overrides the MinkContext::assertElementContainsText() default behavior for
+     * assertElementContainsText to ensure that it waits for the item to be available with a max time limit.
+     *
+     * @see MinkContext::assertElementContainsText
+     * @param string|array $element css element selector
+     * @param string       $text    expected text
      */
     public function assertElementContainsText($element, $text)
     {
@@ -164,7 +192,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Checks, that element with specified CSS doesn't contain specified text.
+     *
+     * @see MinkContext::assertElementNotContainsText
+     * @param string|array $element css element selector.
+     * @param string       $text    expected text that should not being found.
      */
     public function assertElementNotContainsText($element, $text)
     {
@@ -177,7 +209,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Clicks a visible link with specified id|title|alt|text.
+     *
+     * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible
+     * links are clicked.
+     * @see MinkContext::clickLink
+     * @param string $locator The id|title|alt|text of the link to be clicked.
      */
     public function clickLink($locator)
     {
@@ -190,7 +227,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Clicks a visible checkbox with specified id|title|alt|text.
+     *
+     * This method overrides the MinkContext::checkOption() default behavior for checkOption to ensure that only visible
+     * options are checked and that it waits for the option to be available with a max time limit.
+     * @see MinkContext::checkOption
+     * @param string $locator The id|title|alt|text of the option to be clicked.
      */
     public function checkOption($locator)
     {
@@ -203,7 +245,14 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Clicks a visible field with specified id|title|alt|text.
+     *
+     * This method overrides the MinkContext::fillField() default behavior for fill a field to ensure that only visible
+     * field is filled.
+     *
+     * @see MinkContext::fillField
+     * @param string $field The id|title|alt|text of the field to be filled.
+     * @param string $value The value to be set on the field.
      */
     public function fillField($field, $value)
     {
@@ -216,7 +265,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Un-checks checkbox with specified id|name|label|value.
+     *
+     * @see MinkContext::uncheckOption
+     * @param string $locator The id|title|alt|text of the option to be unchecked.
      */
     public function uncheckOption($locator)
     {
@@ -229,9 +281,15 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
-     * @Given the :locator button is :disabled
-     * @Then the :locator button should be :disabled
+     * Checks if the selected button is disabled.
+     *
+     * @Given  the :locator button is :disabled
+     * @Then   the :locator button should be :disabled
+     * @param  string               $locator  The button
+     * @param  bool                 $disabled The state of the button
+     * @throws ExpectationException If button is disabled but shouldn't be.
+     * @throws ExpectationException If button isn't disabled but should be.
+     * @throws ExpectationException If the button can't be found.
      */
     public function assertButtonDisabled($locator, $disabled = true)
     {
@@ -263,7 +321,13 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Finds the first matching visible button on the page.
+     *
+     * Warning: Will return the first button if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The button name.
+     * @throws ExpectationException If a visible button was not found.
+     * @return NodeElement          The button.
      */
     public function assertVisibleButton($locator)
     {
@@ -286,10 +350,15 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Finds the first matching visible link on the page.
      *
-     * @Given the :locator link is visible
-     * @Then the :locator link should be visible
+     * Warning: Will return the first link if the driver does not support visibility checks.
+     *
+     * @Given  the :locator link is visible
+     * @Then   the :locator link should be visible
+     * @param  string               $locator The link name.
+     * @throws ExpectationException If a visible link was not found.
+     * @return NodeElement          The link.
      */
     public function assertVisibleLink($locator)
     {
@@ -317,16 +386,19 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Finds the first matching visible option on the page.
+     *
+     * Warning: Will return the first option if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The option name.
+     * @throws ExpectationException If a visible option was not found.
+     * @return NodeElement          The option.
      */
     public function assertVisibleOption($locator)
     {
         $locator = $this->fixStepArgument($locator);
 
-        $options = $this->getSession()->getPage()->findAll(
-            'named',
-            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
-        );
+        $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
         /** @var NodeElement $option */
         foreach ($options as $option) {
@@ -345,7 +417,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Checks that the page contains a visible input field and then returns it.
+     *
+     * @param  string                  $fieldName The input name.
+     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
+     * @throws ExpectationException    If a visible input field is not found.
+     * @return NodeElement             The found input field.
      */
     public function assertFieldExists($fieldName, TraversableElement $context = null)
     {
@@ -378,7 +455,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Checks that the page not contain a visible input field.
+     *
+     * @param  string               $fieldName The name of the input field.
+     * @throws ExpectationException If a visible input field is found.
      */
     public function assertFieldNotExists($fieldName)
     {
@@ -407,9 +487,12 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Checks that the page contains the given lines of text in the order specified.
      *
      * @Then I should see the following lines in order:
+     * @param  TableNode                $table A list of text lines to look for.
+     * @throws ExpectationException     if a line is not found, or is found out of order.
+     * @throws InvalidArgumentException if the list of lines has more than one column.
      */
     public function assertLinesInOrder(TableNode $table)
     {
@@ -441,9 +524,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method will check if all the fields exists and visible in the current page.
      *
      * @Then /^I should see the following fields:$/
+     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
+     * @throws ExpectationException if any of the fields is not visible in the page
      */
     public function assertPageContainsFields(TableNode $tableNode)
     {
@@ -453,9 +538,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This method will check if all the fields not exists or not visible in the current page.
      *
      * @Then /^I should not see the following fields:$/
+     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
+     * @throws ExpectationException if any of the fields is visible in the page
      */
     public function assertPageNotContainsFields(TableNode $tableNode)
     {
@@ -465,9 +552,14 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Assert if the option exist/not exist in the select.
      *
-     * @Then /^the (?P<option>.*?) option(?:|(?P<existence> does not?)) exists? in the (?P<select>.*?) select$/
+     * @Then   /^the (?P<option>.*?) option(?:|(?P<existence> does not?)) exists? in the (?P<select>.*?) select$/
+     * @param  string                   $select    The name of the select
+     * @param  string                   $existence The status of the option item
+     * @param  string                   $option    The name of the option item
+     * @throws ElementNotFoundException If the select is not found in the page
+     * @throws ExpectationException     If the option is exist/not exist as expected
      */
     public function assertSelectContainsOption($select, $existence, $option)
     {
@@ -484,9 +576,14 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Assert if the options in the select match given options.
      *
-     * @Then /^the "(?P<select>[^"]*)" select should only have the following option(?:|s):$/
+     * @Then   /^the "(?P<select>[^"]*)" select should only have the following option(?:|s):$/
+     * @param  string                   $select    The name of the select
+     * @param  TableNode                $tableNode The text of the options.
+     * @throws ExpectationException     When there is no option in the select.
+     * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
+     * @throws InvalidArgumentException When no expected options listed in the test step.
      */
     public function assertSelectContainsExactOptions($select, TableNode $tableNode)
     {
@@ -536,32 +633,37 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * Adds or replaces a cookie.
-     * Note that you must request a page before trying to set a cookie, in order to set the domain.
+     * Sets a cookie.
+     *
+     * Note: you must request a page before trying to set a cookie, in order to set the domain.
      *
      * @When /^(?:|I )set the cookie "(?P<key>(?:[^"]|\\")*)" with value (?P<value>.+)$/
+     * @param string $key   the name of the key to set
+     * @param string $value the value to set the cookie to
      */
-    public function addOrReplaceCookie($key, $value)
+    public function setCookie($key, $value)
     {
-        // set cookie:
         $this->getSession()->setCookie($key, $value);
     }
 
     /**
      * Deletes a cookie.
      *
-     * @When /^(?:|I )delete the cookie "(?P<key>(?:[^"]|\\")*)"$/
+     * @When  /^(?:|I )delete the cookie "(?P<key>(?:[^"]|\\")*)"$/
+     * @param string $key the name of the key to delete.
      */
     public function deleteCookie($key)
     {
-        // set cookie:
         $this->getSession()->setCookie($key, null);
     }
 
     /**
-     * {@inheritdoc}
+     * Attaches a local file to field with specified id|name|label|value. This is used when running behat and
+     * browser session in different containers.
      *
      * @When /^(?:|I )attach the local file "(?P<path>[^"]*)" to "(?P<field>(?:[^"]|\\")*)"$/
+     * @param string $field The file field to select the file with
+     * @param string $path  The local path of the file
      */
     public function addLocalFileToField($path, $field)
     {
@@ -591,9 +693,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Blurs (unfocuses) selected field.
      *
      * @When /^(?:I |)(?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param string $locator The field to blur
      */
     public function blurField($locator)
     {
@@ -601,10 +704,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Focuses and blurs (unfocuses) the selected field.
      *
      * @When /^(?:I |)focus and (?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
      * @When /^(?:I |)toggle focus (?:on|of) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param string $locator The field to focus and blur
      */
     public function focusBlurField($locator)
     {
@@ -613,9 +717,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Focuses the selected field.
      *
      * @When /^(?:I |)focus (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param string $locator The the field to focus
      */
     public function focusField($locator)
     {
@@ -623,14 +728,16 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Simulates hitting a keyboard key.
      *
-     * @When /^(?:I |)(?:hit|press) (?:the |)"(?P<key>[^"]+)" key$/
+     * @When   /^(?:I |)(?:hit|press) (?:the |)"(?P<key>[^"]+)" key$/
+     * @param  string                   $key The key on the keyboard
+     * @throws InvalidArgumentException if $key is not recognized as a valid key
      */
     public function hitKey($key)
     {
         if (!array_key_exists($key, self::$keyCodes)) {
-            throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
+            throw new InvalidArgumentException("The key '$key' is not defined.");
         }
 
         $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
@@ -638,7 +745,14 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Presses the visible button with specified id|name|title|alt|value.
+     *
+     * This method overrides the MinkContext::pressButton() default behavior for pressButton to ensure that only visible
+     * buttons are pressed and that it waits for the button to be available with a max time limit.
+     *
+     * @see MinkContext::pressButton
+     * @param  string               $locator button id, inner text, value or alt
+     * @throws ExpectationException If a visible button field is not found.
      */
     public function pressButton($locator)
     {
@@ -650,10 +764,13 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Scrolls the window to the top or bottom of the page body.
      *
-     * @When /^(?:I |)scroll to the (?P<where>top|bottom) of the page$/
      * @Given /^the page is scrolled to the (?P<where>top|bottom)$/
+     * @When /^(?:I |)scroll to the (?P<where>top|bottom) of the page$/
+     * @param  string                           $where to scroll to. Must be either "top" or "bottom".
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @throws DriverException                  When the operation cannot be done
      */
     public function scrollWindowToBody($where)
     {
@@ -663,7 +780,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This overrides MinkContext::visit() to inject stored values into the URL.
+     *
+     * @see MinkContext::visit
+     * @param string $page the page to visit
      */
     public function visit($page)
     {
@@ -671,7 +791,9 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This overrides MinkContext::assertCheckboxChecked() to inject stored values into the locator.
+     *
+     * @param string $checkbox The the locator of the checkbox
      */
     public function assertCheckboxChecked($checkbox)
     {
@@ -680,7 +802,9 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * This overrides MinkContext::assertCheckboxNotChecked() to inject stored values into the locator.
+     *
+     * @param string $checkbox The the locator of the checkbox
      */
     public function assertCheckboxNotChecked($checkbox)
     {
@@ -689,9 +813,10 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Check the radio button.
      *
-     * @When I check radio button :label
+     * @When  I check radio button :label
+     * @param string $label The label of the radio button.
      */
     public function ensureRadioButtonChecked($label)
     {
@@ -699,9 +824,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Assert the radio button is checked.
      *
-     * @Then /^the "(?P<label>(?:[^"]|\\")*)" radio button should be checked$/
+     * @Then   /^the "(?P<label>(?:[^"]|\\")*)" radio button should be checked$/
+     * @param  string               $label The label of the radio button.
+     * @throws ExpectationException When the radio button is not checked.
      */
     public function assertRadioButtonChecked($label)
     {
@@ -711,9 +838,11 @@ class FlexibleContext extends MinkContext implements GathersContexts
     }
 
     /**
-     * {@inheritdoc}
+     * Assert the radio button is not checked.
      *
-     * @Then /^the "(?P<label>(?:[^"]|\\")*)" radio button should not be checked$/
+     * @Then   /^the "(?P<label>(?:[^"]|\\")*)" radio button should not be checked$/
+     * @param  string               $label The label of the radio button.
+     * @throws ExpectationException When the radio button is checked.
      */
     public function assertRadioButtonNotChecked($label)
     {

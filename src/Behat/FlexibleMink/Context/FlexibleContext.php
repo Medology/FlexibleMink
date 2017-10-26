@@ -30,7 +30,6 @@ class FlexibleContext extends MinkContext implements GathersContexts
     // Implements.
     use FlexibleContextInterface;
     // Depends.
-    use ContainerContext;
     use TypeCaster;
 
     /** @var array map of common key names to key codes */

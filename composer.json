@@ -27,6 +27,9 @@
     "psr-0": {
       "": "src/",
       "features": ""
+    },
+    "psr-4": {
+      "Tests\\": "tests"
     }
   }
 }

@@ -1,4 +1,4 @@
-<?php namespace Behat\ParallelWorker\Filter;
+<?php namespace Medology\Behat\ParallelWorker;
 
 use Behat\Gherkin\Filter\SimpleFilter;
 use Behat\Gherkin\Node\ExampleTableNode;
@@ -16,7 +16,7 @@ use RuntimeException;
  *
  * @author Taysir Tayyab
  */
-class ParallelWorkerFilter extends SimpleFilter
+class Filter extends SimpleFilter
 {
     private $totalNodes;
     private $curNode;

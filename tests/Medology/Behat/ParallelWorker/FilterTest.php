@@ -1,13 +1,13 @@
-<?php namespace Tests\Behat\ParallelRunner\Filter;
+<?php namespace Tests\Medology\Behat\ParallelWorker;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;
 use Behat\Gherkin\Node\ScenarioNode;
-use Behat\ParallelWorker\Filter\ParallelWorkerFilter;
 use Exception;
 use InvalidArgumentException;
+use Medology\Behat\ParallelWorker\Filter;
 
-class ParallelWorkerFilterTest extends FilterTest
+class FilterTest extends FilterTestBase
 {
     /**
      * This test is for making sure that invalid arguments for construction properly except.
@@ -16,7 +16,7 @@ class ParallelWorkerFilterTest extends FilterTest
     {
         // message check
         try {
-            new ParallelWorkerFilter(-10, 10);
+            new Filter(-10, 10);
             $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertEquals('Received bad arguments for ($curNode, $totalNodes): (-10, 10).', $e->getMessage());
@@ -26,28 +26,28 @@ class ParallelWorkerFilterTest extends FilterTest
          *   Invalid Arguments    *
          **************************/
         try {
-            new ParallelWorkerFilter(-1, 1);
+            new Filter(-1, 1);
             $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
-            new ParallelWorkerFilter(0, 0);
+            new Filter(0, 0);
             $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
-            new ParallelWorkerFilter(-1, -1);
+            new Filter(-1, -1);
             $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
-            new ParallelWorkerFilter(2, 1);
+            new Filter(2, 1);
             $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
@@ -61,13 +61,13 @@ class ParallelWorkerFilterTest extends FilterTest
     {
         $feature = new FeatureNode(null, null, [], null, [], null, null, null, 1);
 
-        $filter = new ParallelWorkerFilter();
+        $filter = new Filter();
         $this->assertFalse($filter->isFeatureMatch($feature));
 
-        $filter = new ParallelWorkerFilter(1, 2);
+        $filter = new Filter(1, 2);
         $this->assertFalse($filter->isFeatureMatch($feature));
 
-        $filter = new ParallelWorkerFilter(2, 5);
+        $filter = new Filter(2, 5);
         $this->assertFalse($filter->isFeatureMatch($feature));
     }
 
@@ -78,13 +78,13 @@ class ParallelWorkerFilterTest extends FilterTest
     {
         $scenario = new ScenarioNode(null, [], [], null, 2);
 
-        $filter = new ParallelWorkerFilter();
+        $filter = new Filter();
         $this->assertTrue($filter->isScenarioMatch($scenario));
 
-        $filter = new ParallelWorkerFilter(1, 2);
+        $filter = new Filter(1, 2);
         $this->assertTrue($filter->isScenarioMatch($scenario));
 
-        $filter = new ParallelWorkerFilter(2, 5);
+        $filter = new Filter(2, 5);
         $this->assertTrue($filter->isScenarioMatch($scenario));
     }
 
@@ -93,7 +93,7 @@ class ParallelWorkerFilterTest extends FilterTest
      */
     public function testFeatureFilterDefaults()
     {
-        $filter = new ParallelWorkerFilter();
+        $filter = new Filter();
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -121,7 +121,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter = new ParallelWorkerFilter(0, 2);
+        $filter = new Filter(0, 2);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -139,7 +139,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2    *
          ****************/
-        $filter = new ParallelWorkerFilter(1, 2);
+        $filter = new Filter(1, 2);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -164,7 +164,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter = new ParallelWorkerFilter(0, 3);
+        $filter = new Filter(0, 3);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -181,7 +181,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2    *
          ****************/
-        $filter = new ParallelWorkerFilter(1, 3);
+        $filter = new Filter(1, 3);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -198,7 +198,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 3    *
          ****************/
-        $filter = new ParallelWorkerFilter(2, 3);
+        $filter = new Filter(2, 3);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -222,7 +222,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter = new ParallelWorkerFilter(0, 4);
+        $filter = new Filter(0, 4);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -239,7 +239,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2   *
          ****************/
-        $filter = new ParallelWorkerFilter(1, 4);
+        $filter = new Filter(1, 4);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -250,7 +250,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 3    *
          ****************/
-        $filter = new ParallelWorkerFilter(2, 4);
+        $filter = new Filter(2, 4);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
@@ -266,7 +266,7 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 4    *
          ****************/
-        $filter = new ParallelWorkerFilter(3, 4);
+        $filter = new Filter(3, 4);
         $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 

@@ -1,8 +1,7 @@
-<?php namespace Behat\ParallelWorker\Controller;
+<?php namespace Medology\Behat\ParallelWorker;
 
 use Behat\Gherkin\Gherkin;
-use Behat\ParallelWorker\Filter\ParallelWorkerFilter;
-use Behat\Testwork\Cli\Controller;
+use Behat\Testwork\Cli\Controller as BaseController;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Taysir Tayyab
  */
-class ParallelWorkerController implements Controller
+class Controller implements BaseController
 {
     private $gherkin;
 
@@ -65,6 +64,6 @@ class ParallelWorkerController implements Controller
             throw new InvalidArgumentException("--current-worker ($curr) must be less than --total-workers($total). ");
         }
 
-        $this->gherkin->addFilter(new ParallelWorkerFilter($curr, $total));
+        $this->gherkin->addFilter(new Filter($curr, $total));
     }
 }

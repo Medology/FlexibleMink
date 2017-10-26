@@ -1,4 +1,4 @@
-<?php namespace Behat\ParallelWorker\ServiceContainer;
+<?php namespace Medology\Behat\ParallelWorker;
 
 use Behat\Behat\Gherkin\ServiceContainer\GherkinExtension;
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;
@@ -16,16 +16,14 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @author Taysir Tayyab
  */
-class ParallelWorkerExtension implements ExtensionInterface
+class Extension implements ExtensionInterface
 {
     /**
      * {@inheritdoc}
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $definition = new Definition('Behat\ParallelWorker\Controller\ParallelWorkerController', [
-            new Reference(GherkinExtension::MANAGER_ID),
-        ]);
+        $definition = new Definition(Controller::class, [new Reference(GherkinExtension::MANAGER_ID)]);
         $definition->addTag(CliExtension::CONTROLLER_TAG);
         $container->setDefinition(CliExtension::CONTROLLER_TAG . '.parallel_worker', $definition);
     }

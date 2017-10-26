@@ -1,4 +1,4 @@
-<?php namespace Tests\Behat\ParallelRunner\Filter;
+<?php namespace Tests\Medology\Behat\ParallelWorker;
 
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
@@ -10,7 +10,7 @@ use PHPUnit_Framework_TestCase;
  *
  * Base class for filter testing which sets up a Gherking Feature with several scenarios and a parser.
  */
-abstract class FilterTest extends PHPUnit_Framework_TestCase
+abstract class FilterTestBase extends PHPUnit_Framework_TestCase
 {
     /**
      * @return Parser

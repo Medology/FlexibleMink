@@ -53,7 +53,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         $testObj = $this->getMockObject();
         $name = 'testObj';
-        $this->storeContext->put($testObj, $name);
+        $this->storeContext->set($name, $testObj);
 
         /***********************
          * Validate First Argument
@@ -364,7 +364,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             ->with($this->equalTo('test_property_1'))
             ->willReturn('test_value_1');
 
-        $this->storeContext->put($mock, $name);
+        $this->storeContext->set($name, $mock);
 
         $this->assertEquals('test_value_1', $this->storeContext->injectStoredValues("(the test_property_1 of the $name)"));
     }

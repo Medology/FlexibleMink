@@ -91,7 +91,7 @@ class TableContext implements Context, GathersContexts
     protected function getTableFromName($name, $forceFresh = false)
     {
         // retrieve table from the store if it exists there
-        if ($this->storeContext->isStored($name) && !$forceFresh) {
+        if ($this->storeContext->has($name) && !$forceFresh) {
             return $this->storeContext->get($name);
         }
 
@@ -99,7 +99,7 @@ class TableContext implements Context, GathersContexts
         $table = $this->findNamedTable($name);
         $tableData = $this->buildTableFromHtml($table);
 
-        $this->storeContext->put($tableData, $name);
+        $this->storeContext->set($name, $tableData);
 
         return $tableData;
     }
@@ -232,7 +232,7 @@ class TableContext implements Context, GathersContexts
 
         // if a key name was provided, we can store this array for quick access next time
         if ($keyName) {
-            $this->storeContext->put($tableData, $keyName);
+            $this->storeContext->set($keyName, $tableData);
         }
 
         return $tableData;

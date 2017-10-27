@@ -65,7 +65,7 @@ class FeatureContext implements Context, GathersContexts
      */
     public function putStoreStep($key, TableNode $attributes)
     {
-        $this->storeContext->put((object) ($attributes->getRowsHash()), $key);
+        $this->storeContext->set($key, (object) ($attributes->getRowsHash()));
     }
 
     /**
@@ -82,7 +82,7 @@ class FeatureContext implements Context, GathersContexts
             $value = $value->getRaw();
         }
 
-        $this->storeContext->put($value, $key);
+        $this->storeContext->set($key, $value);
     }
 
     /**

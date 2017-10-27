@@ -2,16 +2,14 @@
 
 use Behat\Behat\Context\Context;
 use Exception;
+use nounstore\Store;
 use ReflectionFunction;
 
 /**
  * Context for storing and working with nouns.
  */
-class StoreContext implements Context
+class StoreContext extends Store implements Context
 {
-    /** @var array */
-    public $registry;
-
     /**
      * Clears the registry before each Scenario to free up memory and prevent access to stale data.
      *
@@ -19,7 +17,7 @@ class StoreContext implements Context
      */
     public function clearRegistry()
     {
-        $this->registry = [];
+        $this->reset();
 
         if (method_exists($this, 'onStoreInitialized')) {
             $this->onStoreInitialized();
@@ -47,34 +45,6 @@ class StoreContext implements Context
     }
 
     /**
-     * Stores the specified thing under the specified key in the registry.
-     *
-     * @param mixed  $thing The thing to be stored.
-     * @param string $key   The key to store the thing under.
-     */
-    public function put($thing, $key)
-    {
-        $this->registry[$key][] = $thing;
-    }
-
-    /**
-     * Asserts that the specified thing exists in the registry.
-     *
-     * @param  string    $key The key to check.
-     * @param  int       $nth The nth value of the key.
-     * @throws Exception if nothing is stored at the specified location.
-     * @return mixed     The thing from the store.
-     */
-    public function assertIsStored($key, $nth = null)
-    {
-        if (!$thing = $this->isStored($key, $nth)) {
-            throw new Exception("Entry $nth for $key was not found in the store.");
-        }
-
-        return $this->get($key, $nth);
-    }
-
-    /**
      * Converts a key of the form "nth thing" into "n" and "thing".
      *
      * @param  string $key The key to parse
@@ -93,27 +63,6 @@ class StoreContext implements Context
     }
 
     /**
-     * Retrieves the thing stored under the specified key on the nth position in the registry.
-     *
-     * @param  string $key The key to retrieve the thing for.
-     * @param  int    $nth The nth value for the thing to retrieve.
-     * @return mixed  The thing that was retrieved, or null if nothing exists at the specified location.
-     */
-    public function get($key, $nth = null)
-    {
-        if (!$nth) {
-            list($key, $nth) = $this->parseKey($key);
-        }
-
-        if (!$this->isStored($key, $nth)) {
-            /* @noinspection PhpInconsistentReturnPointsInspection StyleCI says just return, don't return null */
-            return;
-        }
-
-        return $nth ? $this->registry[$key][$nth - 1] : end($this->registry[$key]);
-    }
-
-    /**
      * Gets the value of a property from an object of the store.
      *
      * @param  string    $key      The key to retrieve the object for.
@@ -125,7 +74,7 @@ class StoreContext implements Context
      */
     public function getThingProperty($key, $property, $nth = null)
     {
-        $thing = $this->assertIsStored($key, $nth);
+        $thing = $this->assertHas($key, $nth);
 
         if (isset($thing, $property)) {
             return $thing->$property;
@@ -174,7 +123,7 @@ class StoreContext implements Context
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
 
-            if (!$this->isStored($thingName)) {
+            if (!$this->has($thingName)) {
                 throw new Exception("Did not find $thingName in the store");
             }
 
@@ -202,22 +151,6 @@ class StoreContext implements Context
     }
 
     /**
-     * Checks that the specified thing exists in the registry.
-     *
-     * @param  string $key The key to check.
-     * @param  int    $nth The nth value of the key.
-     * @return bool   True if the thing exists, false if not.
-     */
-    public function isStored($key, $nth = null)
-    {
-        if (!$nth) {
-            list($key, $nth) = $this->parseKey($key);
-        }
-
-        return $nth ? isset($this->registry[$key][$nth - 1]) : isset($this->registry[$key]);
-    }
-
-    /**
      * Adds a reference to a stored thing under the new specified key.
      *
      * @When  /^(?:I |)refer to (?:the |)"(?P<current>[^"]*)" as "(?P<new>[^"]*)"$/
@@ -226,7 +159,7 @@ class StoreContext implements Context
      */
     public function referToStoredAs($current, $new)
     {
-        $this->put($this->get($current), $new);
+        $this->set($new, $this->get($current));
     }
 
     /**

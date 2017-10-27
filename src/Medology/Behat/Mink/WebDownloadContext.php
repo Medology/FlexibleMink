@@ -122,7 +122,7 @@ class WebDownloadContext implements Context, GathersContexts
         $response = curl_exec($ch);
 
         // Put response into object store.
-        $this->storeContext->put($response, $key);
+        $this->storeContext->set($key, $response);
 
         return $response;
     }

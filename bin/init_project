@@ -1,5 +1,14 @@
 #!/bin/bash +x
 
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )"
+
+. "$ROOT"/bin/lib/exitCheck.sh
+
+# install composer
+echo "Installing composer..."
+bin/init/install_composer.sh
+exitCheck $?
+
 # install composer dependancies
 echo "Installing composer dependancies..."
 bin/composer install

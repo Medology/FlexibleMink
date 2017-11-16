@@ -59,3 +59,8 @@ Feature: Table Context
      And the table "table-with-select" should have the following values:
       | Name    | Zhang |
       | Country | China |
+
+  Scenario: Developer can Test a table with a nested table within it
+    Then there should be a table on the page with the following information:
+      | Test Column                             |
+      | Testing Column with Hidden Nested Table |

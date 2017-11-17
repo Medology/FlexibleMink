@@ -406,7 +406,9 @@ trait TableContext
      */
     public function assertTableWithStructureExists(TableNode $tableNode)
     {
-        $table = $tableNode->getRows();
+        $table = array_map(function ($rowData) {
+            return array_map([$this, 'injectStoredValues'], array_values($rowData));
+        }, $tableNode->getRows());
 
         $this->waitFor(function () use ($table) {
             $page = $this->getSession()->getPage();

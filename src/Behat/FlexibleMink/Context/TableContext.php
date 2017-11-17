@@ -417,7 +417,7 @@ trait TableContext
             $domTables = $page->findAll('css', 'table');
             foreach ($domTables as $domTable) {
                 /** @var NodeElement[] $domRows */
-                $domRows = $domTable->findAll('xpath', '/thead/tr|tbody/tr');
+                $domRows = $domTable->findAll('xpath', '/tfoot/tr|thead/tr|tbody/tr');
 
                 if (count($domRows) != count($table)) {
                     // This table doesn't have enough rows to match us.

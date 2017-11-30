@@ -84,32 +84,6 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * This method will wait to see the text specified for 15 seconds, and then wait another 15 seconds for the text
-     * to no longer appear on the page.
-     *
-     * @Then I should see :text appear, then disappear
-     * @see assertPageContainsText()
-     * @see assertPageNotContainsText()
-     * @param  string                $text The text to wait on to not show up on the page anymore.
-     * @throws ResponseTextException If the text is not found initially or if the text was still visible after seeing
-     *                                    it and waiting for 15 seconds.
-     */
-    public function assertPageContainsTextTemporarily($text)
-    {
-        $text = $this->storeContext->injectStoredValues($text);
-
-        parent::assertPageContainsText($text);
-
-        try {
-            parent::assertPageNotContainsText($text);
-        } catch (ExpectationException $e) {
-            throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
-            );
-        }
-    }
-
-    /**
      * This method overrides the MinkContext::assertElementContainsText() default behavior for
      * assertElementContainsText to inject stored values into the provided element and text.
      *

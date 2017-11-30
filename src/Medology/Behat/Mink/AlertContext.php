@@ -6,7 +6,6 @@ use Behat\Behat\Context\Context;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
-use Medology\Spinner;
 use WebDriver\Exception\NoAlertOpenError;
 
 /**
@@ -89,17 +88,15 @@ class AlertContext implements Context
             throw new UnsupportedDriverActionException('Assert Alert message is not supported by %s', $driver);
         }
 
-        Spinner::waitFor(function () use ($expected, $driver, $session) {
-            try {
-                $actual = $driver->getWebDriverSession()->getAlert_text();
-            } catch (NoAlertOpenError $e) {
-                throw new ExpectationException('No alert is open', $session);
-            }
+        try {
+            $actual = $driver->getWebDriverSession()->getAlert_text();
+        } catch (NoAlertOpenError $e) {
+            throw new ExpectationException('No alert is open', $session);
+        }
 
-            if (strpos($actual, $expected) === false) {
-                throw new ExpectationException("Text '$expected' not found in alert", $session);
-            }
-        });
+        if (strpos($actual, $expected) === false) {
+            throw new ExpectationException("Text '$expected' not found in alert", $session);
+        }
     }
 
     /**

@@ -111,28 +111,24 @@ class WebDownloadContext implements Context
         $driver = $this->flexibleContext->getSession()->getDriver();
         $xpath = str_replace('"', "'", $xpath);
 
-        $result = Spinner::waitFor(function () use ($driver, $xpath) {
-            if (!$driver->find($xpath)) {
-                throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
-            }
+        if (!$driver->find($xpath)) {
+            throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
+        }
 
-            $script = <<<JS
-return {
-    complete: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.complete,
-    height: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalHeight,
-    width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth
-}
+        $script = <<<JS
+            return {
+                complete: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.complete,
+                height: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalHeight,
+                width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth
+            }
 JS;
 
-            $imgProperties = $driver->evaluateScript($script);
+        $imgProperties = $driver->evaluateScript($script);
 
-            if (!$imgProperties['complete']) {
-                throw new Exception('Image did not finish loading.');
-            }
+        if (!$imgProperties['complete']) {
+            throw new Exception('Image did not finish loading.');
+        }
 
-            return $imgProperties;
-        });
-
-        return $result['width'] !== 0 && $result['height'] !== 0;
+        return $imgProperties['width'] !== 0 && $imgProperties['height'] !== 0;
     }
 }

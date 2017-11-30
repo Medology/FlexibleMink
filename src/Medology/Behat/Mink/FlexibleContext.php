@@ -15,7 +15,6 @@ use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
-use Medology\Spinner;
 use ZipArchive;
 
 /**
@@ -37,36 +36,6 @@ class FlexibleContext extends MinkContext
     ];
 
     /**
-     * This method overrides the MinkContext::assertPageContainsText() default behavior for assertFieldContains to
-     * ensure that it waits for the text to be available with a max time limit.
-     *
-     * @see    MinkContext::assertFieldContains
-     * @param  string               $field the name of the field to check
-     * @param  string               $value the expected value of the field
-     * @throws ExpectationException If the field can't be found
-     * @throws ExpectationException If the field doesn't match the value
-     */
-    public function assertFieldContains($field, $value)
-    {
-        Spinner::waitFor(function () use ($field, $value) {
-            parent::assertFieldContains($field, $value);
-        });
-    }
-
-    /**
-     * This method overrides the MinkContext::assertPageAddress() default behavior by adding a waitFor to ensure that
-     * Behat waits for the page to load properly before failing out.
-     *
-     * @param string $page The address of the page to load
-     */
-    public function assertPageAddress($page)
-    {
-        Spinner::waitFor(function () use ($page) {
-            parent::assertPageAddress($page);
-        });
-    }
-
-    /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertPageContainsText to
      * ensure that it waits for the text to be available with a max time limit.
      *
@@ -75,11 +44,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageContainsText($text)
     {
-        $text = $this->storeContext->injectStoredValues($text);
-
-        Spinner::waitFor(function () use ($text) {
-            parent::assertPageContainsText($text);
-        });
+        parent::assertPageContainsText($this->storeContext->injectStoredValues($text));
     }
 
     /**
@@ -114,10 +79,7 @@ class FlexibleContext extends MinkContext
      */
     public function assertPageNotContainsText($text)
     {
-        $text = $this->storeContext->injectStoredValues($text);
-        Spinner::waitFor(function () use ($text) {
-            parent::assertPageNotContainsText($text);
-        });
+        parent::assertPageNotContainsText($this->storeContext->injectStoredValues($text));
     }
 
     /**
@@ -135,14 +97,10 @@ class FlexibleContext extends MinkContext
     {
         $text = $this->storeContext->injectStoredValues($text);
 
-        Spinner::waitFor(function () use ($text) {
-            parent::assertPageContainsText($text);
-        }, 15);
+        parent::assertPageContainsText($text);
 
         try {
-            Spinner::waitFor(function () use ($text) {
-                parent::assertPageNotContainsText($text);
-            }, 15);
+            parent::assertPageNotContainsText($text);
         } catch (ExpectationException $e) {
             throw new ResponseTextException(
                 "Timed out waiting for '$text' to no longer appear.", $this->getSession()
@@ -160,12 +118,10 @@ class FlexibleContext extends MinkContext
      */
     public function assertElementContainsText($element, $text)
     {
-        $element = $this->storeContext->injectStoredValues($element);
-        $text = $this->storeContext->injectStoredValues($text);
-
-        Spinner::waitFor(function () use ($element, $text) {
-            parent::assertElementContainsText($element, $text);
-        });
+        parent::assertElementContainsText(
+            $this->storeContext->injectStoredValues($element),
+            $this->storeContext->injectStoredValues($text)
+        );
     }
 
     /**
@@ -177,12 +133,10 @@ class FlexibleContext extends MinkContext
      */
     public function assertElementNotContainsText($element, $text)
     {
-        $element = $this->storeContext->injectStoredValues($element);
-        $text = $this->storeContext->injectStoredValues($text);
-
-        Spinner::waitFor(function () use ($element, $text) {
-            parent::assertElementNotContainsText($element, $text);
-        });
+        parent::assertElementNotContainsText(
+            $this->storeContext->injectStoredValues($element),
+            $this->storeContext->injectStoredValues($text)
+        );
     }
 
     /**
@@ -196,11 +150,7 @@ class FlexibleContext extends MinkContext
     public function clickLink($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $element = Spinner::waitFor(function () use ($locator) {
-            return $this->assertVisibleLink($locator);
-        });
-
-        $element->click();
+        $this->assertVisibleLink($locator)->click();
     }
 
     /**
@@ -214,11 +164,7 @@ class FlexibleContext extends MinkContext
     public function checkOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $element = Spinner::waitFor(function () use ($locator) {
-            return $this->assertVisibleOption($locator);
-        });
-
-        $element->check();
+        $this->assertVisibleOption($locator)->check();
     }
 
     /**
@@ -234,11 +180,7 @@ class FlexibleContext extends MinkContext
     public function fillField($field, $value)
     {
         $field = $this->storeContext->injectStoredValues($field);
-        $element = Spinner::waitFor(function () use ($field) {
-            return $this->assertVisibleOption($field);
-        });
-
-        $element->setValue($value);
+        $this->assertVisibleOption($field)->setValue($value);
     }
 
     /**
@@ -250,11 +192,7 @@ class FlexibleContext extends MinkContext
     public function uncheckOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $element = Spinner::waitFor(function () use ($locator) {
-            return $this->assertVisibleOption($locator);
-        });
-
-        $element->uncheck();
+        $this->assertVisibleOption($locator)->uncheck();
     }
 
     /**
@@ -274,27 +212,25 @@ class FlexibleContext extends MinkContext
             $disabled = 'disabled' == $disabled;
         }
 
-        Spinner::waitFor(function () use ($locator, $disabled) {
-            $button = $this->getSession()->getPage()->findButton($locator);
+        $button = $this->getSession()->getPage()->findButton($locator);
 
-            if (!$button) {
-                throw new ExpectationException("Could not find button for $locator", $this->getSession());
-            }
+        if (!$button) {
+            throw new ExpectationException("Could not find button for $locator", $this->getSession());
+        }
 
-            if ($button->hasAttribute('disabled')) {
-                if (!$disabled) {
-                    throw new ExpectationException(
-                        "The button, $locator, was disabled, but it should not have been disabled.",
-                        $this->getSession()
-                    );
-                }
-            } elseif ($disabled) {
+        if ($button->hasAttribute('disabled')) {
+            if (!$disabled) {
                 throw new ExpectationException(
-                    "The button, $locator, was not disabled, but it should have been disabled.",
+                    "The button, $locator, was disabled, but it should not have been disabled.",
                     $this->getSession()
                 );
             }
-        });
+        } elseif ($disabled) {
+            throw new ExpectationException(
+                "The button, $locator, was not disabled, but it should have been disabled.",
+                $this->getSession()
+            );
+        }
     }
 
     /**
@@ -740,11 +676,7 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        $element = Spinner::waitFor(function () use ($locator) {
-            return $this->assertVisibleButton($locator);
-        });
-
-        $element->press();
+        $this->assertVisibleButton($locator)->press();
     }
 
     /**
@@ -838,7 +770,9 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param  string      $label The Label of the radio button.
+     * @param  string $label The Label of the radio button.
+     * @throws ExpectationException if the radio button was not found on the page.
+     * @throws ExpectationException if the radio button was on the page, but was not visible.
      * @return NodeElement
      */
     protected function findRadioButton($label)
@@ -846,28 +780,24 @@ class FlexibleContext extends MinkContext
         $label = $this->storeContext->injectStoredValues($label);
         $this->fixStepArgument($label);
 
-        $radioButton = Spinner::waitFor(function () use ($label) {
-            /** @var NodeElement[] $radioButtons */
-            $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $label]);
+        /** @var NodeElement[] $radioButtons */
+        $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $label]);
 
-            if (!$radioButtons) {
-                throw new ExpectationException('Radio Button was not found on the page', $this->getSession());
-            }
+        if (!$radioButtons) {
+            throw new ExpectationException('Radio Button was not found on the page', $this->getSession());
+        }
 
-            $radioButtons = array_filter($radioButtons, function (NodeElement $radio) {
-                return $radio->isVisible();
-            });
-
-            if (!$radioButtons) {
-                throw new ExpectationException('No Visible Radio Button was found on the page', $this->getSession());
-            }
-
-            usort($radioButtons, [$this, 'compareElementsByCoords']);
-
-            return $radioButtons[0];
+        $radioButtons = array_filter($radioButtons, function (NodeElement $radio) {
+            return $radio->isVisible();
         });
 
-        return $radioButton;
+        if (!$radioButtons) {
+            throw new ExpectationException('No Visible Radio Button was found on the page', $this->getSession());
+        }
+
+        usort($radioButtons, [$this, 'compareElementsByCoords']);
+
+        return $radioButtons[0];
     }
 
     /**

@@ -34,10 +34,7 @@ class TableContext implements Context
         $idPiece = "contains(normalize-space(@id), '$name')";
         $namePiece = "contains(normalize-space(@name), '$name')";
 
-        /** @var NodeElement $table */
-        $table = Spinner::waitFor(function () use ($idPiece, $namePiece) {
-            return $this->flexibleContext->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
-        });
+        $table = $this->flexibleContext->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
 
         if (!$table) {
             throw new ElementNotFoundException(
@@ -437,59 +434,58 @@ class TableContext implements Context
     /**
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
-     * @Then  there should be a table on the page with the following information:
-     * @param TableNode $tableNode
+     * @Then   there should be a table on the page with the following information:
+     * @param  TableNode $tableNode
+     * @throws ExpectationException if the specified table could not be found.
      */
     public function assertTableWithStructureExists(TableNode $tableNode)
     {
         $table = $tableNode->getRows();
 
-        Spinner::waitFor(function () use ($table) {
-            $page = $this->flexibleContext->getSession()->getPage();
+        $page = $this->flexibleContext->getSession()->getPage();
 
-            /** @var NodeElement[] $domTables */
-            $domTables = $page->findAll('css', 'table');
-            foreach ($domTables as $domTable) {
-                /** @var NodeElement[] $domRows */
-                $domRows = $domTable->findAll('css', 'tr');
+        /** @var NodeElement[] $domTables */
+        $domTables = $page->findAll('css', 'table');
+        foreach ($domTables as $domTable) {
+            /** @var NodeElement[] $domRows */
+            $domRows = $domTable->findAll('css', 'tr');
 
-                if (count($domRows) != count($table)) {
-                    // This table doesn't have enough rows to match us.
-                    continue 1;
-                }
-
-                foreach ($table as $rowNum => $row) {
-                    $domRow = $domRows[$rowNum];
-
-                    /** @var NodeElement[] $domCells */
-                    $domCells = $domRow->findAll('css', 'th, td');
-
-                    if (count($domCells) != count($row)) {
-                        // This table doesn't have enough columns to match us.
-                        continue 2;
-                    }
-
-                    foreach ($row as $cellNum => $cell) {
-                        $domCell = $domCells[$cellNum];
-
-                        // Time to finally compare!
-                        if ($cell != '*' && $cell != $domCell->getText()) {
-                            // Whelp, this cell doesn't match. Onward!
-                            continue 3;
-                        }
-                    }
-                }
-
-                // We found a match! Return.
-                return true;
+            if (count($domRows) != count($table)) {
+                // This table doesn't have enough rows to match us.
+                continue 1;
             }
 
-            // Oh no! No matches.
-            throw new ExpectationException(
-                'A table matching the supplied structure could not be found.',
-                $this->flexibleContext->getSession()
-            );
-        });
+            foreach ($table as $rowNum => $row) {
+                $domRow = $domRows[$rowNum];
+
+                /** @var NodeElement[] $domCells */
+                $domCells = $domRow->findAll('css', 'th, td');
+
+                if (count($domCells) != count($row)) {
+                    // This table doesn't have enough columns to match us.
+                    continue 2;
+                }
+
+                foreach ($row as $cellNum => $cell) {
+                    $domCell = $domCells[$cellNum];
+
+                    // Time to finally compare!
+                    if ($cell != '*' && $cell != $domCell->getText()) {
+                        // Whelp, this cell doesn't match. Onward!
+                        continue 3;
+                    }
+                }
+            }
+
+            // We found a match! Return.
+            return;
+        }
+
+        // Oh no! No matches.
+        throw new ExpectationException(
+            'A table matching the supplied structure could not be found.',
+            $this->flexibleContext->getSession()
+        );
     }
 
     /**
@@ -504,26 +500,24 @@ class TableContext implements Context
     {
         $expectedRow = $tableNode->getRowsHash();
 
-        Spinner::waitFor(function () use ($name, $expectedRow) {
-            $actualTable = $this->getTableFromName($name, true);
-            $colHeaders = $actualTable['colHeaders'];
+        $actualTable = $this->getTableFromName($name, true);
+        $colHeaders = $actualTable['colHeaders'];
 
-            array_walk($actualTable['body'], function (&$row) use ($colHeaders) {
-                $row = array_combine($colHeaders, $row);
-            });
-
-            $expectedColumnsCount = count($expectedRow);
-
-            foreach ($actualTable['body'] as $row) {
-                if (count(array_intersect_assoc($expectedRow, $row)) == $expectedColumnsCount) {
-                    return;
-                }
-            }
-
-            throw new ExpectationException(
-                'A row matching the supplied values could not be found.',
-                $this->flexibleContext->getSession()
-            );
+        array_walk($actualTable['body'], function (&$row) use ($colHeaders) {
+            $row = array_combine($colHeaders, $row);
         });
+
+        $expectedColumnsCount = count($expectedRow);
+
+        foreach ($actualTable['body'] as $row) {
+            if (count(array_intersect_assoc($expectedRow, $row)) == $expectedColumnsCount) {
+                return;
+            }
+        }
+
+        throw new ExpectationException(
+            'A row matching the supplied values could not be found.',
+            $this->flexibleContext->getSession()
+        );
     }
 }

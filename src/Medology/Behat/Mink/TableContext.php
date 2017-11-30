@@ -9,7 +9,6 @@ use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use InvalidArgumentException;
 use Medology\Behat\UsesStoreContext;
-use Medology\Spinner;
 use RuntimeException;
 
 /**
@@ -435,7 +434,7 @@ class TableContext implements Context
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
      * @Then   there should be a table on the page with the following information:
-     * @param  TableNode $tableNode
+     * @param  TableNode            $tableNode
      * @throws ExpectationException if the specified table could not be found.
      */
     public function assertTableWithStructureExists(TableNode $tableNode)

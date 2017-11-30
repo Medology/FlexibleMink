@@ -770,7 +770,7 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param  string $label The Label of the radio button.
+     * @param  string               $label The Label of the radio button.
      * @throws ExpectationException if the radio button was not found on the page.
      * @throws ExpectationException if the radio button was on the page, but was not visible.
      * @return NodeElement

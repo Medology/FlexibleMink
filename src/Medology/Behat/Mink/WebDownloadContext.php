@@ -7,7 +7,6 @@ use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Exception;
 use Medology\Behat\UsesStoreContext;
-use Medology\Spinner;
 
 /**
  * {@inheritdoc}

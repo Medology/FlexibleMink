@@ -3,7 +3,6 @@ default:
     default:
       path: %paths.base%/features
       contexts:
-        - Chekote\BehatRetryExtension\Context\BehatRetryContext
         - FeatureContext
         - Medology\Behat\CsvContext
         - Medology\Behat\StoreContext
@@ -25,5 +24,3 @@ default:
             wd_host: http://chrome:4444/wd/hub
     Medology\Behat\ParallelWorker\Extension: ~
     features\Extensions\Assertion\AssertionExtension: ~
-    Chekote\BehatRetryExtension:
-      timeout: 0

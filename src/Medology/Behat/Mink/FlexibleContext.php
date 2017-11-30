@@ -13,6 +13,7 @@ use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
 use ZipArchive;
@@ -37,9 +38,9 @@ class FlexibleContext extends MinkContext
 
     /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertPageContainsText to
-     * ensure that it waits for the text to be available with a max time limit.
+     * inject stored values into the provided text.
      *
-     * @see MinkContext::assertPageContainsText
+     * @see StoreContext::injectStoredValues()
      * @param string $text Text to be searched in the page.
      */
     public function assertPageContainsText($text)
@@ -72,9 +73,9 @@ class FlexibleContext extends MinkContext
 
     /**
      * This method overrides the MinkContext::assertPageNotContainsText() default behavior for assertPageNotContainsText
-     * to ensure that it waits for the item to not be available with a max time limit.
+     * to inject stored values into the provided text.
      *
-     * @see MinkContext::assertPageNotContainsText
+     * @see StoreContext::injectStoredValues()
      * @param string $text The text that should not be found on the page.
      */
     public function assertPageNotContainsText($text)
@@ -110,9 +111,9 @@ class FlexibleContext extends MinkContext
 
     /**
      * This method overrides the MinkContext::assertElementContainsText() default behavior for
-     * assertElementContainsText to ensure that it waits for the item to be available with a max time limit.
+     * assertElementContainsText to inject stored values into the provided element and text.
      *
-     * @see MinkContext::assertElementContainsText
+     * @see StoreContext::injectStoredValues()
      * @param string|array $element css element selector
      * @param string       $text    expected text
      */
@@ -157,7 +158,9 @@ class FlexibleContext extends MinkContext
      * Clicks a visible checkbox with specified id|title|alt|text.
      *
      * This method overrides the MinkContext::checkOption() default behavior for checkOption to ensure that only visible
-     * options are checked and that it waits for the option to be available with a max time limit.
+     * options are checked and inject stored values into the provided locator.
+     *
+     * @see StoreContext::injectStoredValues()
      * @see MinkContext::checkOption
      * @param string $locator The id|title|alt|text of the option to be clicked.
      */
@@ -668,7 +671,7 @@ class FlexibleContext extends MinkContext
      * Presses the visible button with specified id|name|title|alt|value.
      *
      * This method overrides the MinkContext::pressButton() default behavior for pressButton to ensure that only visible
-     * buttons are pressed and that it waits for the button to be available with a max time limit.
+     * buttons are pressed.
      *
      * @see MinkContext::pressButton
      * @param  string               $locator button id, inner text, value or alt

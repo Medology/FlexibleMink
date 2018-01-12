@@ -127,6 +127,26 @@ class FlexibleContext extends MinkContext
         }
     }
 
+
+    /**
+     * {@inheritdoc}
+     * @Then /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/
+     */
+    public function assertFieldIsVisible($field, $not){
+        $locator = $this->fixStepArgument($field);
+
+        $option = $this->getSession()->getPage()->find(
+          'named',
+          ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
+        );
+
+        $shouldBeVisible = !$not;
+        if (($shouldBeVisible && !$option->isVisible()) || (!$shouldBeVisible && $option->isVisible())) {
+          throw new ExpectationException("The field '$locator' was " . (!$not ? 'not ' :'') . "visible or not found", $this->getSession());
+        }
+    }
+
+
     /**
      * {@inheritdoc}
      */

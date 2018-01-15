@@ -45,11 +45,13 @@ trait FlexibleContextInterface
     abstract public function assertPageAddress($page);
 
     /**
+     * Asserts that a field is visible or not.
+     *
      * @param  string               $field The field to be checked
      * @param  bool                 $not   check if field should be visible or not.
      * @throws ExpectationException
      */
-    abstract public function assertFieldIsVisible($field, $not);
+    abstract public function assertFieldVisibility($field, $not);
 
     /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertFieldContains to

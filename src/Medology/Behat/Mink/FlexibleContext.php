@@ -84,6 +84,33 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that a field is visible or not.
+     *
+     * @Then   /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/
+     * @param  string               $field The field to be checked
+     * @param  bool                 $not   check if field should be visible or not.
+     * @throws ExpectationException
+     */
+    public function assertFieldVisibility($field, $not)
+    {
+        $locator = $this->fixStepArgument($field);
+
+        $fields = $this->getSession()->getPage()->findAll(
+            'named',
+            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
+        );
+
+        if (count($fields) > 1) {
+            throw new ExpectationException("The field '$locator' was found more than one time", $this->getSession());
+        }
+
+        $shouldBeVisible = !$not;
+        if (($shouldBeVisible && !$fields[0]->isVisible()) || (!$shouldBeVisible && $fields[0]->isVisible())) {
+            throw new ExpectationException("The field '$locator' was " . (!$not ? 'not ' : '') . 'visible or not found', $this->getSession());
+        }
+    }
+
+    /**
      * This method overrides the MinkContext::assertElementContainsText() default behavior for
      * assertElementContainsText to inject stored values into the provided element and text.
      *

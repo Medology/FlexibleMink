@@ -141,7 +141,7 @@ class FlexibleContext extends MinkContext
         );
 
         if (count($fields) > 1) {
-          throw new ExpectationException("The field '$locator' was found more than one time", $this->getSession());
+            throw new ExpectationException("The field '$locator' was found more than one time", $this->getSession());
         }
 
         $shouldBeVisible = !$not;

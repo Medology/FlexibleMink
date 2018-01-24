@@ -47,24 +47,6 @@ class StoreContext extends Store implements Context
     }
 
     /**
-     * Converts a key of the form "nth thing" into "n" and "thing".
-     *
-     * @param  string $key The key to parse
-     * @return array  For a key "nth thing", returns [thing, n], else [thing, null]
-     */
-    public function parseKey($key)
-    {
-        if (preg_match('/^([1-9][0-9]*)(?:st|nd|rd|th) (.+)$/', $key, $matches)) {
-            $nth = $matches[1];
-            $key = $matches[2];
-        } else {
-            $nth = '';
-        }
-
-        return [$key, $nth];
-    }
-
-    /**
      * Gets the value of a property from an object of the store.
      *
      * @param  string    $key      The key to retrieve the object for.

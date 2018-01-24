@@ -12,6 +12,6 @@ Feature:  Assert Fields visibility
   Scenario: Developer Can Test an input is visible
     Then the field "visible" should be visible
 
-  Scenario: Assertion fails reliably if option in select is not found
+  Scenario: Assertion fails reliably if visibility is not found
     When  I assert that the field "nonVisible" should be visible
     Then the assertion should throw an ExpectationException

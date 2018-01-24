@@ -3,8 +3,9 @@
 namespace Medology\Behat;
 
 use Behat\Behat\Context\Context;
+use Chekote\NounStore\Assert;
+use Chekote\NounStore\Store;
 use Exception;
-use nounstore\Store;
 use ReflectionFunction;
 
 /**
@@ -12,6 +13,16 @@ use ReflectionFunction;
  */
 class StoreContext extends Store implements Context
 {
+    /** @var Assert */
+    protected $assert;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->assert = new Assert($this);
+    }
+
     /**
      * Clears the registry before each Scenario to free up memory and prevent access to stale data.
      *
@@ -51,14 +62,14 @@ class StoreContext extends Store implements Context
      *
      * @param  string    $key      The key to retrieve the object for.
      * @param  string    $property The name of the property to retrieve from the object.
-     * @param  int       $nth      The nth value for the object to retrieve.
+     * @param  int       $index    The index of the key entry to check.
      * @throws Exception If an object was not found under the specified key.
      * @throws Exception If the object does not have the specified property.
      * @return mixed     The value of the property.
      */
-    public function getThingProperty($key, $property, $nth = null)
+    public function getThingProperty($key, $property, $index = null)
     {
-        $thing = $this->assertHas($key, $nth);
+        $thing = $this->assert->keyExists($key, $index);
 
         if (isset($thing, $property)) {
             return $thing->$property;
@@ -107,7 +118,7 @@ class StoreContext extends Store implements Context
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
 
-            if (!$this->has($thingName)) {
+            if (!$this->keyExists($thingName)) {
                 throw new Exception("Did not find $thingName in the store");
             }
 

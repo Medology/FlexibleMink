@@ -60,7 +60,7 @@ class TableContext implements Context
     protected function getTableFromName($name, $forceFresh = false)
     {
         // retrieve table from the store if it exists there
-        if ($this->storeContext->has($name) && !$forceFresh) {
+        if ($this->storeContext->keyExists($name) && !$forceFresh) {
             return $this->storeContext->get($name);
         }
 

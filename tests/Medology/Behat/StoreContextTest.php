@@ -101,7 +101,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals("Did not find $badName in the store", $e->getMessage());
+            $this->assertEquals("Entry '$badName' was not found in the store.", $e->getMessage());
         }
 
         // test bad property

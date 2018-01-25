@@ -118,12 +118,12 @@ class StoreContext extends Store implements Context
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
 
-            if (!$this->keyExists($thingName)) {
-                throw new Exception("Did not find $thingName in the store");
-            }
+            $thing = $this->assert->keyExists($thingName);
 
             // applies the hook the to the entity
-            $thing = $onGetFn ? $onGetFn($this->get($thingName)) : $this->get($thingName);
+            if ($onGetFn) {
+                $thing = $onGetFn($thing);
+            }
 
             // must return object, array, but not function
             if (!is_object($thing) && !is_array($thing) || is_callable($thing)) {

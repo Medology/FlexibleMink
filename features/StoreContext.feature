@@ -57,3 +57,20 @@ Feature: Store Context
      When I assert that the "body" of the "Slogan" should contain "candy"
      Then the assertion should throw an Exception
       And the assertion should fail with the message "Expected the 'body' of the 'Slogan' to contain 'candy', but found 'Eat more cake' instead"
+
+  Scenario: Can Assert The Deep Property of Thing Contains Value
+    Given the following complex object is stored as "Family":
+      """
+      {
+        "name": "Mary",
+        "parent": {
+          "name": "Sam",
+          "parent": {
+            "name": "Fred"
+          }
+        }
+      }
+      """
+    Then the "name" of the "Family" should contain "Mary"
+     And the deep property "(the parent->name of the Family)" should contain "Sam"
+     And the deep property "(the parent->parent->name of the Family)" should contain "Fred"

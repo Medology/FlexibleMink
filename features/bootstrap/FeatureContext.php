@@ -166,4 +166,17 @@ JS
 
         return true;
     }
+
+    /**
+     * Places a complex object with the given structure into the store.
+     *
+     * @Given the following complex object is stored as :key:
+     * @param string       $key     The key to put the object into the store under.
+     * @param PyStringNode $rawJson The JSON of the object to create.
+     */
+    public function putComplexStoreStep($key, PyStringNode $rawJson)
+    {
+        $complexObject = json_decode($rawJson->getRaw());
+        $this->put($complexObject, $key);
+    }
 }

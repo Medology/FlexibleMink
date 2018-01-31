@@ -150,16 +150,37 @@ trait StoreContext
                 throw new Exception('The $onGetFn method must return an object or an array!');
             }
 
-            $hasValueResult = $hasValue($thing, $thingProperty);
-            if (!is_bool($hasValueResult)) {
-                throw new Exception('$hasValue lambda must return a boolean!');
-            }
+            $replaceValue = function($match, $thing, $thingProperty) use ($string, $thingName, $hasValue) {
+                $hasValueResult = $hasValue($thing, $thingProperty);
+                if (!is_bool($hasValueResult)) {
+                    throw new Exception('$hasValue lambda must return a boolean!');
+                }
 
-            if (!$hasValueResult) {
-                throw new Exception("$thingName does not have a $thingProperty property");
-            }
+                if (!$hasValueResult) {
+                    throw new Exception("$thingName does not have a $thingProperty property");
+                }
 
-            $string = str_replace($match, $thing->$thingProperty, $string);
+                return str_replace($match, $thing->$thingProperty, $string);
+            };
+
+            if (strpos($thingProperty, '->') !== false) {
+                $pieces = explode('->', $thingProperty);
+                $deepThing = $thing;
+                $lastPieceIndex = count($pieces) - 1;
+                for ($a = 0; $a < $lastPieceIndex; ++$a) {
+                    $piece = $pieces[$a];
+                    if (!property_exists($deepThing, $piece)) {
+                        throw new Exception("$thingName does not have a deep property called '$piece'");
+                    }
+
+                    $deepThing = $deepThing->$piece;
+                }
+
+                $string = $replaceValue($match, $deepThing, $pieces[$lastPieceIndex]);
+            }
+            else {
+                $string = $replaceValue($match, $thing, $thingProperty);
+            }
         }
 
         return $string;

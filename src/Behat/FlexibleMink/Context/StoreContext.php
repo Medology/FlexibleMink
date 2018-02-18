@@ -48,7 +48,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function put($thing, $key)
+    public function put($thing, $key)
     {
         $this->registry[$key][] = $thing;
     }
@@ -56,7 +56,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function assertIsStored($key, $nth = null)
+    public function assertIsStored($key, $nth = null)
     {
         if (!$thing = $this->isStored($key, $nth)) {
             throw new Exception("Entry $nth for $key was not found in the store.");
@@ -86,7 +86,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function get($key, $nth = null)
+    public function get($key, $nth = null)
     {
         if (!$nth) {
             list($key, $nth) = $this->parseKey($key);
@@ -102,7 +102,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function getThingProperty($key, $property, $nth = null)
+    public function getThingProperty($key, $property, $nth = null)
     {
         $thing = $this->assertIsStored($key, $nth);
 
@@ -116,7 +116,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null)
+    public function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null)
     {
         if ($onGetFn && (new ReflectionFunction($onGetFn))->getNumberOfParameters() != 1) {
             throw new Exception('Method $onGetFn must take one argument!');
@@ -168,7 +168,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
-    protected function isStored($key, $nth = null)
+    public function isStored($key, $nth = null)
     {
         if (!$nth) {
             list($key, $nth) = $this->parseKey($key);

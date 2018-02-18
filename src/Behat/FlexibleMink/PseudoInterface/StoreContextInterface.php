@@ -27,7 +27,7 @@ trait StoreContextInterface
      * @param  int    $nth The nth value of the key.
      * @return mixed  The thing from the store.
      */
-    abstract protected function assertIsStored($key, $nth = null);
+    abstract public function assertIsStored($key, $nth = null);
 
     /**
      * Retrieves the thing stored under the specified key on the nth position in the registry.
@@ -36,7 +36,7 @@ trait StoreContextInterface
      * @param  int    $nth The nth value for the thing to retrieve.
      * @return mixed  The thing that was retrieved.
      */
-    abstract protected function get($key, $nth = null);
+    abstract public function get($key, $nth = null);
 
     /**
      * Gets the value of a property from an object of the store.
@@ -48,7 +48,7 @@ trait StoreContextInterface
      * @throws Exception If the object does not have the specified property.
      * @return mixed     The value of the property.
      */
-    abstract protected function getThingProperty($key, $property, $nth = null);
+    abstract public function getThingProperty($key, $property, $nth = null);
 
     /**
      * Parses the string for references to stored items and replaces them with the value from the store.
@@ -68,7 +68,7 @@ trait StoreContextInterface
      * @throws Exception If the string references something that does not exist in the store.
      * @return string    The parsed string.
      */
-    abstract protected function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null);
+    abstract public function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null);
 
     /**
      * Checks that the specified thing exists in the registry.
@@ -77,7 +77,7 @@ trait StoreContextInterface
      * @param  int    $nth The nth value of the key.
      * @return bool   True if the thing exists, false if not.
      */
-    abstract protected function isStored($key, $nth = null);
+    abstract public function isStored($key, $nth = null);
 
     /**
      * Stores the specified thing under the specified key in the registry.
@@ -85,7 +85,7 @@ trait StoreContextInterface
      * @param mixed  $thing The thing to be stored.
      * @param string $key   The key to store the thing under.
      */
-    abstract protected function put($thing, $key);
+    abstract public function put($thing, $key);
 
     /**
      * Adds a reference to a stored thing under the new specified key.

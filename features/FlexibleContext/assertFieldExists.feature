@@ -42,3 +42,10 @@ Feature:  Assert Fields exists
      And I check "Hot Dog"
      And I press "Submit Favorites"
     Then I should see "Selected: Pizza, Hamburger, Hot Dog"
+
+  Scenario: Fields With Duplicate Label Names Should Modify the First Visible
+    Then I should see the following fields:
+       | Text Input: |
+    When I fill in "Text Input:" with "test"
+     And I press "Submit Favorites"
+    Then I should see "invisibleInput: , visibleInput: test"

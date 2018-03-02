@@ -157,7 +157,7 @@ class FlexibleContext extends MinkContext
     public function fillField($field, $value)
     {
         $field = $this->storeContext->injectStoredValues($field);
-        $this->assertVisibleOption($field)->setValue($value);
+        $this->assertFieldExists($field)->setValue($value);
     }
 
     /**
@@ -316,32 +316,43 @@ class FlexibleContext extends MinkContext
      */
     public function assertFieldExists($fieldName, TraversableElement $context = null)
     {
-        if (!$context) {
-            $context = $this->getSession()->getPage();
-        }
+        $context = $context ?: $this->getSession()->getPage();
 
         /** @var NodeElement[] $fields */
-        $fields = $context->findAll('named', ['field', $fieldName]);
-        if (count($fields) == 0) {
-            // If the field was not found with the usual way above, attempt to find with label name as last resort
-            $label = $context->find('xpath', "//label[contains(text(), '$fieldName')]");
-            if (!$label) {
-                throw new ExpectationException("No input label '$fieldName' found", $this->getSession());
-            }
-            $name = $label->getAttribute('for');
-            if (($element = $context->findField($name))) {
-                $fields = [$element];
-            }
-        }
-        if (count($fields) > 0) {
-            foreach ($fields as $field) {
-                if ($field->isVisible()) {
-                    return $field;
-                }
+        $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+
+        foreach ($fields as $field) {
+            if ($field->isVisible()) {
+                return $field;
             }
         }
 
         throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+    }
+
+    /**
+     * Gets all the inputs that have the label name specified within the context specified.
+     *
+     * @param string             $labelName The label text used to find the inputs for.
+     * @param TraversableElement $context   The context to search in.
+     *
+     * @return NodeElement[]
+     */
+    public function getInputsByLabel($labelName, TraversableElement $context)
+    {
+        /** @var NodeElement[] $labels */
+        $labels = $context->findAll('xpath', "//label[contains(text(), '$labelName')]");
+        $found = [];
+
+        foreach ($labels as $label) {
+            $inputName = $label->getAttribute('for');
+
+            foreach ($context->findAll('named', ['field', $inputName]) as $element) {
+                $found[$inputName] = $element;
+            }
+        }
+
+        return array_values($found);
     }
 
     /**
@@ -352,28 +363,13 @@ class FlexibleContext extends MinkContext
      */
     public function assertFieldNotExists($fieldName)
     {
-        /** @var NodeElement[] $fields */
-        $fields = $this->getSession()->getPage()->findAll('named', ['field', $fieldName]);
-        if (count($fields) == 0) {
-            // If the field was not found with the usual way above, attempt to find with label name as last resort
-            /* @var NodeElement[] $label */
-            $labels = $this->getSession()->getPage()->findAll('xpath', "//label[contains(text(), '$fieldName')]");
-            if (count($labels) > 0) {
-                foreach ($labels as $item) {
-                    /** @var NodeElement $item */
-                    if ($item->isVisible()) {
-                        throw new ExpectationException("Input label '$fieldName' found", $this->getSession());
-                    }
-                }
-            }
-        } else {
-            foreach ($fields as $field) {
-                /** @var NodeElement $field */
-                if ($field->isVisible()) {
-                    throw new ExpectationException("Input label '$fieldName' found", $this->getSession());
-                }
-            }
+        try {
+            $this->assertFieldExists($fieldName);
+        } catch (ExpectationException $e) {
+            return;
         }
+
+        throw new ExpectationException("Input label '$fieldName' found", $this->getSession());
     }
 
     /**

@@ -18,7 +18,7 @@ Feature:  Assert Fields exists
     When I assert that I should see the following fields:
        | Utopia |
     Then the assertion should throw an ExpectationException
-     And the assertion should fail with the message "No input label 'Utopia' found"
+     And the assertion should fail with the message "No visible input found for 'Utopia'"
 
   Scenario: Assertion fails reliably if checkbox element is not visible
     When I assert that I should see the following fields:
@@ -30,7 +30,7 @@ Feature:  Assert Fields exists
     When I assert that I should see the following fields:
        | Sushi |
     Then the assertion should throw an ExpectationException
-     And the assertion should fail with the message "No input label 'Sushi' found"
+     And the assertion should fail with the message "No visible input found for 'Sushi'"
 
   Scenario: Developer Can Test for option with varying input/label setup
     Then I should see the following fields:
@@ -42,3 +42,10 @@ Feature:  Assert Fields exists
      And I check "Hot Dog"
      And I press "Submit Favorites"
     Then I should see "Selected: Pizza, Hamburger, Hot Dog"
+
+  Scenario: Fields With Duplicate Label Names Should Modify the First Visible
+    Then I should see the following fields:
+       | Text Input: |
+    When I fill in "Text Input:" with "test"
+     And I press "Submit Favorites"
+    Then I should see "invisibleInput: , visibleInput: test"

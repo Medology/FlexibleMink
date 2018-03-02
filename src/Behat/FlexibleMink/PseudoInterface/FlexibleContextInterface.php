@@ -205,6 +205,16 @@ trait FlexibleContextInterface
     abstract public function assertFieldExists($fieldName, TraversableElement $context = null);
 
     /**
+     * Gets all the inputs that have the label name specified within the context specified.
+     *
+     * @param string             $labelName The label text used to find the inputs for.
+     * @param TraversableElement $context   The context to search in.
+     *
+     * @return NodeElement[]
+     */
+    abstract public function getInputsByLabel($labelName, TraversableElement $context);
+
+    /**
      * Checks that the page not contain a visible input field.
      *
      * @param  string               $fieldName The name of the input field.

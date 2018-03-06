@@ -348,11 +348,13 @@ class FlexibleContext extends MinkContext
             $inputName = $label->getAttribute('for');
 
             foreach ($context->findAll('named', ['field', $inputName]) as $element) {
-                $found[$inputName] = $element;
+                if (!in_array($element, $found)) {
+                    array_push($found, $element);
+                }
             }
         }
 
-        return array_values($found);
+        return $found;
     }
 
     /**

@@ -92,4 +92,15 @@ trait TableContextInterface
      * @throws ExpectationException If the values are not found in the table.
      */
     abstract public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode);
+
+    /**
+     * This method will retrieve a table by its name. If the table is stored in the key store, that will be used,
+     * otherwise a fresh parse will be done against the table's HTML. Setting $forceFresh to true will ignore
+     * the key store and build the table from HTML.
+     *
+     * @param  string $name       The name of the table to be used in an xpath query
+     * @param  bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
+     * @return array  An array containing parsed rows and cells as returned form $this->buildTableFromHtml
+     */
+    abstract public function getTableFromName($name, $forceFresh = false);
 }

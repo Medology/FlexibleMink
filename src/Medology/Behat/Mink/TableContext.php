@@ -57,7 +57,7 @@ class TableContext implements Context
      * @param  bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
      * @return array  An array containing parsed rows and cells as returned form $this->buildTableFromHtml
      */
-    protected function getTableFromName($name, $forceFresh = false)
+    public function getTableFromName($name, $forceFresh = false)
     {
         // retrieve table from the store if it exists there
         if ($this->storeContext->keyExists($name) && !$forceFresh) {

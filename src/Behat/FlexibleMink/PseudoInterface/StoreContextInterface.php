@@ -39,6 +39,14 @@ trait StoreContextInterface
     abstract public function get($key, $nth = null);
 
     /**
+     * Retrieves all the things stored under the specified key in the registry.
+     *
+     * @param  string $key The key to retrieve the things for.
+     * @return array  the things that were retrieved.
+     */
+    abstract public function all($key);
+
+    /**
      * Gets the value of a property from an object of the store.
      *
      * @param  string    $key      The key to retrieve the object for.

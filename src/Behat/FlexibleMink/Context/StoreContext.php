@@ -102,6 +102,13 @@ trait StoreContext
     /**
      * {@inheritdoc}
      */
+    public function all($key) {
+      return isset($this->registry[$key]) ? $this->registry[$key] : [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getThingProperty($key, $property, $nth = null)
     {
         $thing = $this->assertIsStored($key, $nth);

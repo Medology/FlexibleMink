@@ -64,3 +64,13 @@ Feature:  Assert Option in Select
      | Texas | Ohio |
     Then the assertion should throw an InvalidArgumentException
      And the assertion should fail with the message "Arguments must be a single-column list of items"
+
+  Scenario: Assertion passes when select eventually has options
+    When I press "Update select with delay"
+    Then the "Country" select should only have the following options:
+      | US          |
+      | China       |
+      | Canada      |
+      | Australia   |
+      | New Zealand |
+      | Japan       |

@@ -488,44 +488,46 @@ class FlexibleContext extends MinkContext
         }
 
         $expectedOptTexts = array_map([$this, 'injectStoredValues'], $tableNode->getColumn(0));
-
         $select = $this->fixStepArgument($select);
         $select = $this->injectStoredValues($select);
-        $selectField = $this->assertFieldExists($select);
-        $actualOpts = $selectField->findAll('xpath', '//option');
 
-        if (count($actualOpts) == 0) {
-            throw new ExpectationException('No option found in the select', $this->getSession());
-        }
+        $this->waitFor(function () use ($expectedOptTexts, $select) {
+            $selectField = $this->assertFieldExists($select);
+            $actualOpts = $selectField->findAll('xpath', '//option');
 
-        $actualOptTexts = array_map(function ($actualOpt) {
-            /* @var NodeElement $actualOpt */
-            return $actualOpt->getText();
-        }, $actualOpts);
+            if (count($actualOpts) == 0) {
+                throw new ExpectationException('No option found in the select', $this->getSession());
+            }
 
-        if (count($actualOptTexts) > count($expectedOptTexts)) {
-            throw new ExpectationException('Select has more option then expected', $this->getSession());
-        }
+            $actualOptTexts = array_map(function ($actualOpt) {
+                /* @var NodeElement $actualOpt */
+                return $actualOpt->getText();
+            }, $actualOpts);
 
-        if (count($actualOptTexts) < count($expectedOptTexts)) {
-            throw new ExpectationException('Select has less option then expected', $this->getSession());
-        }
+            if (count($actualOptTexts) > count($expectedOptTexts)) {
+                throw new ExpectationException('Select has more option then expected', $this->getSession());
+            }
 
-        if ($actualOptTexts != $expectedOptTexts) {
-            $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
+            if (count($actualOptTexts) < count($expectedOptTexts)) {
+                throw new ExpectationException('Select has less option then expected', $this->getSession());
+            }
 
-            if (count($intersect) < count($expectedOptTexts)) {
+            if ($actualOptTexts != $expectedOptTexts) {
+                $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
+
+                if (count($intersect) < count($expectedOptTexts)) {
+                    throw new ExpectationException(
+                        'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
+                        $this->getSession()
+                    );
+                }
+
                 throw new ExpectationException(
-                    'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
+                    'Options in select match expected but not in expected order',
                     $this->getSession()
                 );
             }
-
-            throw new ExpectationException(
-                'Options in select match expected but not in expected order',
-                $this->getSession()
-            );
-        }
+        });
     }
 
     /**

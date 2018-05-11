@@ -64,3 +64,10 @@ Feature: Table Context
     Then there should be a table on the page with the following information:
       | Test Column                             |
       | Testing Column with Hidden Nested Table |
+
+  Scenario: Developer can Test a table with partial rows
+    Then the table "population-table" should contain the following values:
+      | Country                  | Female Population |
+      | India                    | 592,067,546       |
+      | China                    | 644,994,400       |
+      | United States of America | 157,244,385       |

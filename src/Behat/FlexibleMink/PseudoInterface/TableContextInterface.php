@@ -103,4 +103,13 @@ trait TableContextInterface
      * @return array  An array containing parsed rows and cells as returned form $this->buildTableFromHtml
      */
     abstract public function getTableFromName($name, $forceFresh = false);
+
+    /**
+     * Asserts that the table contains a row with the provided values.
+     *
+     * @param  string               $name      The name of the table
+     * @param  TableNode            $tableNode The list of values to search.
+     * @throws ExpectationException If the values are not found in the table.
+     */
+    abstract public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode);
 }

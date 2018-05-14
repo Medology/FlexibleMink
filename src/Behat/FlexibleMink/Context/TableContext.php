@@ -487,9 +487,9 @@ trait TableContext
     /**
      * {@inheritdoc}
      *
-     * @Then the table :name should contain the following values:
+     * @Then /^the table (?P<name>"[^"]+") should (?:|(?P<not>not) )contain the following values:$/
      */
-    public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode)
+    public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode, $not)
     {
         $table = $this->getTableFromName($name);
         $expected = $tableNode->getColumnsHash();
@@ -499,9 +499,14 @@ trait TableContext
         }, $table['body']);
 
         foreach ($expected as $row) {
-            if (($key = $this->getTableRow($row, $actual)) === -1) {
+            $key = $this->getTableRow($row, $actual);
+            if ($row === -1 && !$not) {
                 throw new ExpectationException(
-                    'Row not found...',
+                    'Expected row ' . $row . ' was not found',
+                    $this->getSession());
+            } elseif ($row !== -1 && $not) {
+                throw new ExpectationException(
+                    'Expected row ' . $row . ' was found',
                     $this->getSession());
             }
 

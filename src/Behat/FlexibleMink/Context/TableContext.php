@@ -499,7 +499,7 @@ trait TableContext
         }, $table['body']);
 
         foreach ($expected as $row) {
-            if (($key = $this->rowExistsInTable($row, $actual)) === false) {
+            if (($key = $this->getTableRow($row, $actual)) === -1) {
                 throw new ExpectationException(
                     'Row not found...',
                     $this->getSession());
@@ -515,9 +515,9 @@ trait TableContext
      * @param array $expectedRow The that is expected in the table.
      * @param array $table       The table to find row
      *
-     * @return int|bool False when the row was not found or the key where the row was found
+     * @return int False when the row was not found or the key where the row was found
      **/
-    protected function rowExistsInTable($expectedRow, $table)
+    protected function getTableRow($expectedRow, $table)
     {
         foreach ($table as $key => $actualRow) {
             if ($this->rowContains($expectedRow, $actualRow)) {
@@ -525,7 +525,7 @@ trait TableContext
             }
         }
 
-        return false;
+        return -1;
     }
 
     /**

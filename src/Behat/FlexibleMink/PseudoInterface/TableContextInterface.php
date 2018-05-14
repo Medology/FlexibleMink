@@ -109,7 +109,8 @@ trait TableContextInterface
      *
      * @param  string               $name      The name of the table
      * @param  TableNode            $tableNode The list of values to search.
+     * @param  string|bool          $not       flag for should not see
      * @throws ExpectationException If the values are not found in the table.
      */
-    abstract public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode);
+    abstract public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode, $not = false);
 }

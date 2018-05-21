@@ -12,6 +12,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
+use Exception;
 use InvalidArgumentException;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
@@ -469,6 +470,7 @@ class FlexibleContext extends MinkContext
      * @Then   /^the "(?P<select>[^"]*)" select should only have the following option(?:|s):$/
      * @param  string                   $select    The name of the select
      * @param  TableNode                $tableNode The text of the options.
+     * @throws Exception                If the string references something that does not exist in the store.
      * @throws ExpectationException     When there is no option in the select.
      * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
      * @throws InvalidArgumentException When no expected options listed in the test step.
@@ -480,44 +482,46 @@ class FlexibleContext extends MinkContext
         }
 
         $expectedOptTexts = array_map([$this->storeContext, 'injectStoredValues'], $tableNode->getColumn(0));
-
         $select = $this->fixStepArgument($select);
         $select = $this->storeContext->injectStoredValues($select);
-        $selectField = $this->assertFieldExists($select);
-        $actualOpts = $selectField->findAll('xpath', '//option');
 
-        if (count($actualOpts) == 0) {
-            throw new ExpectationException('No option found in the select', $this->getSession());
-        }
+        $this->waitFor(function () use ($expectedOptTexts, $select) {
+            $selectField = $this->assertFieldExists($select);
+            $actualOpts = $selectField->findAll('xpath', '//option');
 
-        $actualOptTexts = array_map(function ($actualOpt) {
-            /* @var NodeElement $actualOpt */
-            return $actualOpt->getText();
-        }, $actualOpts);
+            if (count($actualOpts) == 0) {
+                throw new ExpectationException('No option found in the select', $this->getSession());
+            }
 
-        if (count($actualOptTexts) > count($expectedOptTexts)) {
-            throw new ExpectationException('Select has more option then expected', $this->getSession());
-        }
+            $actualOptTexts = array_map(function ($actualOpt) {
+                /* @var NodeElement $actualOpt */
+                return $actualOpt->getText();
+            }, $actualOpts);
 
-        if (count($actualOptTexts) < count($expectedOptTexts)) {
-            throw new ExpectationException('Select has less option then expected', $this->getSession());
-        }
+            if (count($actualOptTexts) > count($expectedOptTexts)) {
+                throw new ExpectationException('Select has more option then expected', $this->getSession());
+            }
 
-        if ($actualOptTexts != $expectedOptTexts) {
-            $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
+            if (count($actualOptTexts) < count($expectedOptTexts)) {
+                throw new ExpectationException('Select has less option then expected', $this->getSession());
+            }
 
-            if (count($intersect) < count($expectedOptTexts)) {
+            if ($actualOptTexts != $expectedOptTexts) {
+                $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
+
+                if (count($intersect) < count($expectedOptTexts)) {
+                    throw new ExpectationException(
+                        'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
+                        $this->getSession()
+                    );
+                }
+
                 throw new ExpectationException(
-                    'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
+                    'Options in select match expected but not in expected order',
                     $this->getSession()
                 );
             }
-
-            throw new ExpectationException(
-                'Options in select match expected but not in expected order',
-                $this->getSession()
-            );
-        }
+        });
     }
 
     /**

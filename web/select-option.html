@@ -17,5 +17,20 @@
         <select id="state">
         </select>
     </form>
+    <button onclick="updateSelectWithDelay()">Update select with delay</button>
+<script>
+    function updateSelectWithDelay() {
+        setTimeout(function() {
+            let select = document.getElementById('country');
+
+            ['Australia', 'New Zealand', 'Japan'].forEach(function (value) {
+                let option = document.createElement('option');
+                option.value = value;
+                option.text = value;
+                select.add(option);
+            });
+        }, 2000);
+    }
+</script>
 </body>
 </html>

@@ -12,6 +12,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
+use Exception;
 use InvalidArgumentException;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
@@ -469,6 +470,7 @@ class FlexibleContext extends MinkContext
      * @Then   /^the "(?P<select>[^"]*)" select should only have the following option(?:|s):$/
      * @param  string                   $select    The name of the select
      * @param  TableNode                $tableNode The text of the options.
+     * @throws Exception                If the string references something that does not exist in the store.
      * @throws ExpectationException     When there is no option in the select.
      * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
      * @throws InvalidArgumentException When no expected options listed in the test step.
@@ -479,9 +481,9 @@ class FlexibleContext extends MinkContext
             throw new InvalidArgumentException('Arguments must be a single-column list of items');
         }
 
-        $expectedOptTexts = array_map([$this, 'injectStoredValues'], $tableNode->getColumn(0));
+        $expectedOptTexts = array_map([$this->storeContext, 'injectStoredValues'], $tableNode->getColumn(0));
         $select = $this->fixStepArgument($select);
-        $select = $this->injectStoredValues($select);
+        $select = $this->storeContext->injectStoredValues($select);
 
         $this->waitFor(function () use ($expectedOptTexts, $select) {
             $selectField = $this->assertFieldExists($select);

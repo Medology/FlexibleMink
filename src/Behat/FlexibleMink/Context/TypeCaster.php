@@ -10,7 +10,7 @@ trait TypeCaster
     /**
      * Casts a step argument from a string to an int.
      *
-     * @Transform /^((?!(0))[0-9]+)$/
+     * @Transform /^([1-9]\d*)$/
      * @param  string $string the string to cast.
      * @return int    The resulting int.
      */

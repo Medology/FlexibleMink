@@ -5,8 +5,11 @@ namespace Medology\Behat;
 use Behat\Behat\Context\Context;
 use Chekote\NounStore\Assert;
 use Chekote\NounStore\Store;
+use DateTimeInterface;
 use Exception;
+use ReflectionException;
 use ReflectionFunction;
+use ReflectionProperty;
 
 /**
  * Context for storing and working with nouns.
@@ -139,10 +142,44 @@ class StoreContext extends Store implements Context
                 throw new Exception("$thingName does not have a $thingProperty property");
             }
 
-            $string = str_replace($match, $thing->$thingProperty, $string);
+            $string = str_replace($match, $this->getValueForInjection($thingProperty, $thing), $string);
         }
 
         return $string;
+    }
+
+    /**
+     * Fetches a value from an object and ensures it is prepared for injection into a string.
+     *
+     * This method is primarily for ensuring that Carbon instances are formatted properly when read from
+     * an Eloquent model. Eloquent uses a static dateFormat property on the class which will cause the
+     * Carbon instances to be formatted when the model is converted to an array or JSON. If the Carbon
+     * instance is converted to a string via PHP, the dateFormat property is not going to be used. This
+     * can cause problems because comparing a string Carbon instance locally to one received from the
+     * server will result in different formatting. This method will ensure that the Carbon instance
+     * is formatted as per the classes dateFormat property if it is present.
+     *
+     * @param  mixed  $property the property to get from the object
+     * @param  object $thing    the object to get the value from
+     * @return mixed  the prepared value
+     */
+    protected function getValueForInjection($property, $thing)
+    {
+        $value = $thing->$property;
+
+        if ($value instanceof DateTimeInterface && is_object($thing)) {
+            try {
+                $dateFormat = new ReflectionProperty(get_class($thing), 'dateFormat');
+                $accessible = $dateFormat->isPublic();
+                $dateFormat->setAccessible(true);
+                $value = $value->format($dateFormat->getValue($thing));
+                $dateFormat->setAccessible($accessible);
+            } catch (ReflectionException $e) {
+                // the dateFormat property did not exist, so we'll just use the property as-is
+            }
+        }
+
+        return $value;
     }
 
     /**

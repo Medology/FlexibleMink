@@ -21,12 +21,17 @@ trait StoreContext
     /** @var array */
     protected $registry;
 
+    protected static $FORMAT_MYSQL_DATE = 'a MySQL date';
     protected static $FORMAT_MYSQL_DATE_AND_TIME = 'a MySQL date and time';
+    protected static $FORMAT_US_DATE = 'a US date';
+    protected static $FORMAT_US_DATE_AND_TIME = 'a US date and time';
+    protected static $FORMAT_US_DATE_AND_12HR_TIME = 'a US date and 12hr time';
     protected static $format_map = [
-        'a MySQL date'          => 'Y-m-d',
-        'a MySQL date and time' => 'Y-m-d H:i:s',
-        'a US date'             => 'm-d-Y',
-        'a US date and time'    => 'm-d-Y H:i:s',
+        'a MySQL date'            => 'Y-m-d',
+        'a MySQL date and time'   => 'Y-m-d H:i:s',
+        'a US date'               => 'm/d/Y',
+        'a US date and time'      => 'm/d/Y H:i:s',
+        'a US date and 12hr time' => 'm/d/Y \a\t g:i A',
     ];
 
     /**
@@ -158,8 +163,6 @@ trait StoreContext
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
             $thingFormat = $matches[4][$i];
-
-            //dump($matches);
 
             if (!$this->isStored($thingName)) {
                 throw new Exception("Did not find $thingName in the store");

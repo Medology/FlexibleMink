@@ -254,7 +254,7 @@ trait StoreContext
     {
         if ($format) {
             $value = $dateTime->format($format);
-        } else if (is_object($thing)) {
+        } elseif (is_object($thing)) {
             $value = $this->formatDateTimeFromHostObject($dateTime, $thing);
         } else {
             return $this->formatDateTimeWithoutHostObject($dateTime);

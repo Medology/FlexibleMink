@@ -21,6 +21,8 @@ trait StoreContext
     /** @var array */
     protected $registry;
 
+    protected static $dateFormat = DateTime::ISO8601;
+
     protected static $FORMAT_MYSQL_DATE = 'a MySQL date';
     protected static $FORMAT_MYSQL_DATE_AND_TIME = 'a MySQL date and time';
     protected static $FORMAT_US_DATE = 'a US date';
@@ -257,7 +259,7 @@ trait StoreContext
         } elseif (is_object($thing)) {
             $value = $this->formatDateTimeFromHostObject($dateTime, $thing);
         } else {
-            return $this->formatDateTimeWithoutHostObject($dateTime);
+            $value = $this->formatDateTimeWithoutHostObject($dateTime);
         }
 
         return $value;
@@ -289,14 +291,14 @@ trait StoreContext
      * Formats a DateTime without taking into account the config of its host object.
      *
      * @param  DateTime $dateTime the date time to format.
-     * @return string   the result of calling __toString() on the date time, or formatting it as ISO8601 if no
-     *                           __toString method exists.
+     * @return string   the result of calling __toString() on the date time, or formatting it as static::$dateFormat if
+     *                           no __toString method exists.
      */
     protected function formatDateTimeWithoutHostObject(DateTime $dateTime)
     {
         return method_exists($dateTime, '__toString')
             ? (string) $dateTime
-            : $dateTime->format(DateTime::ISO8601);
+            : $dateTime->format(static::$dateFormat);
     }
 
     /**
@@ -319,7 +321,6 @@ trait StoreContext
 
                 $value = $property->getValue($object);
             } catch (ReflectionException $e) {
-                echo "Caught ReflectionException\n";
                 // do nothing
             }
         }

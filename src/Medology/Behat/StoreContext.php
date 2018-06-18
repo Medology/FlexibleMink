@@ -5,8 +5,10 @@ namespace Medology\Behat;
 use Behat\Behat\Context\Context;
 use Chekote\NounStore\Assert;
 use Chekote\NounStore\Store;
+use DateTime;
 use DateTimeInterface;
 use Exception;
+use InvalidArgumentException;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionProperty;
@@ -25,6 +27,21 @@ class StoreContext extends Store implements Context
 
         $this->assert = new Assert($this);
     }
+
+    protected static $dateFormat = DateTime::ISO8601;
+
+    protected static $FORMAT_MYSQL_DATE = 'a MySQL date';
+    protected static $FORMAT_MYSQL_DATE_AND_TIME = 'a MySQL date and time';
+    protected static $FORMAT_US_DATE = 'a US date';
+    protected static $FORMAT_US_DATE_AND_TIME = 'a US date and time';
+    protected static $FORMAT_US_DATE_AND_12HR_TIME = 'a US date and 12hr time';
+    protected static $format_map = [
+        'a MySQL date'            => 'Y-m-d',
+        'a MySQL date and time'   => 'Y-m-d H:i:s',
+        'a US date'               => 'm/d/Y',
+        'a US date and time'      => 'm/d/Y H:i:s',
+        'a US date and 12hr time' => 'm/d/Y \a\t g:i A',
+    ];
 
     /**
      * Clears the registry before each Scenario to free up memory and prevent access to stale data.
@@ -116,10 +133,11 @@ class StoreContext extends Store implements Context
             };
         }
 
-        preg_match_all('/\(the ([^\)]+) of the ([^\)]+)\)/', $string, $matches);
+        preg_match_all('/\(the ([^\)]+) of the ([^\)]+?)( formatted as ([^\)]+))?\)/', $string, $matches);
         foreach ($matches[0] as $i => $match) {
             $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
+            $thingFormat = $matches[4][$i];
 
             $thing = $this->assert->keyExists($thingName);
 
@@ -142,7 +160,11 @@ class StoreContext extends Store implements Context
                 throw new Exception("$thingName does not have a $thingProperty property");
             }
 
-            $string = str_replace($match, $this->getValueForInjection($thingProperty, $thing), $string);
+            $string = str_replace(
+                $match,
+                $this->getValueForInjection($thingProperty, $thing, $thingFormat),
+                $string
+            );
         }
 
         return $string;
@@ -150,6 +172,74 @@ class StoreContext extends Store implements Context
 
     /**
      * Fetches a value from an object and ensures it is prepared for injection into a string.
+     *
+     * @param  mixed  $property       the property to get from the object
+     * @param  object $thing          the object to get the value from
+     * @param  string $propertyFormat the pattern for formatting the value.
+     * @return mixed  the prepared value
+     */
+    protected function getValueForInjection($property, $thing, $propertyFormat = null)
+    {
+        $value = $thing->$property;
+
+        if ($propertyFormat) {
+            $propertyFormat = $this->processPropertyFormat($propertyFormat);
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            $value = $this->formatDateTime($value, $thing, $propertyFormat);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Provides the programmatic value for a plain english property format.
+     *
+     * e.g. 'a MySQL date and time' equates to the PHP date_format 'Y-m-d H:i:s'
+     *
+     * @param  string                   $propertyFormat the name of the property format to process.
+     * @throws InvalidArgumentException if the property format is not supported.
+     * @return string                   the programmatic format.
+     */
+    protected function processPropertyFormat($propertyFormat)
+    {
+        if (!isset(self::$format_map[$propertyFormat])) {
+            throw new InvalidArgumentException("Unknown value for thingFormat: $propertyFormat");
+        }
+
+        return self::$format_map[$propertyFormat];
+    }
+
+    /**
+     * Formats a DateTimeInterface object from the specified host thing to the specified format.
+     *
+     * The method will attempt the following in sequence:
+     *
+     * 1. Format as per the format parameter if provided
+     * 2. Format using the host thing if it is an object (@see self::formatDateTimeFromHostObject())
+     * 3. Format via string casting
+     *
+     * @param  DateTimeInterface $dateTime the date time to format.
+     * @param  array|object      $thing    the thing that the date time came from.
+     * @param  string|null       $format   the optional format for the date time.
+     * @return string            the formatted date time.
+     */
+    protected function formatDateTime(DateTimeInterface $dateTime, $thing, $format = null)
+    {
+        if ($format) {
+            $value = $dateTime->format($format);
+        } elseif (is_object($thing)) {
+            $value = $this->formatDateTimeFromHostObject($dateTime, $thing);
+        } else {
+            $value = $this->formatDateTimeWithoutHostObject($dateTime);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Formats a DateTimeInterface based on the configuration of the host object that it came from.
      *
      * This method is primarily for ensuring that Carbon instances are formatted properly when read from
      * an Eloquent model. Eloquent uses a static dateFormat property on the class which will cause the
@@ -159,23 +249,52 @@ class StoreContext extends Store implements Context
      * server will result in different formatting. This method will ensure that the Carbon instance
      * is formatted as per the classes dateFormat property if it is present.
      *
-     * @param  mixed  $property the property to get from the object
-     * @param  object $thing    the object to get the value from
-     * @return mixed  the prepared value
+     * @param  DateTimeInterface $dateTime the date time to format.
+     * @param  object            $object   the host object that the date time came from.
+     * @return string            the formatted date time.
      */
-    protected function getValueForInjection($property, $thing)
+    protected function formatDateTimeFromHostObject(DateTimeInterface $dateTime, $object)
     {
-        $value = $thing->$property;
+        return ($format = $this->getPropertyValue($object, 'dateFormat'))
+            ? $dateTime->format($format)
+            : $this->formatDateTimeWithoutHostObject($dateTime);
+    }
 
-        if ($value instanceof DateTimeInterface && is_object($thing)) {
+    /**
+     * Formats a DateTime without taking into account the config of its host object.
+     *
+     * @param  DateTimeInterface $dateTime the date time to format.
+     * @return string            the result of calling __toString() on the date time, or formatting it as
+     *                                    static::$dateFormat if no __toString method exists.
+     */
+    protected function formatDateTimeWithoutHostObject(DateTimeInterface $dateTime)
+    {
+        return method_exists($dateTime, '__toString')
+            ? (string) $dateTime
+            : $dateTime->format(static::$dateFormat);
+    }
+
+    /**
+     * Attempts to get the value of a property (public or otherwise) on an object.
+     *
+     * @param  object     $object       the object to read the property from.
+     * @param  string     $propertyName the name of the property to read.
+     * @return mixed|null the value of the property. Will return null if the property does not exist.
+     */
+    protected function getPropertyValue($object, $propertyName)
+    {
+        $value = null;
+
+        if (isset($object->$propertyName)) {
+            $value = $object->$propertyName;
+        } else {
             try {
-                $dateFormat = new ReflectionProperty(get_class($thing), 'dateFormat');
-                $accessible = $dateFormat->isPublic();
-                $dateFormat->setAccessible(true);
-                $value = $value->format($dateFormat->getValue($thing));
-                $dateFormat->setAccessible($accessible);
+                $property = new ReflectionProperty(get_class($object), $propertyName);
+                $property->setAccessible(true);
+
+                $value = $property->getValue($object);
             } catch (ReflectionException $e) {
-                // the dateFormat property did not exist, so we'll just use the property as-is
+                // do nothing
             }
         }
 

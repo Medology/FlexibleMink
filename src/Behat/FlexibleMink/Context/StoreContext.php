@@ -254,10 +254,10 @@ trait StoreContext
     {
         if ($format) {
             $value = $dateTime->format($format);
-        } elseif (is_object($thing)) {
+        } else if (is_object($thing)) {
             $value = $this->formatDateTimeFromHostObject($dateTime, $thing);
         } else {
-            $value = (string) $dateTime;
+            return $this->formatDateTimeWithoutHostObject($dateTime);
         }
 
         return $value;
@@ -282,7 +282,21 @@ trait StoreContext
     {
         return ($format = $this->getPropertyValue($object, 'dateFormat'))
             ? $dateTime->format($format)
-            : (string) $dateTime;
+            : $this->formatDateTimeWithoutHostObject($dateTime);
+    }
+
+    /**
+     * Formats a DateTime without taking into account the config of its host object.
+     *
+     * @param  DateTime $dateTime the date time to format.
+     * @return string   the result of calling __toString() on the date time, or formatting it as ISO8601 if no
+     *                           __toString method exists.
+     */
+    protected function formatDateTimeWithoutHostObject(DateTime $dateTime)
+    {
+        return method_exists($dateTime, '__toString')
+            ? (string) $dateTime
+            : $dateTime->format(DateTime::ISO8601);
     }
 
     /**

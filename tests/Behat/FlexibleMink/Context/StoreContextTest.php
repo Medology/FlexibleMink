@@ -1,6 +1,7 @@
 <?php namespace Tests\Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\Context\StoreContext;
+use DateTime;
 use Exception;
 use PHPUnit_Framework_Error;
 use PHPUnit_Framework_TestCase;
@@ -28,6 +29,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             'test_property_1' => 'test_value_1',
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
+            'date_prop'       => new DateTime('2028-10-28 15:30:10'),
         ];
 
         return $obj;
@@ -330,6 +332,32 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
                     return isset($thing->$property);
                 }
             )
+        );
+
+        /******************************
+         * Formatted as
+         *****************************/
+
+        // DateTime is formatted with default format when no format is specified
+        $this->assertEquals('2028-10-28T15:30:10+0000', $this->injectStoredValues('(the date_prop of the testObj)'));
+
+        // DateTime is formatted with specified format
+        $this->assertEquals(
+            '10/28/2028',
+            $this->injectStoredValues('(the date_prop of the testObj formatted as a US date)')
+        );
+
+        // DateTime is formatted as per host object format
+        $testObj->dateFormat = 'm/d/Y H:i';
+        $this->assertEquals(
+            '10/28/2028 15:30',
+            $this->injectStoredValues('(the date_prop of the testObj)')
+        );
+
+        // DateTime is formatted as specified format, even if host object has format
+        $this->assertEquals(
+            '10/28/2028 at 3:30 PM',
+            $this->injectStoredValues('(the date_prop of the testObj formatted as a US date and 12hr time)')
         );
     }
 

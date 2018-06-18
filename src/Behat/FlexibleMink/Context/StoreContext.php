@@ -280,28 +280,37 @@ trait StoreContext
      */
     protected function formatDateTimeFromHostObject(DateTime $dateTime, $object)
     {
-        return ($format = $this->getPrivatePropertyValue($object, 'dateFormat'))
+        return ($format = $this->getPropertyValue($object, 'dateFormat'))
             ? $dateTime->format($format)
             : (string) $dateTime;
     }
 
     /**
-     * Attempts to get the value of a non-public property on an object.
+     * Attempts to get the value of a property (public or otherwise) on an object.
      *
      * @param  object     $object       the object to read the property from.
      * @param  string     $propertyName the name of the property to read.
      * @return mixed|null the value of the property. Will return null if the property does not exist.
      */
-    protected function getPrivatePropertyValue($object, $propertyName)
+    protected function getPropertyValue($object, $propertyName)
     {
-        try {
-            $property = new ReflectionProperty(get_class($object), $propertyName);
-            $property->setAccessible(true);
+        $value = null;
 
-            return $property->getValue($object);
-        } catch (ReflectionException $e) {
-            return;
+        if (isset($object->$propertyName)) {
+            $value = $object->$propertyName;
+        } else {
+            try {
+                $property = new ReflectionProperty(get_class($object), $propertyName);
+                $property->setAccessible(true);
+
+                $value = $property->getValue($object);
+            } catch (ReflectionException $e) {
+                echo "Caught ReflectionException\n";
+                // do nothing
+            }
         }
+
+        return $value;
     }
 
     /**

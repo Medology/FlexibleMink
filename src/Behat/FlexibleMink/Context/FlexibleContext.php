@@ -647,14 +647,30 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      *
-     * @When /^(?:I |)scroll to the (?P<where>top|bottom) of the page$/
+     * @When /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page$/
      * @Given /^the page is scrolled to the (?P<where>top|bottom)$/
      */
     public function scrollWindowToBody($where)
     {
-        $x = ($where == 'top') ? '0' : 'document.body.scrollHeight';
+        // horizontal scroll
+        if (strpos($where, 'left') !== false) {
+            $x = 0;
+        } elseif (strpos($where, 'right') !== false) {
+            $x = 'document.body.scrollWidth';
+        } else {
+            $x = 'window.scrollX';
+        }
 
-        $this->getSession()->executeScript("window.scrollTo(0, $x)");
+        // vertical scroll
+        if (strpos($where, 'top') !== false) {
+            $y = 0;
+        } elseif (strpos($where, 'bottom') !== false) {
+            $y = 'document.body.scrollHeight';
+        } else {
+            $y = 'window.scrollY';
+        }
+
+        $this->getSession()->executeScript("window.scrollTo($x, $y)");
     }
 
     /**

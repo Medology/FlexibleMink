@@ -320,9 +320,10 @@ trait FlexibleContextInterface
     abstract public function pressButton($button);
 
     /**
-     * Scrolls the window to the top or bottom of the page body.
+     * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.
      *
-     * @param  string                           $where to scroll to. Must be either "top" or "bottom".
+     * @param  string                           $where to scroll to. Can be any valid combination of "top", "bottom",
+     *                                                 "left" and "right". e.g. "top", "top right", but not "top bottom"
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @throws DriverException                  When the operation cannot be done
      */

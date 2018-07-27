@@ -26,9 +26,6 @@ jobs:
           name: Merge master
           command: git fetch origin && git merge origin/2.0 --no-edit
       - run:
-          name: Docker login
-          command: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-      - run:
           name: Initialize docker .env
           command: bin/init/init_docker_env.sh
       - run:
@@ -64,9 +61,6 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Docker login
-          command: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
       - run:
           name: Start containers
           command: |

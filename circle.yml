@@ -10,7 +10,7 @@ machine:
 
 dependencies:
   override:
-    - git fetch origin;git config --global user.email "ci@medology.com" && git config --global user.name "Circle CI" && git rebase origin/master
+    - git fetch origin;git config --global user.email "ci@medology.com" && git config --global user.name "Circle CI" && git merge origin/master --no-edit
     - cp ./docker/.env.example ./docker/.env
     - sudo pip install 'docker-compose==1.9.0'
     - sudo pip install 'six==1.10.0'

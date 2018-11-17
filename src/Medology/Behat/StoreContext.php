@@ -102,16 +102,16 @@ class StoreContext extends Store implements Context
     /**
      * Parses the string for references to stored items and replaces them with the value from the store.
      *
-     * @param  string   $string         String to parse.
-     * @param  callable $onGetFn        Used to modify a resource after it is retrieved from store and
-     *                                  before properties of it are accessed. Takes one argument, the
-     *                                  resource retrieved and returns the resource after modifying it.
+     * @param string   $string  String to parse.
+     * @param callable $onGetFn Used to modify a resource after it is retrieved from store and
+     *                          before properties of it are accessed. Takes one argument, the
+     *                          resource retrieved and returns the resource after modifying it.
      *
      *                                              $thing = $onGetFn($thing);
      *
-     * @param  callable $hasValue       Used to determine if the thing in the store has the required value.
-     *                                  Will default to using isset on objects and arrays if not present.
-     *                                  The callable should take two arguments:
+     * @param callable $hasValue Used to determine if the thing in the store has the required value.
+     *                           Will default to using isset on objects and arrays if not present.
+     *                           The callable should take two arguments:
      *
      *                                              $thing    - mixed  - The thing from the store.
      *                                              $property - string - The name of the property or key to check for.

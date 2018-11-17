@@ -8,6 +8,7 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;
 use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
+use Behat\Mink\Exception\ElementTextException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
@@ -16,6 +17,8 @@ use InvalidArgumentException;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
+use OutOfBoundsException;
+use ReflectionException;
 use ZipArchive;
 
 /**
@@ -41,7 +44,18 @@ class FlexibleContext extends MinkContext
      * inject stored values into the provided text.
      *
      * @see StoreContext::injectStoredValues()
-     * @param string $text Text to be searched in the page.
+     * @param  string                   $text Text to be searched in the page.
+     * @throws InvalidArgumentException If the string references something that does not exist in the store.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                       and they do not conform to its requirements. This method does not pass
+     *                                       closures, so if this happens, there is a problem with the
+     *                                       injectStoredValues method.
+     * @throws OutOfBoundsException     If a stored item was referenced in the text and the specified stored item does
+     *                                       not have the specified property or key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                       This should never happen. If it does, there is a problem with the
+     *                                       injectStoredValues method.
+     * @throws ResponseTextException    If the text is not found.
      */
     public function assertPageContainsText($text)
     {
@@ -52,9 +66,19 @@ class FlexibleContext extends MinkContext
      * Asserts that the page contains a list of strings.
      *
      * @Then   /^I should (?:|(?P<not>not ))see the following:$/
-     * @param  TableNode             $table The list of strings to find.
-     * @param  string                $not   A flag to assert not containing text.
-     * @throws ResponseTextException If the text is not found.
+     * @param  TableNode                $table The list of strings to find.
+     * @param  string                   $not   A flag to assert not containing text.
+     * @throws InvalidArgumentException If the string references something that does not exist in the store.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                        and they do not conform to its requirements. This method does not pass
+     *                                        closures, so if this happens, there is a problem with the
+     *                                        injectStoredValues method.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                        key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                        This should never happen. If it does, there is a problem with the
+     *                                        injectStoredValues method.
+     * @throws ResponseTextException    If the text is not found.
      */
     public function assertPageContainsTexts(TableNode $table, $not = null)
     {
@@ -76,8 +100,18 @@ class FlexibleContext extends MinkContext
      * to inject stored values into the provided text.
      *
      * @see    StoreContext::injectStoredValues()
-     * @param  string $text The text that should not be found on the page.
-     * @throws ResponseTextException if the page does not contain the text
+     * @param  string                   $text The text that should not be found on the page.
+     * @throws InvalidArgumentException If the string references something that does not exist in the store.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                       and they do not conform to its requirements. This method does not pass
+     *                                       closures, so if this happens, there is a problem with the
+     *                                       injectStoredValues method.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                       key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                       This should never happen. If it does, there is a problem with the
+     *                                       injectStoredValues method.
+     * @throws ResponseTextException    if the page does not contain the text
      */
     public function assertPageNotContainsText($text)
     {
@@ -86,11 +120,13 @@ class FlexibleContext extends MinkContext
 
     /**
      * Asserts that a field is visible or not.
-     *
      * @Then   /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/
-     * @param  string               $field The field to be checked
-     * @param  bool                 $not   check if field should be visible or not.
-     * @throws ExpectationException
+     *
+     * @param  string                           $field The field to be checked
+     * @param  bool                             $not   check if field should be visible or not.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if there is more than one matching field found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertFieldVisibility($field, $not)
     {
@@ -115,9 +151,19 @@ class FlexibleContext extends MinkContext
      * This method overrides the MinkContext::assertElementContainsText() default behavior for
      * assertElementContainsText to inject stored values into the provided element and text.
      *
-     * @see StoreContext::injectStoredValues()
-     * @param string|array $element css element selector
-     * @param string       $text    expected text
+     * @see    StoreContext::injectStoredValues()
+     * @param  string|array             $element css element selector
+     * @param  string                   $text    expected text
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                          and they do not conform to its requirements. This method does not pass
+     *                                          closures, so if this happens, there is a problem with the
+     *                                          injectStoredValues method.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                          key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                          This should never happen. If it does, there is a problem with the
+     *                                          injectStoredValues method.
+     * @throws ElementTextException     If the element does not contain the text.
      */
     public function assertElementContainsText($element, $text)
     {
@@ -130,9 +176,19 @@ class FlexibleContext extends MinkContext
     /**
      * Checks, that element with specified CSS doesn't contain specified text.
      *
-     * @see MinkContext::assertElementNotContainsText
-     * @param string|array $element css element selector.
-     * @param string       $text    expected text that should not being found.
+     * @see    MinkContext::assertElementNotContainsText
+     * @param  string|array             $element css element selector.
+     * @param  string                   $text    expected text that should not being found.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                          and they do not conform to its requirements. This method does not pass
+     *                                          closures, so if this happens, there is a problem with the
+     *                                          injectStoredValues method.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                          key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                          This should never happen. If it does, there is a problem with the
+     *                                          injectStoredValues method.
+     * @throws ElementTextException     If the element contains the text.
      */
     public function assertElementNotContainsText($element, $text)
     {
@@ -144,11 +200,21 @@ class FlexibleContext extends MinkContext
 
     /**
      * Clicks a visible link with specified id|title|alt|text.
-     *
      * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible
      * links are clicked.
+     *
      * @see MinkContext::clickLink
-     * @param string $locator The id|title|alt|text of the link to be clicked.
+     * @param  string                           $locator The id|title|alt|text of the link to be clicked.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If the specified link is not visible.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed, and they do not conform to its requirements. This method
+     *                                                  does not pass closures, so if this happens, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function clickLink($locator)
     {
@@ -164,7 +230,17 @@ class FlexibleContext extends MinkContext
      *
      * @see StoreContext::injectStoredValues()
      * @see MinkContext::checkOption
-     * @param string $locator The id|title|alt|text of the option to be clicked.
+     * @param  string                           $locator The id|title|alt|text of the option to be clicked.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If the specified option is not visible.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed, and they do not conform to its requirements. This method
+     *                                                  does not pass closures, so if this happens, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function checkOption($locator)
     {
@@ -179,8 +255,18 @@ class FlexibleContext extends MinkContext
      * field is filled.
      *
      * @see MinkContext::fillField
-     * @param string $field The id|title|alt|text of the field to be filled.
-     * @param string $value The value to be set on the field.
+     * @param  string                           $field The id|title|alt|text of the field to be filled.
+     * @param  string                           $value The value to be set on the field.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If the specified field does not exist.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function fillField($field, $value)
     {
@@ -192,7 +278,17 @@ class FlexibleContext extends MinkContext
      * Un-checks checkbox with specified id|name|label|value.
      *
      * @see MinkContext::uncheckOption
-     * @param string $locator The id|title|alt|text of the option to be unchecked.
+     * @param  string                           $locator The id|title|alt|text of the option to be unchecked.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If the specified option is not visible.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed, and they do not conform to its requirements. This method
+     *                                                  does not pass closures, so if this happens, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a problem
+     *                                                  with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function uncheckOption($locator)
     {
@@ -205,11 +301,13 @@ class FlexibleContext extends MinkContext
      *
      * @Given  the :locator button is :disabled
      * @Then   the :locator button should be :disabled
-     * @param  string               $locator  The button
-     * @param  bool                 $disabled The state of the button
-     * @throws ExpectationException If button is disabled but shouldn't be.
-     * @throws ExpectationException If button isn't disabled but should be.
-     * @throws ExpectationException If the button can't be found.
+     * @param  string                           $locator  The button
+     * @param  bool                             $disabled The state of the button
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If button is disabled but shouldn't be.
+     * @throws ExpectationException             If button isn't disabled but should be.
+     * @throws ExpectationException             If the button can't be found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertButtonDisabled($locator, $disabled = true)
     {
@@ -243,9 +341,11 @@ class FlexibleContext extends MinkContext
      *
      * Warning: Will return the first button if the driver does not support visibility checks.
      *
-     * @param  string               $locator The button name.
-     * @throws ExpectationException If a visible button was not found.
-     * @return NodeElement          The button.
+     * @param  string                           $locator The button name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible button was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The button.
      */
     public function assertVisibleButton($locator)
     {
@@ -274,9 +374,11 @@ class FlexibleContext extends MinkContext
      *
      * @Given  the :locator link is visible
      * @Then   the :locator link should be visible
-     * @param  string               $locator The link name.
-     * @throws ExpectationException If a visible link was not found.
-     * @return NodeElement          The link.
+     * @param  string                           $locator The link name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible link was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The link.
      */
     public function assertVisibleLink($locator)
     {
@@ -308,9 +410,11 @@ class FlexibleContext extends MinkContext
      *
      * Warning: Will return the first option if the driver does not support visibility checks.
      *
-     * @param  string               $locator The option name.
-     * @throws ExpectationException If a visible option was not found.
-     * @return NodeElement          The option.
+     * @param  string                           $locator The option name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible option was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The option.
      */
     public function assertVisibleOption($locator)
     {
@@ -337,10 +441,12 @@ class FlexibleContext extends MinkContext
     /**
      * Checks that the page contains a visible input field and then returns it.
      *
-     * @param  string                  $fieldName The input name.
-     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
-     * @throws ExpectationException    If a visible input field is not found.
-     * @return NodeElement             The found input field.
+     * @param  string                           $fieldName The input name.
+     * @param  TraversableElement|null          $context   The context to search in, if not provided defaults to page.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible input field is not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The found input field.
      */
     public function assertFieldExists($fieldName, TraversableElement $context = null)
     {
@@ -361,9 +467,10 @@ class FlexibleContext extends MinkContext
     /**
      * Gets all the inputs that have the label name specified within the context specified.
      *
-     * @param string             $labelName The label text used to find the inputs for.
-     * @param TraversableElement $context   The context to search in.
-     *
+     * @param  string                           $labelName The label text used to find the inputs for.
+     * @param  TraversableElement               $context   The context to search in.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      * @return NodeElement[]
      */
     public function getInputsByLabel($labelName, TraversableElement $context)
@@ -388,8 +495,10 @@ class FlexibleContext extends MinkContext
     /**
      * Checks that the page not contain a visible input field.
      *
-     * @param  string               $fieldName The name of the input field.
-     * @throws ExpectationException If a visible input field is found.
+     * @param  string                           $fieldName The name of the input field.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible input field is found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertFieldNotExists($fieldName)
     {
@@ -405,10 +514,19 @@ class FlexibleContext extends MinkContext
     /**
      * Checks that the page contains the given lines of text in the order specified.
      *
-     * @Then I should see the following lines in order:
-     * @param  TableNode                $table A list of text lines to look for.
-     * @throws ExpectationException     if a line is not found, or is found out of order.
-     * @throws InvalidArgumentException if the list of lines has more than one column.
+     * @Then   I should see the following lines in order:
+     * @param  TableNode                        $table A list of text lines to look for.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if a line is not found, or is found out of order.
+     * @throws InvalidArgumentException         if the list of lines has more than one column.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertLinesInOrder(TableNode $table)
     {
@@ -442,9 +560,11 @@ class FlexibleContext extends MinkContext
     /**
      * This method will check if all the fields exists and visible in the current page.
      *
-     * @Then /^I should see the following fields:$/
-     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
-     * @throws ExpectationException if any of the fields is not visible in the page
+     * @Then   /^I should see the following fields:$/
+     * @param  TableNode                        $tableNode The id|name|title|alt|value of the input field
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if any of the fields is not visible in the page.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertPageContainsFields(TableNode $tableNode)
     {
@@ -456,9 +576,11 @@ class FlexibleContext extends MinkContext
     /**
      * This method will check if all the fields not exists or not visible in the current page.
      *
-     * @Then /^I should not see the following fields:$/
-     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
-     * @throws ExpectationException if any of the fields is visible in the page
+     * @Then   /^I should not see the following fields:$/
+     * @param  TableNode                        $tableNode The id|name|title|alt|value of the input field
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if any of the fields is visible in the page.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertPageNotContainsFields(TableNode $tableNode)
     {
@@ -471,11 +593,12 @@ class FlexibleContext extends MinkContext
      * Assert if the option exist/not exist in the select.
      *
      * @Then   /^the (?P<option>.*?) option(?:|(?P<existence> does not?)) exists? in the (?P<select>.*?) select$/
-     * @param  string                   $select    The name of the select
-     * @param  string                   $existence The status of the option item
-     * @param  string                   $option    The name of the option item
-     * @throws ElementNotFoundException If the select is not found in the page
-     * @throws ExpectationException     If the option is exist/not exist as expected
+     * @param  string                           $select    The name of the select
+     * @param  string                           $existence The status of the option item
+     * @param  string                           $option    The name of the option item
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If the option does/doesn't exist as expected
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertSelectContainsOption($select, $existence, $option)
     {
@@ -484,10 +607,10 @@ class FlexibleContext extends MinkContext
         $selectField = $this->assertFieldExists($select);
         $opt = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
-            throw new ExpectationException("The option '" . $option . "' exist in the select", $this->getSession());
+            throw new ExpectationException("The option '$option' exist in the select", $this->getSession());
         }
         if (!$existence && !$opt) {
-            throw new ExpectationException("The option '" . $option . "' does not exist in the select", $this->getSession());
+            throw new ExpectationException("The option '$option' does not exist in the select", $this->getSession());
         }
     }
 
@@ -495,11 +618,20 @@ class FlexibleContext extends MinkContext
      * Assert if the options in the select match given options.
      *
      * @Then   /^the "(?P<select>[^"]*)" select should only have the following option(?:|s):$/
-     * @param  string                   $select    The name of the select
-     * @param  TableNode                $tableNode The text of the options.
-     * @throws ExpectationException     When there is no option in the select.
-     * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
-     * @throws InvalidArgumentException When no expected options listed in the test step.
+     * @param  string                           $select    The name of the select
+     * @param  TableNode                        $tableNode The text of the options.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             When there is no option in the select.
+     * @throws ExpectationException             When the option(s) in the select not match the option(s) listed.
+     * @throws InvalidArgumentException         When no expected options listed in the test step.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                    passed, and they do not conform to its requirements. This
+     *                                                    method does not pass closures, so if this happens, there is a
+     *                                                    problem with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                    passed. This should never happen. If it does, there is a
+     *                                                    problem with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function assertSelectContainsExactOptions($select, TableNode $tableNode)
     {
@@ -553,9 +685,11 @@ class FlexibleContext extends MinkContext
      *
      * Note: you must request a page before trying to set a cookie, in order to set the domain.
      *
-     * @When /^(?:|I )set the cookie "(?P<key>(?:[^"]|\\")*)" with value (?P<value>.+)$/
-     * @param string $key   the name of the key to set
-     * @param string $value the value to set the cookie to
+     * @When   /^(?:|I )set the cookie "(?P<key>(?:[^"]|\\")*)" with value (?P<value>.+)$/
+     * @param  string                           $key   the name of the key to set
+     * @param  string                           $value the value to set the cookie to
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function setCookie($key, $value)
     {
@@ -565,8 +699,10 @@ class FlexibleContext extends MinkContext
     /**
      * Deletes a cookie.
      *
-     * @When  /^(?:|I )delete the cookie "(?P<key>(?:[^"]|\\")*)"$/
-     * @param string $key the name of the key to delete.
+     * @When   /^(?:|I )delete the cookie "(?P<key>(?:[^"]|\\")*)"$/
+     * @param  string                           $key the name of the key to delete.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function deleteCookie($key)
     {
@@ -580,6 +716,8 @@ class FlexibleContext extends MinkContext
      * @When   /^(?:|I )attach the local file "(?P<path>[^"]*)" to "(?P<field>(?:[^"]|\\")*)"$/
      * @param  string                           $field The file field to select the file with
      * @param  string                           $path  The local path of the file
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ElementNotFoundException         if the field could not be found.
      * @throws UnsupportedDriverActionException if getWebDriverSession() is not supported by the current driver.
      */
     public function addLocalFileToField($path, $field)
@@ -618,8 +756,11 @@ class FlexibleContext extends MinkContext
     /**
      * Blurs (unfocuses) selected field.
      *
-     * @When /^(?:I |)(?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
-     * @param string $locator The field to blur
+     * @When   /^(?:I |)(?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param  string                           $locator The field to blur
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if the specified field does not exist.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function blurField($locator)
     {
@@ -629,9 +770,12 @@ class FlexibleContext extends MinkContext
     /**
      * Focuses and blurs (unfocuses) the selected field.
      *
-     * @When /^(?:I |)focus and (?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
-     * @When /^(?:I |)toggle focus (?:on|of) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
-     * @param string $locator The field to focus and blur
+     * @When   /^(?:I |)focus and (?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @When   /^(?:I |)toggle focus (?:on|of) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param  string                           $locator The field to focus and blur
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if the specified field does not exist.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function focusBlurField($locator)
     {
@@ -642,8 +786,11 @@ class FlexibleContext extends MinkContext
     /**
      * Focuses the selected field.
      *
-     * @When /^(?:I |)focus (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
-     * @param string $locator The the field to focus
+     * @When   /^(?:I |)focus (?:the |)"(?P<locator>[^"]+)"(?: field|)$/
+     * @param  string                           $locator The the field to focus
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             if the specified field does not exist.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function focusField($locator)
     {
@@ -654,8 +801,10 @@ class FlexibleContext extends MinkContext
      * Simulates hitting a keyboard key.
      *
      * @When   /^(?:I |)(?:hit|press) (?:the |)"(?P<key>[^"]+)" key$/
-     * @param  string                   $key The key on the keyboard
-     * @throws InvalidArgumentException if $key is not recognized as a valid key
+     * @param  string                           $key The key on the keyboard
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws InvalidArgumentException         if $key is not recognized as a valid key
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function hitKey($key)
     {
@@ -673,9 +822,11 @@ class FlexibleContext extends MinkContext
      * This method overrides the MinkContext::pressButton() default behavior for pressButton to ensure that only visible
      * buttons are pressed.
      *
-     * @see MinkContext::pressButton
-     * @param  string               $locator button id, inner text, value or alt
-     * @throws ExpectationException If a visible button field is not found.
+     * @see    MinkContext::pressButton
+     * @param  string                           $locator button id, inner text, value or alt
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible button field is not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function pressButton($locator)
     {
@@ -689,8 +840,8 @@ class FlexibleContext extends MinkContext
      * @When   /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page$/
      * @param  string                           $where to scroll to. Can be any valid combination of "top", "bottom",
      *                                                 "left" and "right". e.g. "top", "top right", but not "top bottom"
-     * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function scrollWindowToBody($where)
     {
@@ -718,8 +869,15 @@ class FlexibleContext extends MinkContext
     /**
      * This overrides MinkContext::visit() to inject stored values into the URL.
      *
-     * @see MinkContext::visit
-     * @param string $page the page to visit
+     * @see    MinkContext::visit
+     * @param  string                   $page the page to visit
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed, and
+     *                                       they do not conform to its requirements. This method does not pass
+     *                                       closures, so if this happens, there is a problem with the
+     *                                       injectStoredValues method.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                       This should never happen. If it does, there is a problem with the
+     *                                       injectStoredValues method.
      */
     public function visit($page)
     {
@@ -729,7 +887,15 @@ class FlexibleContext extends MinkContext
     /**
      * This overrides MinkContext::assertCheckboxChecked() to inject stored values into the locator.
      *
-     * @param string $checkbox The the locator of the checkbox
+     * @param  string                   $checkbox The the locator of the checkbox
+     * @throws ExpectationException     If the check box is not checked.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed, and
+     *                                           they do not conform to its requirements. This method does not pass
+     *                                           closures, so if this happens, there is a problem with the
+     *                                           injectStoredValues method.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                           This should never happen. If it does, there is a problem with the
+     *                                           injectStoredValues method.
      */
     public function assertCheckboxChecked($checkbox)
     {
@@ -740,7 +906,15 @@ class FlexibleContext extends MinkContext
     /**
      * This overrides MinkContext::assertCheckboxNotChecked() to inject stored values into the locator.
      *
-     * @param string $checkbox The the locator of the checkbox
+     * @param  string                   $checkbox The the locator of the checkbox
+     * @throws ExpectationException     If the check box is checked.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed, and
+     *                                           they do not conform to its requirements. This method does not pass
+     *                                           closures, so if this happens, there is a problem with the
+     *                                           injectStoredValues method.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                           This should never happen. If it does, there is a problem with the
+     *                                           injectStoredValues method.
      */
     public function assertCheckboxNotChecked($checkbox)
     {
@@ -751,8 +925,19 @@ class FlexibleContext extends MinkContext
     /**
      * Check the radio button.
      *
-     * @When  I check radio button :label
-     * @param string $label The label of the radio button.
+     * @When   I check radio button :label
+     * @param  string                           $label The label of the radio button.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             if the radio button was not found on the page.
+     * @throws ExpectationException             if the radio button was on the page, but was not visible.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function ensureRadioButtonChecked($label)
     {
@@ -763,8 +948,19 @@ class FlexibleContext extends MinkContext
      * Assert the radio button is checked.
      *
      * @Then   /^the "(?P<label>(?:[^"]|\\")*)" radio button should be checked$/
-     * @param  string               $label The label of the radio button.
-     * @throws ExpectationException When the radio button is not checked.
+     * @param  string                           $label The label of the radio button.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             When the radio button is not checked.
+     * @throws ExpectationException             if the radio button was not found on the page.
+     * @throws ExpectationException             if the radio button was on the page, but was not visible.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function assertRadioButtonChecked($label)
     {
@@ -777,8 +973,17 @@ class FlexibleContext extends MinkContext
      * Assert the radio button is not checked.
      *
      * @Then   /^the "(?P<label>(?:[^"]|\\")*)" radio button should not be checked$/
-     * @param  string               $label The label of the radio button.
-     * @throws ExpectationException When the radio button is checked.
+     * @param  string                           $label The label of the radio button.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             When the radio button is checked.
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function assertRadioButtonNotChecked($label)
     {
@@ -790,9 +995,18 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param  string               $label The Label of the radio button.
-     * @throws ExpectationException if the radio button was not found on the page.
-     * @throws ExpectationException if the radio button was on the page, but was not visible.
+     * @param  string                           $label The Label of the radio button.
+     * @throws ExpectationException             if the radio button was not found on the page.
+     * @throws ExpectationException             if the radio button was on the page, but was not visible.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws InvalidArgumentException         If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed, and they do not conform to its requirements. This method
+     *                                                does not pass closures, so if this happens, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                passed. This should never happen. If it does, there is a problem
+     *                                                with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @return NodeElement
      */
     protected function findRadioButton($label)
@@ -827,9 +1041,8 @@ class FlexibleContext extends MinkContext
      * NodeElements by their coordinates. The typical use case is to determine
      * the order of elements on a page as a viewer would perceive them.
      *
-     * @param  NodeElement                      $a one of the two NodeElements to compare.
-     * @param  NodeElement                      $b the other NodeElement to compare.
-     * @throws UnsupportedDriverActionException If the current driver does not support getXpathBoundingClientRect.
+     * @param  NodeElement $a one of the two NodeElements to compare.
+     * @param  NodeElement $b the other NodeElement to compare.
      * @return int
      */
     protected function compareElementsByCoords(NodeElement $a, NodeElement $b)
@@ -837,7 +1050,7 @@ class FlexibleContext extends MinkContext
         /** @var Selenium2Driver $driver */
         $driver = $this->getSession()->getDriver();
         if (!($driver instanceof Selenium2Driver) || !method_exists($driver, 'getXpathBoundingClientRect')) {
-            // If not supported by driver, just return true so the keep the original sort.
+            // If not supported by driver, just return -1 so the keep the original sort.
             return -1;
         }
 

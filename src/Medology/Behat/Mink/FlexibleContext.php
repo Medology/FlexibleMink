@@ -75,8 +75,9 @@ class FlexibleContext extends MinkContext
      * This method overrides the MinkContext::assertPageNotContainsText() default behavior for assertPageNotContainsText
      * to inject stored values into the provided text.
      *
-     * @see StoreContext::injectStoredValues()
-     * @param string $text The text that should not be found on the page.
+     * @see    StoreContext::injectStoredValues()
+     * @param  string $text The text that should not be found on the page.
+     * @throws ResponseTextException if the page does not contain the text
      */
     public function assertPageNotContainsText($text)
     {

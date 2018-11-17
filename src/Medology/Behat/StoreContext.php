@@ -9,6 +9,7 @@ use DateTime;
 use DateTimeInterface;
 use Exception;
 use InvalidArgumentException;
+use OutOfBoundsException;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionProperty;
@@ -101,30 +102,41 @@ class StoreContext extends Store implements Context
     /**
      * Parses the string for references to stored items and replaces them with the value from the store.
      *
-     * @param string   $string   String to parse.
-     * @param callable $onGetFn  Used to modify a resource after it is retrieved from store and before properties of
-     *                           it are accessed. Takes one argument, the resource retrieved and returns the resource
-     *                           after modifying it.
-     *                           $thing = $onGetFn($thing);
-     * @param callable $hasValue Used to determine if the thing in the store has the required value. Will default
-     *                           to using isset on objects and arrays if not present. The callable should take two
-     *                           arguments:
+     * @param  string   $string         String to parse.
+     * @param  callable $onGetFn        Used to modify a resource after it is retrieved from store and
+     *                                  before properties of it are accessed. Takes one argument, the
+     *                                  resource retrieved and returns the resource after modifying it.
      *
-     *                             $thing    - mixed  - The thing from the store.
-     *                             $property - string - The name of the property (or key, etc) to check for.
+     *                                              $thing = $onGetFn($thing);
      *
-     * @throws Exception If the string references something that does not exist in the store.
-     * @return string    The parsed string.
+     * @param  callable $hasValue       Used to determine if the thing in the store has the required value.
+     *                                  Will default to using isset on objects and arrays if not present.
+     *                                  The callable should take two arguments:
+     *
+     *                                              $thing    - mixed  - The thing from the store.
+     *                                              $property - string - The name of the property or key to check for.
+     *
+     * @throws InvalidArgumentException If the string references something that does not exist in the store.
+     * @throws InvalidArgumentException If callable $onGetFn does not take exactly one argument.
+     * @throws InvalidArgumentException If callable $hasValue does not take exactly two arguments.
+     * @throws InvalidArgumentException If callable $onGetFn returns something other than array, object or callable.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                  key.
+     * @throws ReflectionException      if $onGetFn was provided but the reflection API says it does not exist. This
+     *                                  should not be possible.
+     * @throws ReflectionException      if $hasValue was provided but the reflection API says it does not exist. This
+     *                                  should not be possible.
+     * @return string                   The parsed string.
      */
     public function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null)
     {
         if ($onGetFn && (new ReflectionFunction($onGetFn))->getNumberOfParameters() != 1) {
-            throw new Exception('Method $onGetFn must take one argument!');
+            throw new InvalidArgumentException('Method $onGetFn must take one argument!');
         }
 
         if ($hasValue) {
             if ((new ReflectionFunction($hasValue))->getNumberOfParameters() != 2) {
-                throw new Exception('Lambda $hasValue must take two arguments!');
+                throw new InvalidArgumentException('Lambda $hasValue must take two arguments!');
             }
         } else {
             $hasValue = function ($thing, $property) {
@@ -148,16 +160,16 @@ class StoreContext extends Store implements Context
 
             // must return object, array, but not function
             if (!is_object($thing) && !is_array($thing) || is_callable($thing)) {
-                throw new Exception('The $onGetFn method must return an object or an array!');
+                throw new InvalidArgumentException('The $onGetFn method must return an object or an array!');
             }
 
             $hasValueResult = $hasValue($thing, $thingProperty);
             if (!is_bool($hasValueResult)) {
-                throw new Exception('$hasValue lambda must return a boolean!');
+                throw new InvalidArgumentException('$hasValue lambda must return a boolean!');
             }
 
             if (!$hasValueResult) {
-                throw new Exception("$thingName does not have a $thingProperty property");
+                throw new OutOfBoundsException("$thingName does not have a $thingProperty property");
             }
 
             $string = str_replace(

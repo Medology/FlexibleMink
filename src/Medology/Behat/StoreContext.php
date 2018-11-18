@@ -4,6 +4,7 @@ namespace Medology\Behat;
 
 use Behat\Behat\Context\Context;
 use Chekote\NounStore\Assert;
+use Chekote\NounStore\Key;
 use Chekote\NounStore\Store;
 use DateTime;
 use DateTimeInterface;
@@ -21,11 +22,15 @@ class StoreContext extends Store implements Context
     /** @var Assert */
     protected $assert;
 
+    /** @var Key the key service for the noun-store */
+    protected $key;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->assert = new Assert($this);
+        $this->key = Key::getInstance();
     }
 
     protected static $dateFormat = DateTime::ISO8601;
@@ -89,7 +94,7 @@ class StoreContext extends Store implements Context
      */
     public function getThingProperty($key, $property, $index = null)
     {
-        $thing = $this->assert->keyExists($key, $index);
+        $thing = $this->assert->keyExists($this->key->build($key, $index));
 
         if (isset($thing, $property)) {
             return $thing->$property;

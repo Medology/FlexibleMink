@@ -184,6 +184,7 @@ class FlexibleContext extends MinkContext
     public function fillField($field, $value)
     {
         $field = $this->storeContext->injectStoredValues($field);
+        $value = $this->storeContext->injectStoredValues($value);
         $this->assertFieldExists($field)->setValue($value);
     }
 

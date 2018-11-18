@@ -42,6 +42,14 @@ class FlexibleContext extends MinkContext
         'tab'        => 9,
     ];
 
+    /** @var AsyncMink */
+    protected $wait;
+
+    public function __construct()
+    {
+        $this->wait = new AsyncMink($this);
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -320,7 +328,7 @@ class FlexibleContext extends MinkContext
     public function clickLink($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->assertVisibleLink($locator)->click();
+        $this->wait->assertVisibleLink($locator)->click();
     }
 
     /**
@@ -346,7 +354,7 @@ class FlexibleContext extends MinkContext
     public function checkOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->assertVisibleOption($locator)->check();
+        $this->wait->assertVisibleOption($locator)->check();
     }
 
     /**
@@ -373,7 +381,7 @@ class FlexibleContext extends MinkContext
     {
         $field = $this->storeContext->injectStoredValues($field);
         $value = $this->storeContext->injectStoredValues($value);
-        $this->assertFieldExists($field)->setValue($value);
+        $this->wait->assertFieldExists($field)->setValue($value);
     }
 
     /**
@@ -395,12 +403,13 @@ class FlexibleContext extends MinkContext
     public function uncheckOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->assertVisibleOption($locator)->uncheck();
+        $this->wait->assertVisibleOption($locator)->uncheck();
     }
 
     /**
      * Checks if the selected button is disabled.
      *
+     * @todo   fix Given used with Then (incompatible)
      * @Given  the :locator button is :disabled
      * @Then   the :locator button should be :disabled
      * @param  string                           $locator  The button
@@ -942,11 +951,14 @@ class FlexibleContext extends MinkContext
      * @param  string                           $locator The field to blur
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             if the specified field does not exist.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a
+     *                                                  problem with the injectStoredValues method.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function blurField($locator)
     {
-        $this->assertFieldExists($locator)->blur();
+        $this->wait->assertFieldExists($locator)->blur();
     }
 
     /**
@@ -957,6 +969,9 @@ class FlexibleContext extends MinkContext
      * @param  string                           $locator The field to focus and blur
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             if the specified field does not exist.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a
+     *                                                  problem with the injectStoredValues method.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function focusBlurField($locator)
@@ -972,11 +987,14 @@ class FlexibleContext extends MinkContext
      * @param  string                           $locator The the field to focus
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             if the specified field does not exist.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                                  passed. This should never happen. If it does, there is a
+     *                                                  problem with the injectStoredValues method.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function focusField($locator)
     {
-        $this->assertFieldExists($locator)->focus();
+        $this->wait->assertFieldExists($locator)->focus();
     }
 
     /**
@@ -1012,11 +1030,7 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        /** @var NodeElement $button */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $button = Spinner::waitFor(function () use ($locator) {
-            return $this->assertVisibleButton($locator);
-        });
+        $button = $this->wait->assertVisibleButton($locator);
 
         /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($button, $locator) {

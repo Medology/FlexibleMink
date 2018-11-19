@@ -84,6 +84,19 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * Overrides the parent method to support injecting values from the store into the field and value.
+     */
+    public function assertFieldContains($field, $value)
+    {
+        $field = $this->injectStoredValues($field);
+        $value = $this->injectStoredValues($value);
+
+        parent::assertFieldContains($field, $value);
+    }
+
+    /**
      * Asserts that a field is visible or not.
      *
      * @Then   /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/

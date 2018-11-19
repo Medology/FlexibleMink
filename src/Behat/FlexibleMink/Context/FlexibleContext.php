@@ -46,6 +46,9 @@ class FlexibleContext extends MinkContext
      */
     public function assertFieldContains($field, $value)
     {
+        $field = $this->injectStoredValues($field);
+        $value = $this->injectStoredValues($value);
+
         $this->waitFor(function () use ($field, $value) {
             parent::assertFieldContains($field, $value);
         });

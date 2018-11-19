@@ -142,6 +142,24 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that an element with the given XPath is present in the container, and returns it.
+     *
+     * @param  NodeElement          $container The base element to search in.
+     * @param  string               $xpath     The XPath of the element to locate inside the container.
+     * @throws DriverException      When the operation cannot be done
+     * @throws ExpectationException if no element was found.
+     * @return NodeElement          The found element.
+     */
+    public function assertElementInsideElement(NodeElement $container, $xpath)
+    {
+        if (!$element = $container->find('xpath', $xpath)) {
+            throw new ExpectationException('Nothing found inside element with xpath $xpath', $this->getSession());
+        }
+
+        return $element;
+    }
+
+    /**
      * Clicks a visible link with specified id|title|alt|text.
      *
      * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible

@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
@@ -174,6 +175,26 @@ class FlexibleContext extends MinkContext
         $this->waitFor(function () use ($element, $text) {
             parent::assertElementNotContainsText($element, $text);
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Overrides the base method to wait for the assertion to pass, and store
+     * the resulting element in the store under "element".
+     *
+     * @throws ElementNotFoundException if the element was not found.
+     * @return NodeElement              The element found.
+     */
+    public function assertElementOnPage($element, $selectorType = 'css')
+    {
+        $node = $this->waitFor(function () use ($element, $selectorType) {
+            return $this->assertSession()->elementExists($selectorType, $element);
+        });
+
+        $this->put($node, 'element');
+
+        return $node;
     }
 
     /**

@@ -800,7 +800,7 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a qaId is visible and inside the viewport
+     * Asserts that a qaId is visible and inside the viewport.
      *
      * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
      *
@@ -815,36 +815,30 @@ class FlexibleContext extends MinkContext
         $xpath = '//*[@data-qa-id="' . $qaId . '"]';
 
         $nodeElement = $this->waitFor(function () use ($xpath) {
-
             return $this->getSession()->getPage()->find('xpath', $xpath);
-
         });
 
-        if(!$nodeElement instanceof NodeElement && !$not)
-        {
+        if (!$nodeElement instanceof NodeElement && !$not) {
             throw new ElementNotFoundException(
                 $this->getSession(),
                 "Couldn't find node element by qaId in " . __FUNCTION__
             );
-        }
-        elseif(!$nodeElement instanceof NodeElement && $not)
-        {
+        } elseif (!$nodeElement instanceof NodeElement && $not) {
             return;
         }
 
         try {
             $this->assertNodeIsFullyVisibleInViewPort($nodeElement, $not);
-        }
-        catch(ResponseTextException $ResponseTextException) {
+        } catch (ResponseTextException $ResponseTextException) {
             throw new ResponseTextException(
-                str_replace(['Node','node'], $qaId, $ResponseTextException->getMessage()),
+                str_replace(['Node', 'node'], $qaId, $ResponseTextException->getMessage()),
                 $this->getSession()
             );
         }
     }
 
     /**
-     * Asserts that a NodeElement is visible and inside the viewport
+     * Asserts that a NodeElement is visible and inside the viewport.
      *
      * @param $element NodeElement
      * @param $not boolean asserts NodeElement is partially or not visible in the viewport.
@@ -852,87 +846,73 @@ class FlexibleContext extends MinkContext
      */
     public function assertNodeIsFullyVisibleInViewPort(NodeElement $element, $not = false)
     {
-
         $session = $this->getSession();
 
-        if (!$element instanceof NodeElement)
-        {
+        if (!$element instanceof NodeElement) {
             throw new ElementNotFoundException($session, 'Invalid node sent to ' . __FUNCTION__);
         }
 
         $driver = $session->getDriver();
 
-        if (!$driver instanceof Selenium2Driver)
-        {
+        if (!$driver instanceof Selenium2Driver) {
             throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
         }
 
         $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
 
-        if ( count($parents) < 2 )
-        {
-            throw new ResponseTextException("Invalid number of node elements", $session);
+        if (count($parents) < 2) {
+            throw new ResponseTextException('Invalid number of node elements', $session);
         }
 
         $elementViewportRectangle = $this->getElementViewportRectangle($element);
 
         $elementIsVisible = $element->isVisible();
 
-        if(!$not && !$elementIsVisible)
-        {
+        if (!$not && !$elementIsVisible) {
             throw new ResponseTextException(
-                "The element is not visible", $session
+                'The element is not visible', $session
             );
-        }
-        elseif($not && !$elementIsVisible)
-        {
+        } elseif ($not && !$elementIsVisible) {
             return;
         }
 
         $allAreIn = true;
 
-        foreach($parents as $parent) {
-
+        foreach ($parents as $parent) {
             $parentIsVisible = $parent->isVisible();
 
-            if(!$not && !$parentIsVisible)
-            {
+            if (!$not && !$parentIsVisible) {
                 throw new ResponseTextException(
-                    "One of the node elements parents is not visible", $session
+                    'One of the node elements parents is not visible', $session
                 );
-            }
-            elseif($not && !$parentIsVisible)
-            {
+            } elseif ($not && !$parentIsVisible) {
                 return;
             }
 
             $parentViewportRectangle = $this->getElementViewportRectangle($parent);
 
-            $isIn = $elementViewportRectangle->isIn( $parentViewportRectangle, $not);
+            $isIn = $elementViewportRectangle->isIn($parentViewportRectangle, $not);
 
             $allAreIn = $allAreIn && !$isIn;
 
-            if(!$not && !$isIn )
-            {
+            if (!$not && !$isIn) {
                 throw new ResponseTextException(
-                    "Node is not fully visible in the viewport.", $session
+                    'Node is not fully visible in the viewport.', $session
                 );
             }
         }
 
-        if($not && $allAreIn)
-        {
+        if ($not && $allAreIn) {
             throw new ResponseTextException(
-                "Node is fully visible in the viewport.", $session
+                'Node is fully visible in the viewport.', $session
             );
         }
     }
 
     /**
+     * Get a rectangle that represents the location of a NodeElements viewport.
      *
-     * Get a rectangle that represents the location of a NodeElements viewport
-     *
-     * @param NodeElement $element
+     * @param  NodeElement $element
      * @return Rectangle
      */
     public function getElementViewportRectangle(NodeElement $element)
@@ -942,26 +922,24 @@ class FlexibleContext extends MinkContext
         $YScrollBarWidth = 0;
         $XScrollBarHeight = 0;
 
-        if($dimensions['clientWidth'] > 0)
-        {
+        if ($dimensions['clientWidth'] > 0) {
             $YScrollBarWidth = $dimensions['width'] - $dimensions['clientWidth'];
         }
 
-        if($dimensions['clientHeight'] > 0)
-        {
+        if ($dimensions['clientHeight'] > 0) {
             $XScrollBarHeight = $dimensions['height'] - $dimensions['clientHeight'];
         }
 
         return new Rectangle(
             $dimensions['left'],
             $dimensions['top'],
-            $dimensions['right']  - $YScrollBarWidth,
+            $dimensions['right'] - $YScrollBarWidth,
             $dimensions['bottom'] - $XScrollBarHeight
         );
     }
 
     /**
-     * Get list of of all NodeElement parents
+     * Get list of of all NodeElement parents.
      *
      * @param $NodeElement NodeElement
      * @param $StopAt string html tag to stop at
@@ -970,25 +948,20 @@ class FlexibleContext extends MinkContext
      */
     private function getListOfAllNodeElementParents(NodeElement $NodeElement, $StopAt, $reverseOrder)
     {
-
         $NodeElements = [];
 
-        while($NodeElement->getParent() instanceof NodeElement)
-        {
+        while ($NodeElement->getParent() instanceof NodeElement) {
             $NodeElements[] = ($NodeElement = $NodeElement->getParent());
 
-            if(strtolower($NodeElement->getTagName()) === strtolower($StopAt))
-            {
+            if (strtolower($NodeElement->getTagName()) === strtolower($StopAt)) {
                 break;
             }
         }
 
-        if($reverseOrder)
-        {
+        if ($reverseOrder) {
             $NodeElements = array_reverse($NodeElements);
         }
 
         return $NodeElements;
-
     }
 }

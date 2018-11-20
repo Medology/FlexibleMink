@@ -3,13 +3,10 @@
 namespace Behat\FlexibleMink\Models\Geometry;
 
 /**
- * Class Rectangle
- *
- * @package Behat\FlexibleMink\Models\Geometry
+ * Class Rectangle.
  */
 class Rectangle
 {
-
     public $corner1x = 0;
     public $corner1y = 0;
     public $corner3x = 0;
@@ -28,7 +25,7 @@ class Rectangle
      * @param $corner3x
      * @param $corner3y
      */
-    function __construct($corner1x,$corner1y,$corner3x,$corner3y)
+    public function __construct($corner1x, $corner1y, $corner3x, $corner3y)
     {
         $this->corner1x = $corner1x;
         $this->corner1y = $corner1y;
@@ -37,24 +34,24 @@ class Rectangle
     }
 
     /**
-     *
-     * Checks if this is|is not inside another rectangle
+     * Checks if this is|is not inside another rectangle.
      *
      *
      * @param $Rectangle Rectangle
      * @param $not boolean asserts not
-     * @return boolean returns the opposite
+     * @return bool returns the opposite
      */
-    function isIn(Rectangle $Rectangle, $not = false) {
-        if(
+    public function isIn(self $Rectangle, $not = false)
+    {
+        if (
             $not &&
             $this->corner1x >= $Rectangle->corner1x &&
             $this->corner3x <= $Rectangle->corner3x &&
             $this->corner1y >= $Rectangle->corner1y &&
             $this->corner3y <= $Rectangle->corner3y
-        ) return false;
-
-        elseif(
+        ) {
+            return false;
+        } elseif (
             !$not &&
             (
                 $this->corner1x < $Rectangle->corner1x ||
@@ -62,7 +59,9 @@ class Rectangle
                 $this->corner1y < $Rectangle->corner1y ||
                 $this->corner3y > $Rectangle->corner3y
             )
-        ) return false;
+        ) {
+            return false;
+        }
 
         return true;
     }

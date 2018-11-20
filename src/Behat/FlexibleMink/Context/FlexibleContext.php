@@ -679,11 +679,18 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        $element = $this->waitFor(function () use ($locator) {
+        /** @var NodeElement $button */
+        $button = $this->waitFor(function () use ($locator) {
             return $this->assertVisibleButton($locator);
         });
 
-        $element->press();
+        $this->waitFor(function () use ($button, $locator) {
+            if ($button->getAttribute('disabled') === 'disabled') {
+                throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
+            }
+        });
+
+        $button->press();
     }
 
     /**

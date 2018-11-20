@@ -725,11 +725,16 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
+     * Overrides the base method to inject stored values into the argument, and wait for the assertion to pass.
      */
     public function assertCheckboxChecked($checkbox)
     {
         $checkbox = $this->injectStoredValues($checkbox);
-        parent::assertCheckboxChecked($checkbox);
+
+        $this->waitFor(function () use ($checkbox) {
+            parent::assertCheckboxChecked($checkbox);
+        });
     }
 
     /**

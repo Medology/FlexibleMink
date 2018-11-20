@@ -40,6 +40,43 @@ class FlexibleContext extends MinkContext
     ];
 
     /**
+     * {@inheritdoc}
+     *
+     * Overrides the base method to support injecting stored values and matching URLs that include hostname.
+     *
+     * @throws DriverException          If the driver failed to perform the action.
+     * @throws ExpectationException     If the current page is not the expected page.
+     *                                  and they do not conform to its requirements. This method does not pass
+     *                                  closures, so if this happens, there is a problem with the
+     *                                  injectStoredValues method.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     * @throws OutOfBoundsException     If a stored item was referenced in the text and the specified stored item does
+     *                                  not have the specified property or key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                  This should never happen. If it does, there is a problem with the
+     *                                  injectStoredValues method.
+     */
+    public function assertPageAddress($page)
+    {
+        $page = $this->storeContext->injectStoredValues($page);
+
+        // is the page a path, or a full URL?
+        if (preg_match('!^https?://!', $page) == 0) {
+            // it's just a path. delegate to parents implementation
+            parent::assertPageAddress($page);
+        } else {
+            // it's a full URL, compare manually
+            $actual = $this->getSession()->getCurrentUrl();
+            if (!strpos($actual, $page) === 0) {
+                throw new ExpectationException(
+                    sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                    $this->getSession()
+                );
+            }
+        }
+    }
+
+    /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertPageContainsText to
      * inject stored values into the provided text.
      *

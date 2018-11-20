@@ -56,11 +56,29 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
+     * Overrides the base method to support injecting stored values and matching URLs that include hostname.
      */
     public function assertPageAddress($page)
     {
+        $page = $this->injectStoredValues($page);
+
         $this->waitFor(function () use ($page) {
-            parent::assertPageAddress($page);
+            // is the page a path, or a full URL?
+            if (preg_match('!^https?://!', $page) == 0) {
+                // it's just a path. delegate to parents implementation
+                parent::assertPageAddress($page);
+            } else {
+                // it's a full URL, compare manually
+                $actual = $this->getSession()->getCurrentUrl();
+
+                if (!strpos($actual, $page) === 0) {
+                    throw new ExpectationException(
+                        sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                        $this->getSession()
+                    );
+                }
+            }
         });
     }
 

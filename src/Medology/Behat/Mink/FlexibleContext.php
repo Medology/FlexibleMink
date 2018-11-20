@@ -17,6 +17,8 @@ use InvalidArgumentException;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
+use Medology\Spinner;
+use Medology\SpinnerTimeoutException;
 use OutOfBoundsException;
 use ReflectionException;
 use ZipArchive;
@@ -868,20 +870,32 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Presses the visible button with specified id|name|title|alt|value.
+     * @noinspection PhpDocRedundantThrowsInspection exceptions are bubbling up from the waitFor's closure
      *
-     * This method overrides the MinkContext::pressButton() default behavior for pressButton to ensure that only visible
-     * buttons are pressed.
+     * {@inheritdoc}
      *
-     * @see    MinkContext::pressButton
+     * This method overrides the base method to ensure that only visible & enabled buttons are pressed.
+     *
      * @param  string                           $locator button id, inner text, value or alt
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             If a visible button field is not found.
+     * @throws SpinnerTimeoutException          If the timeout expires and the lambda has thrown a Exception.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function pressButton($locator)
     {
-        $this->assertVisibleButton($locator)->press();
+        /** @var NodeElement $button */
+        $button = Spinner::waitFor(function () use ($locator) {
+            return $this->assertVisibleButton($locator);
+        });
+
+        Spinner::waitFor(function () use ($button, $locator) {
+            if ($button->getAttribute('disabled') === 'disabled') {
+                throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
+            }
+        });
+
+        $button->press();
     }
 
     /**

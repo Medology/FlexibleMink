@@ -129,4 +129,20 @@ class JavaScriptContext implements Context
             );
         }
     }
+
+    /**
+     * Asserts that a set of javascript variables have specified values.
+     * The $table should have the variable name in the first column, and the value in the second.
+     *
+     * @param  TableNode            $table The variable names and values to check.
+     * @throws ExpectationException If variable value does not match expected value.
+     */
+    public function assertJavascriptVariables(TableNode $table)
+    {
+        $attributes = array_map([$this, 'injectStoredValues'], $table->getRowsHash());
+
+        foreach ($attributes as $key => $value) {
+            $this->assertJavascriptVariable($key, $value);
+        }
+    }
 }

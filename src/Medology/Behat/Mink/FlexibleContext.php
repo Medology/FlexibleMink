@@ -14,6 +14,7 @@ use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use Medology\Behat\Mink\Models\Geometry\Rectangle;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
@@ -1141,5 +1142,171 @@ class FlexibleContext extends MinkContext
     public function getArtifactsDir()
     {
         return realpath(__DIR__ . '/../../../../artifacts');
+    }
+
+    /**
+     * Asserts that a qaId is visible and inside the viewport.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
+     *
+     * @param $qaId string The qaId of the dom element to find
+     * @param $not boolean asserts qaId is partially or now visible in the viewport.
+     * @throws ResponseTextException
+     */
+    public function assertQaIDIsFullyVisibleInViewPort($qaId, $not = false)
+    {
+        $qaId = $this->storeContext->injectStoredValues($qaId);
+
+        $xpath = '//*[@data-qa-id="' . $qaId . '"]';
+
+        $nodeElement = Spinner::waitFor(function () use ($xpath) {
+            return $this->getSession()->getPage()->find('xpath', $xpath);
+        });
+
+        if (!$nodeElement instanceof NodeElement && !$not) {
+            throw new ElementNotFoundException(
+                $this->getSession(),
+                "Couldn't find node element by qaId in " . __FUNCTION__
+            );
+        } elseif (!$nodeElement instanceof NodeElement && $not) {
+            return;
+        }
+
+        try {
+            $this->assertNodeIsFullyVisibleInViewPort($nodeElement, $not);
+        } catch (ResponseTextException $ResponseTextException) {
+            throw new ResponseTextException(
+                str_replace(['Node', 'node'], $qaId, $ResponseTextException->getMessage()),
+                $this->getSession()
+            );
+        }
+    }
+
+    /**
+     * Asserts that a NodeElement is visible and inside the viewport.
+     *
+     * @param $element NodeElement
+     * @param $not boolean asserts NodeElement is partially or not visible in the viewport.
+     * @throws ResponseTextException
+     */
+    public function assertNodeIsFullyVisibleInViewPort(NodeElement $element, $not = false)
+    {
+        $session = $this->getSession();
+
+        if (!$element instanceof NodeElement) {
+            throw new ElementNotFoundException($session, 'Invalid node sent to ' . __FUNCTION__);
+        }
+
+        $driver = $session->getDriver();
+
+        if (!$driver instanceof Selenium2Driver) {
+            throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
+        }
+
+        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
+
+        if (count($parents) < 2) {
+            throw new ResponseTextException('Invalid number of node elements', $session);
+        }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+
+        $elementIsVisible = $element->isVisible();
+
+        if (!$not && !$elementIsVisible) {
+            throw new ResponseTextException(
+                'The element is not visible', $session
+            );
+        } elseif ($not && !$elementIsVisible) {
+            return;
+        }
+
+        $allAreIn = true;
+
+        foreach ($parents as $parent) {
+            $parentIsVisible = $parent->isVisible();
+
+            if (!$not && !$parentIsVisible) {
+                throw new ResponseTextException(
+                    'One of the node elements parents is not visible', $session
+                );
+            } elseif ($not && !$parentIsVisible) {
+                return;
+            }
+
+            $parentViewportRectangle = $this->getElementViewportRectangle($parent);
+
+            $isIn = $elementViewportRectangle->isIn($parentViewportRectangle, $not);
+
+            $allAreIn = $allAreIn && !$isIn;
+
+            if (!$not && !$isIn) {
+                throw new ResponseTextException(
+                    'Node is not fully visible in the viewport.', $session
+                );
+            }
+        }
+
+        if ($not && $allAreIn) {
+            throw new ResponseTextException(
+                'Node is fully visible in the viewport.', $session
+            );
+        }
+    }
+
+    /**
+     * Get a rectangle that represents the location of a NodeElements viewport.
+     *
+     * @param  NodeElement $element
+     * @return Rectangle
+     */
+    public function getElementViewportRectangle(NodeElement $element)
+    {
+        $dimensions = $this->getSession()->getDriver()->getXpathElementDimensions($element->getXpath());
+
+        $YScrollBarWidth = 0;
+        $XScrollBarHeight = 0;
+
+        if ($dimensions['clientWidth'] > 0) {
+            $YScrollBarWidth = $dimensions['width'] - $dimensions['clientWidth'];
+        }
+
+        if ($dimensions['clientHeight'] > 0) {
+            $XScrollBarHeight = $dimensions['height'] - $dimensions['clientHeight'];
+        }
+
+        return new Rectangle(
+            $dimensions['left'],
+            $dimensions['top'],
+            $dimensions['right'] - $YScrollBarWidth,
+            $dimensions['bottom'] - $XScrollBarHeight
+        );
+    }
+
+    /**
+     * Get list of of all NodeElement parents.
+     *
+     * @param $NodeElement NodeElement
+     * @param $StopAt string html tag to stop at
+     * @param $reverseOrder boolean
+     * @return array of nodeElements
+     */
+    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $StopAt, $reverseOrder)
+    {
+        $NodeElements = [];
+
+        while ($NodeElement->getParent() instanceof NodeElement) {
+            $NodeElements[] = ($NodeElement = $NodeElement->getParent());
+
+            if (strtolower($NodeElement->getTagName()) === strtolower($StopAt)) {
+                break;
+            }
+        }
+
+        if ($reverseOrder) {
+            $NodeElements = array_reverse($NodeElements);
+        }
+
+        return $NodeElements;
     }
 }

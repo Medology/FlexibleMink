@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>All Centered</title>
+        <script>
+          /**
+           *
+           * centers all scrolls with class
+           *
+           * @param ClassName
+           * @param x x offset from center
+           * @param y y offset from center
+           * @constructor
+           */
+            function SetScrolls(ClassName,x=0,y=0) {
+                let divs = document.body.getElementsByClassName(ClassName);
+                for (let i = 0; i < divs.length; i++) {
+                    let div = divs[i];
+                    let rect = div.getBoundingClientRect();
+                    let YScrollBarWidth = ( rect.width - div.clientWidth );
+                    let XScrollBarHeight = ( rect.height - div.clientHeight );
+                    let clientWidth = div.clientWidth + YScrollBarWidth;
+                    let clientHeight = div.clientHeight + XScrollBarHeight;
+                    let scrollWidth = div.scrollWidth;
+                    let scrollHeight = div.scrollHeight;
+                    div.style.lineHeight = (scrollHeight*1) + 'px';
+                    div.scrollLeft = ( scrollWidth  / 2  ) - ( ( clientWidth  - YScrollBarWidth  ) / 2 )  - (YScrollBarWidth/2) + x;
+                    div.scrollTop  = ( scrollHeight / 2  ) - ( ( clientHeight - XScrollBarHeight ) / 2 )  - (XScrollBarHeight/2) + y;
+                }
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                document.body.onload = function () {
+                    SetScrolls('AllCenter1', 5, 12);
+                    SetScrolls('AllCenter2', 5, -12);
+                    SetScrolls('AllCenter3', -5, 12);
+                    SetScrolls('AllCenter4', -5, -12);
+                    SetScrolls('PartialLeft', 15);
+                    SetScrolls('PartialRight', -15);
+                    SetScrolls('PartialTop', 0, 15);
+                    SetScrolls('PartialBottom', 0, -14);
+                    SetScrolls('OutToLeft', 30);
+                    SetScrolls('OutToRight', -30);
+                    SetScrolls('OutToTop', 0, 30);
+                    SetScrolls('OutToBottom', 0, -30);
+                    SetScrolls('visible');
+                    SetScrolls('invisible');
+                }
+            });
+        </script>
+        <style>
+            div {
+                text-align: center;
+                vertical-align: middle;
+                overflow-x: scroll;
+                overflow-y: scroll;
+                width:200%;
+                height:200%;
+            }
+            div.top {
+                height:205px;
+                max-height:205px;
+                width:205px;
+                max-width:205px;
+                display: inline-block;
+            }
+            span {
+                background-color: yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="AllCenter1 top">
+            <div class="AllCenter1">
+                <div class="AllCenter1">
+                    <div class="AllCenter1">
+                        <div class="AllCenter1">
+                            <div class="AllCenter1">
+                                <div class="AllCenter1">
+                                    <span data-qa-id="All Centered 1">All Centered 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="AllCenter2 top">
+            <div class="AllCenter2">
+                <div class="AllCenter2">
+                    <div class="AllCenter2">
+                        <div class="AllCenter2">
+                            <div class="AllCenter2">
+                                <div class="AllCenter2">
+                                    <span data-qa-id="All Centered 2">All Centered 2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="AllCenter3 top">
+            <div class="AllCenter3">
+                <div class="AllCenter3">
+                    <div class="AllCenter3">
+                        <div class="AllCenter3">
+                            <div class="AllCenter3">
+                                <div class="AllCenter3">
+                                    <span data-qa-id="All Centered 3">All Centered 3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="AllCenter4 top">
+            <div class="AllCenter4">
+                <div class="AllCenter4">
+                    <div class="AllCenter4">
+                        <div class="AllCenter4">
+                            <div class="AllCenter4">
+                                <div class="AllCenter4">
+                                    <span data-qa-id="All Centered 4">All Centered 4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="PartialLeft top">
+            <div class="PartialLeft">
+                <div class="PartialLeft">
+                    <div class="PartialLeft">
+                        <div class="PartialLeft">
+                            <div class="PartialLeft">
+                                <div class="PartialLeft">
+                                    <span id="test" data-qa-id="Partial Left">Partial Left</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="PartialRight top">
+            <div class="PartialRight">
+                <div class="PartialRight">
+                    <div class="PartialRight">
+                        <div class="PartialRight">
+                            <div class="PartialRight">
+                                <div class="PartialRight">
+                                    <span data-qa-id="Partial Right">Partial Right</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="PartialTop top">
+            <div class="PartialTop">
+                <div class="PartialTop">
+                    <div class="PartialTop">
+                        <div class="PartialTop">
+                            <div class="PartialTop">
+                                <div class="PartialTop">
+                                    <span data-qa-id="Partial Top">Partial Top</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="PartialBottom top">
+            <div class="PartialBottom">
+                <div class="PartialBottom">
+                    <div class="PartialBottom">
+                        <div class="PartialBottom">
+                            <div class="PartialBottom">
+                                <div class="PartialBottom">
+                                    <span data-qa-id="Partial Bottom">Partial Bottom</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="OutToLeft top">
+            <div class="OutToLeft">
+                <div class="OutToLeft">
+                    <div class="OutToLeft">
+                        <div class="OutToLeft">
+                            <div class="OutToLeft">
+                                <div class="OutToLeft">
+                                    <span data-qa-id="Out to left">Out to left</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="OutToRight top">
+            <div class="OutToRight">
+                <div class="OutToRight">
+                    <div class="OutToRight">
+                        <div class="OutToRight">
+                            <div class="OutToRight">
+                                <div class="OutToRight">
+                                    <span data-qa-id="Out to right">Out to right</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="OutToTop top">
+            <div class="OutToTop">
+                <div class="OutToTop">
+                    <div class="OutToTop">
+                        <div class="OutToTop">
+                            <div class="OutToTop">
+                                <div class="OutToTop">
+                                    <span data-qa-id="Out to top">Out to top</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="OutToBottom top">
+            <div class="OutToBottom">
+                <div class="OutToBottom">
+                    <div class="OutToBottom">
+                        <div class="OutToBottom">
+                            <div class="OutToBottom">
+                                <span data-qa-id="Out to bottom">Out to bottom</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="visible top">
+            <div class="visible">
+                <div class="visible">
+                    <div class="visible">
+                        <div class="visible">
+                            <div class="visible">
+                                <span data-qa-id="Visible">Visible</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="invisible top">
+            <div class="invisible">
+                <div class="invisible">
+                    <div class="invisible" style="display:none;">
+                        <div class="invisible">
+                            <div class="invisible">
+                                <span data-qa-id="Invisible">Invisible</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="invisible top">
+            <div class="invisible">
+                <div class="invisible">
+                    <div class="invisible">
+                        <div class="invisible">
+                            <div class="invisible">
+                                <span data-qa-id="Invisible 2" style="visibility: hidden;">Invisible 2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="visible top">
+            <div class="visible">
+                <div class="invisible">
+                    <div class="visible">
+                        <div class="visible">
+                            <div class="visible">
+                                <span data-qa-id="Visible 3 dosn't exist">Visible 3 dosn't exist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -17,8 +17,8 @@
     "ext-zip": "^1.0"
   },
   "require-dev": {
-    "behat/mink-selenium2-driver": "*",
-    "phpunit/phpunit": "^4.8"
+    "phpunit/phpunit": "^4.8",
+    "behat/mink-selenium2-driver": "dev-1.3.1-with-patches as 1.3.1"
   },
   "config": {
     "platform": {
@@ -33,5 +33,11 @@
     "psr-4": {
       "Tests\\": "tests"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Chekote/MinkSelenium2Driver"
+    }
+  ]
 }

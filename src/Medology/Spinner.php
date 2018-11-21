@@ -17,7 +17,7 @@ class Spinner
      *
      * @param  callable                $lambda  The lambda to call. Must return true on success.
      * @param  int                     $timeout The number of seconds to spin for.
-     * @throws SpinnerTimeoutException If the timeout expires and the lambda has thrown a Exception.
+     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
      * @return mixed                   The result of the lambda if it succeeds.
      */
     public static function waitFor(callable $lambda, $timeout = null)

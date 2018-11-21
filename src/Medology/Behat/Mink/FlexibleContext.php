@@ -1149,7 +1149,9 @@ class FlexibleContext extends MinkContext
      * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
      * ready. This is done by waiting for the document.readyState to be "complete".
      *
-     * @throws SpinnerTimeoutException If the timeout expires and the lambda has thrown a Exception.
+     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
+     * @throws ExpectationException    If the page did not finish loading before the timeout expired.
+     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
      */
     public function waitForPageLoad()
     {

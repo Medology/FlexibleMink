@@ -427,6 +427,27 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that the specified button exists in the DOM.
+     *
+     * @Then   I should see a :locator button
+     * @param  string                           $locator The id|name|title|alt|value of the button.
+     * @throws DriverException                  When the operation cannot be done.
+     * @throws ExpectationException             If no button was found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The button.
+     */
+    public function assertButtonExists($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        if (!$button = $this->getSession()->getPage()->find('named', ['button', $locator])) {
+            throw new ExpectationException("No button found for '$locator'", $this->getSession());
+        }
+
+        return $button;
+    }
+
+    /**
      * Finds the first matching visible button on the page.
      *
      * Warning: Will return the first button if the driver does not support visibility checks.

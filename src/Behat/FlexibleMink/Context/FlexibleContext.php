@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;
+use Behat\Mink\Exception\DriverException;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
@@ -803,6 +804,26 @@ class FlexibleContext extends MinkContext
         if ($this->findRadioButton($label)->isChecked()) {
             throw new ExpectationException("Radio button \"$label\" is checked, but it should not be.", $this->getSession());
         }
+    }
+
+    /**
+     * Checks if a node has the specified attribute values.
+     *
+     * @param  NodeElement                      $node       The node to check the expected attributes against.
+     * @param  array                            $attributes An associative array of the expected attributes.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @return bool                             true if the element has the specified attribute values, false if not.
+     */
+    public function elementHasAttributeValues(NodeElement $node, array $attributes)
+    {
+        foreach ($attributes as $name => $value) {
+            if ($node->getAttribute($name) != $value) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

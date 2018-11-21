@@ -1142,4 +1142,22 @@ class FlexibleContext extends MinkContext
     {
         return realpath(__DIR__ . '/../../../../artifacts');
     }
+
+    /**
+     * Waits for the page to be loaded.
+     *
+     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
+     * ready. This is done by waiting for the document.readyState to be "complete".
+     *
+     * @throws SpinnerTimeoutException If the timeout expires and the lambda has thrown a Exception.
+     */
+    public function waitForPageLoad()
+    {
+        Spinner::waitFor(function () {
+            $readyState = $this->getSession()->evaluateScript('document.readyState');
+            if ($readyState !== 'complete') {
+                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
+            }
+        });
+    }
 }

@@ -13,6 +13,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
+use Exception;
 use InvalidArgumentException;
 use ZipArchive;
 
@@ -320,6 +321,31 @@ class FlexibleContext extends MinkContext
                     $this->getSession()
                 );
             }
+        });
+    }
+
+    /**
+     * Asserts that the specified button exists in the DOM.
+     *
+     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor
+     * @Then   I should see a :locator button
+     * @param  string                           $locator The id|name|title|alt|value of the button.
+     * @throws Exception                        If the timeout expired before the assertion could be ran even once.
+     * @throws DriverException                  When the operation cannot be done.
+     * @throws ExpectationException             If no button was found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The button.
+     */
+    public function assertButtonExists($locator)
+    {
+        return $this->waitFor(function () use ($locator) {
+            $locator = $this->fixStepArgument($locator);
+
+            if (!$button = $this->getSession()->getPage()->find('named', ['button', $locator])) {
+                throw new ExpectationException("No button found for '$locator'", $this->getSession());
+            }
+
+            return $button;
         });
     }
 

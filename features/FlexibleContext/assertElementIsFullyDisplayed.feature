@@ -6,7 +6,6 @@ Feature: Assert element is fully displayed or not fully displayed
   Background:
     Given I am on "/ScrollableDivs.html"
 
-
   Scenario: Assert Test Text is fully displayed
     Then "All Centered 1" should be fully displayed
      And "All Centered 2" should be fully displayed

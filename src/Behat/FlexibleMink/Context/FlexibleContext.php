@@ -8,12 +8,12 @@ use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Selenium2Driver;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;
-use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use InvalidArgumentException;
+use JMS\Serializer\Tests\Fixtures\Node;
 use ZipArchive;
 
 /**
@@ -800,111 +800,109 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a qaId is visible and inside the viewport.
+     * Asserts that a qaId is fully displayed inside the viewport.
      *
      * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
      *
-     * @param $qaId string The qaId of the dom element to find
-     * @param $not boolean asserts qaId is partially or now visible in the viewport.
-     * @throws ResponseTextException
+     * @param  string               $qaId The qaId of the dom element to find
+     * @param  bool                 $not  Asserts qaId is partially or not visible in the viewport.
+     * @throws ExpectationException
      */
-    public function assertQaIDIsFullyVisibleInViewPort($qaId, $not = false)
+    public function assertQaIDIsFullyDisplayed($qaId, $not = false)
     {
         $qaId = $this->injectStoredValues($qaId);
 
-        $xpath = '//*[@data-qa-id="' . $qaId . '"]';
+        $driver = $this->getSession()->getDriver();
 
-        $nodeElement = $this->waitFor(function () use ($xpath) {
-            return $this->getSession()->getPage()->find('xpath', $xpath);
+        $nodeElement = $this->waitFor(function () use ($qaId) {
+            return $this->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
         });
 
         if (!$nodeElement instanceof NodeElement && !$not) {
-            throw new ElementNotFoundException(
-                $this->getSession(),
-                "Couldn't find node element by qaId in " . __FUNCTION__
+            throw new ExpectationException(
+                "Couldn't find node element by qaId in " . __FUNCTION__,
+                $driver
             );
         } elseif (!$nodeElement instanceof NodeElement && $not) {
             return;
         }
 
         try {
-            $this->assertNodeIsFullyVisibleInViewPort($nodeElement, $not);
-        } catch (ResponseTextException $ResponseTextException) {
-            throw new ResponseTextException(
-                str_replace(['Node', 'node'], $qaId, $ResponseTextException->getMessage()),
-                $this->getSession()
+            $this->assertNodeIsFullyDisplayed($nodeElement, $not);
+        } catch (ExpectationException $ExpectationException) {
+            throw new ExpectationException(
+                str_replace(['Node', 'node'], $qaId, $ExpectationException->getMessage()),
+                $driver
             );
         }
     }
 
     /**
-     * Asserts that a NodeElement is visible and inside the viewport.
+     * Asserts that a NodeElement is fully displayed inside the viewport.
      *
-     * @param $element NodeElement
-     * @param $not boolean asserts NodeElement is partially or not visible in the viewport.
-     * @throws ResponseTextException
+     * @param  NodeElement          $element
+     * @param  bool                 $not     Asserts NodeElement is partially or not visible in the viewport.
+     * @throws ExpectationException
      */
-    public function assertNodeIsFullyVisibleInViewPort(NodeElement $element, $not = false)
+    public function assertNodeIsFullyDisplayed(NodeElement $element, $not = false)
     {
-        $session = $this->getSession();
+        $driver = $this->getSession()->getDriver();
 
         if (!$element instanceof NodeElement) {
-            throw new ElementNotFoundException($session, 'Invalid node sent to ' . __FUNCTION__);
+            throw new ExpectationException('Invalid node sent to ' . __FUNCTION__, $driver);
         }
-
-        $driver = $session->getDriver();
 
         if (!$driver instanceof Selenium2Driver) {
             throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
         }
 
-        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
+        if (!$element->isVisible()) {
+            if (!$not) {
+                throw new ExpectationException(
+                    'The element is not visible', $driver
+                );
+            }
 
-        if (count($parents) < 2) {
-            throw new ResponseTextException('Invalid number of node elements', $session);
-        }
-
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
-        $elementIsVisible = $element->isVisible();
-
-        if (!$not && !$elementIsVisible) {
-            throw new ResponseTextException(
-                'The element is not visible', $session
-            );
-        } elseif ($not && !$elementIsVisible) {
             return;
         }
 
         $allAreIn = true;
 
-        foreach ($parents as $parent) {
-            $parentIsVisible = $parent->isVisible();
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
 
-            if (!$not && !$parentIsVisible) {
-                throw new ResponseTextException(
-                    'One of the node elements parents is not visible', $session
-                );
-            } elseif ($not && !$parentIsVisible) {
+        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
+
+        if (count($parents) < 1) {
+            throw new ExpectationException('Invalid number of node elements', $driver);
+        }
+
+        foreach ($parents as $parent) {
+            if (!$parent->isVisible()) {
+                if (!$not) {
+                    throw new ExpectationException(
+                        'One of the node elements parents is not visible', $driver
+                    );
+                }
+
                 return;
             }
 
             $parentViewportRectangle = $this->getElementViewportRectangle($parent);
 
-            $isIn = $elementViewportRectangle->isIn($parentViewportRectangle, $not);
+            $isIn = $elementViewportRectangle->isFullyIn($parentViewportRectangle, $not);
 
             $allAreIn = $allAreIn && !$isIn;
 
             if (!$not && !$isIn) {
-                throw new ResponseTextException(
-                    'Node is not fully visible in the viewport.', $session
+                throw new ExpectationException(
+                    'Node is not fully visible in the viewport.', $driver
                 );
             }
         }
 
         if ($not && $allAreIn) {
-            throw new ResponseTextException(
-                'Node is fully visible in the viewport.', $session
+            throw new ExpectationException(
+                'Node is fully visible in the viewport.', $driver
             );
         }
     }
@@ -912,8 +910,8 @@ class FlexibleContext extends MinkContext
     /**
      * Get a rectangle that represents the location of a NodeElements viewport.
      *
-     * @param  NodeElement $element
-     * @return Rectangle
+     * @param  NodeElement $element NodeElement to get the viewport of.
+     * @return Rectangle   representing the viewport
      */
     public function getElementViewportRectangle(NodeElement $element)
     {
@@ -941,19 +939,19 @@ class FlexibleContext extends MinkContext
     /**
      * Get list of of all NodeElement parents.
      *
-     * @param $NodeElement NodeElement
-     * @param $StopAt string html tag to stop at
-     * @param $reverseOrder boolean
-     * @return array of nodeElements
+     * @param  NodeElement $NodeElement
+     * @param  string      $stopAt       html tag to stop at
+     * @param  bool        $reverseOrder list parents in reverse order (root element will be at index 0)
+     * @return array       of nodeElements
      */
-    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $StopAt, $reverseOrder)
+    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $stopAt, $reverseOrder)
     {
         $NodeElements = [];
 
         while ($NodeElement->getParent() instanceof NodeElement) {
             $NodeElements[] = ($NodeElement = $NodeElement->getParent());
 
-            if (strtolower($NodeElement->getTagName()) === strtolower($StopAt)) {
+            if (strtolower($NodeElement->getTagName()) === strtolower($stopAt)) {
                 break;
             }
         }

@@ -43,6 +43,43 @@ class FlexibleContext extends MinkContext
     ];
 
     /**
+     * {@inheritdoc}
+     *
+     * Overrides the base method to support injecting stored values and matching URLs that include hostname.
+     *
+     * @throws DriverException          If the driver failed to perform the action.
+     * @throws ExpectationException     If the current page is not the expected page.
+     *                                  and they do not conform to its requirements. This method does not pass
+     *                                  closures, so if this happens, there is a problem with the
+     *                                  injectStoredValues method.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     * @throws OutOfBoundsException     If a stored item was referenced in the text and the specified stored item does
+     *                                  not have the specified property or key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                  This should never happen. If it does, there is a problem with the
+     *                                  injectStoredValues method.
+     */
+    public function assertPageAddress($page)
+    {
+        $page = $this->storeContext->injectStoredValues($page);
+
+        // is the page a path, or a full URL?
+        if (preg_match('!^https?://!', $page) == 0) {
+            // it's just a path. delegate to parents implementation
+            parent::assertPageAddress($page);
+        } else {
+            // it's a full URL, compare manually
+            $actual = $this->getSession()->getCurrentUrl();
+            if (!strpos($actual, $page) === 0) {
+                throw new ExpectationException(
+                    sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                    $this->getSession()
+                );
+            }
+        }
+    }
+
+    /**
      * This method overrides the MinkContext::assertPageContainsText() default behavior for assertPageContainsText to
      * inject stored values into the provided text.
      *
@@ -388,6 +425,27 @@ class FlexibleContext extends MinkContext
                 $this->getSession()
             );
         }
+    }
+
+    /**
+     * Asserts that the specified button exists in the DOM.
+     *
+     * @Then   I should see a :locator button
+     * @param  string                           $locator The id|name|title|alt|value of the button.
+     * @throws DriverException                  When the operation cannot be done.
+     * @throws ExpectationException             If no button was found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The button.
+     */
+    public function assertButtonExists($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        if (!$button = $this->getSession()->getPage()->find('named', ['button', $locator])) {
+            throw new ExpectationException("No button found for '$locator'", $this->getSession());
+        }
+
+        return $button;
     }
 
     /**
@@ -1059,6 +1117,26 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Checks if a node has the specified attribute values.
+     *
+     * @param  NodeElement                      $node       The node to check the expected attributes against.
+     * @param  array                            $attributes An associative array of the expected attributes.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @return bool                             true if the element has the specified attribute values, false if not.
+     */
+    public function elementHasAttributeValues(NodeElement $node, array $attributes)
+    {
+        foreach ($attributes as $name => $value) {
+            if ($node->getAttribute($name) != $value) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Locate the radio button by label.
      *
      * @param  string                           $label The Label of the radio button.
@@ -1145,6 +1223,7 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+<<<<<<< HEAD
      * Asserts that a qaId is visible and inside the viewport.
      *
      * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
@@ -1308,5 +1387,25 @@ class FlexibleContext extends MinkContext
         }
 
         return $NodeElements;
+    }
+
+     /**
+     * Waits for the page to be loaded.
+     *
+     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
+     * ready. This is done by waiting for the document.readyState to be "complete".
+     *
+     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
+     * @throws ExpectationException    If the page did not finish loading before the timeout expired.
+     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
+     */
+    public function waitForPageLoad()
+    {
+        Spinner::waitFor(function () {
+            $readyState = $this->getSession()->evaluateScript('document.readyState');
+            if ($readyState !== 'complete') {
+                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
+            }
+        });
     }
 }

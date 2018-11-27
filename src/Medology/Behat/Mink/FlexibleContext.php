@@ -1223,112 +1223,124 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-<<<<<<< HEAD
-     * Asserts that a qaId is visible and inside the viewport.
+     * Waits for the page to be loaded.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
+     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
+     * ready. This is done by waiting for the document.readyState to be "complete".
      *
-     * @param $qaId string The qaId of the dom element to find
-     * @param $not boolean asserts qaId is partially or now visible in the viewport.
-     * @throws ResponseTextException
+     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
+     * @throws ExpectationException    If the page did not finish loading before the timeout expired.
+     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
      */
-    public function assertQaIDIsFullyVisibleInViewPort($qaId, $not = false)
+    public function waitForPageLoad()
+    {
+        Spinner::waitFor(function () {
+            $readyState = $this->getSession()->evaluateScript('document.readyState');
+            if ($readyState !== 'complete') {
+                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
+            }
+        });
+    }
+
+    /**
+     * Asserts that a qaId is fully visible.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully visible$/
+     *
+     * @param  string                           $qaId The qaId of the dom element to find
+     * @param  bool                             $not  Asserts qaId is partially or not visible in the viewport.
+     * @throws ExpectationException
+     * @throws ReflectionException
+     * @throws SpinnerTimeoutException
+     * @throws UnsupportedDriverActionException
+     */
+    public function assertQaIDIsFullyVisible($qaId, $not = false)
     {
         $qaId = $this->storeContext->injectStoredValues($qaId);
 
-        $xpath = '//*[@data-qa-id="' . $qaId . '"]';
+        $this->waitForPageLoad();
 
-        $nodeElement = Spinner::waitFor(function () use ($xpath) {
-            return $this->getSession()->getPage()->find('xpath', $xpath);
-        });
+        $driver = $this->getSession()->getDriver();
+
+        $nodeElement = $this->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
 
         if (!$nodeElement instanceof NodeElement && !$not) {
-            throw new ElementNotFoundException(
-                $this->getSession(),
-                "Couldn't find node element by qaId in " . __FUNCTION__
+            throw new ExpectationException(
+                "Couldn't find node element by qaId in " . __FUNCTION__,
+                $driver
             );
         } elseif (!$nodeElement instanceof NodeElement && $not) {
             return;
         }
 
         try {
-            $this->assertNodeIsFullyVisibleInViewPort($nodeElement, $not);
-        } catch (ResponseTextException $ResponseTextException) {
-            throw new ResponseTextException(
-                str_replace(['Node', 'node'], $qaId, $ResponseTextException->getMessage()),
-                $this->getSession()
+            $this->assertNodeIsFullyVisible($nodeElement, $not);
+        } catch (ExpectationException $ExpectationException) {
+            throw new ExpectationException(
+                str_replace(['Node', 'node'], $qaId, $ExpectationException->getMessage()),
+                $driver
             );
         }
     }
 
     /**
-     * Asserts that a NodeElement is visible and inside the viewport.
+     * Asserts that a NodeElement is fully visible.
      *
-     * @param $element NodeElement
-     * @param $not boolean asserts NodeElement is partially or not visible in the viewport.
-     * @throws ResponseTextException
+     * @param  NodeElement                      $element
+     * @param  bool                             $not     Asserts NodeElement is partially or not visible in the viewport.
+     * @throws ExpectationException
+     * @throws SpinnerTimeoutException
+     * @throws UnsupportedDriverActionException
      */
-    public function assertNodeIsFullyVisibleInViewPort(NodeElement $element, $not = false)
+    public function assertNodeIsFullyVisible(NodeElement $element, $not = false)
     {
-        $session = $this->getSession();
+        $this->waitForPageLoad();
 
+        $driver = $this->getSession()->getDriver();
         if (!$element instanceof NodeElement) {
-            throw new ElementNotFoundException($session, 'Invalid node sent to ' . __FUNCTION__);
+            throw new ExpectationException('Invalid node sent to ' . __FUNCTION__, $driver);
         }
+        if (!$element->isVisible()) {
+            if (!$not) {
+                throw new ExpectationException(
+                    'The element is not visible', $driver
+                );
+            }
 
-        $driver = $session->getDriver();
-
-        if (!$driver instanceof Selenium2Driver) {
-            throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
-        }
-
-        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
-
-        if (count($parents) < 2) {
-            throw new ResponseTextException('Invalid number of node elements', $session);
-        }
-
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
-        $elementIsVisible = $element->isVisible();
-
-        if (!$not && !$elementIsVisible) {
-            throw new ResponseTextException(
-                'The element is not visible', $session
-            );
-        } elseif ($not && !$elementIsVisible) {
             return;
         }
 
         $allAreIn = true;
 
-        foreach ($parents as $parent) {
-            $parentIsVisible = $parent->isVisible();
+        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
 
-            if (!$not && !$parentIsVisible) {
-                throw new ResponseTextException(
-                    'One of the node elements parents is not visible', $session
-                );
-            } elseif ($not && !$parentIsVisible) {
+        if (count($parents) < 1) {
+            throw new ExpectationException('Invalid number of node elements', $driver);
+        }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+
+        foreach ($parents as $parent) {
+            if (!$parent->isVisible()) {
+                if (!$not) {
+                    throw new ExpectationException(
+                        'One of the node elements parents is not visible', $driver
+                    );
+                }
+
                 return;
             }
-
-            $parentViewportRectangle = $this->getElementViewportRectangle($parent);
-
-            $isIn = $elementViewportRectangle->isIn($parentViewportRectangle, $not);
-
+            $isIn = $elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent), $not);
             $allAreIn = $allAreIn && !$isIn;
-
             if (!$not && !$isIn) {
-                throw new ResponseTextException(
-                    'Node is not fully visible in the viewport.', $session
+                throw new ExpectationException(
+                    'Node is not fully visible in the viewport.', $driver
                 );
             }
         }
-
         if ($not && $allAreIn) {
-            throw new ResponseTextException(
-                'Node is fully visible in the viewport.', $session
+            throw new ExpectationException(
+                'Node is fully visible in the viewport.', $driver
             );
         }
     }
@@ -1336,12 +1348,19 @@ class FlexibleContext extends MinkContext
     /**
      * Get a rectangle that represents the location of a NodeElements viewport.
      *
-     * @param  NodeElement $element
-     * @return Rectangle
+     * @param  NodeElement                      $element NodeElement to get the viewport of.
+     * @throws UnsupportedDriverActionException
+     * @return Rectangle                        representing the viewport
      */
     public function getElementViewportRectangle(NodeElement $element)
     {
-        $dimensions = $this->getSession()->getDriver()->getXpathElementDimensions($element->getXpath());
+        $driver = $this->getSession()->getDriver();
+
+        if (!$driver instanceof Selenium2Driver) {
+            throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
+        }
+
+        $dimensions = $driver->getXpathElementDimensions($element->getXpath());
 
         $YScrollBarWidth = 0;
         $XScrollBarHeight = 0;
@@ -1365,47 +1384,24 @@ class FlexibleContext extends MinkContext
     /**
      * Get list of of all NodeElement parents.
      *
-     * @param $NodeElement NodeElement
-     * @param $StopAt string html tag to stop at
-     * @param $reverseOrder boolean
-     * @return array of nodeElements
+     * @param  NodeElement $NodeElement
+     * @param  string      $stopAt       html tag to stop at
+     * @param  bool        $reverseOrder list parents in reverse order (root element will be at index 0)
+     * @return array       of nodeElements
      */
-    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $StopAt, $reverseOrder)
+    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $stopAt, $reverseOrder)
     {
         $NodeElements = [];
-
         while ($NodeElement->getParent() instanceof NodeElement) {
             $NodeElements[] = ($NodeElement = $NodeElement->getParent());
-
-            if (strtolower($NodeElement->getTagName()) === strtolower($StopAt)) {
+            if (strtolower($NodeElement->getTagName()) === strtolower($stopAt)) {
                 break;
             }
         }
-
         if ($reverseOrder) {
             $NodeElements = array_reverse($NodeElements);
         }
 
         return $NodeElements;
-    }
-
-     /**
-     * Waits for the page to be loaded.
-     *
-     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
-     * ready. This is done by waiting for the document.readyState to be "complete".
-     *
-     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
-     * @throws ExpectationException    If the page did not finish loading before the timeout expired.
-     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
-     */
-    public function waitForPageLoad()
-    {
-        Spinner::waitFor(function () {
-            $readyState = $this->getSession()->evaluateScript('document.readyState');
-            if ($readyState !== 'complete') {
-                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
-            }
-        });
     }
 }

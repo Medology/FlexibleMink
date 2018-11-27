@@ -7,23 +7,36 @@ namespace Medology\Behat\Mink\Models\Geometry;
  */
 class Rectangle
 {
+    /**
+     * @var int Top left x position
+     */
     public $corner1x = 0;
+
+    /**
+     * @var int Top left y position
+     */
     public $corner1y = 0;
+
+    /**
+     * @var int Bottom right x position
+     */
     public $corner3x = 0;
+
+    /**
+     * @var int Bottom right y position
+     */
     public $corner3y = 0;
 
     /**
      * Rectangle constructor.
      *
-     *
      * Corner one is the top left corner.
-     * Corner two is the bottom left corner.
+     * Corner three is the bottom left corner.
      *
-     *
-     * @param $corner1x
-     * @param $corner1y
-     * @param $corner3x
-     * @param $corner3y
+     * @param int $corner1x Top left x position
+     * @param int $corner1y Top left y position
+     * @param int $corner3x Bottom right x position
+     * @param int $corner3y Bottom right y position
      */
     public function __construct($corner1x, $corner1y, $corner3x, $corner3y)
     {
@@ -36,12 +49,11 @@ class Rectangle
     /**
      * Checks if this is|is not inside another rectangle.
      *
-     *
-     * @param $Rectangle Rectangle
-     * @param $not boolean asserts not
-     * @return bool returns the opposite
+     * @param  self $Rectangle Rectangle to check if this one is inside of
+     * @param  bool $not       Changes to not fully in
+     * @return bool returns
      */
-    public function isIn(self $Rectangle, $not = false)
+    public function isFullyIn(self $Rectangle, $not = false)
     {
         if (
             $not &&

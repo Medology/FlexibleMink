@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assert Element is not Covered</title>
+    <style>
+        .samePositionElements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            height: 150px;
+        }
+
+        #testedDiv {
+            background-color: aquamarine;
+            z-index: 1;
+        }
+
+        #coveringDiv{
+            background-color: firebrick;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="samePositionElements" id="testedDiv"></div>
+    <div class="samePositionElements" id="coveringDiv"></div>
+</body>
+</html>
+

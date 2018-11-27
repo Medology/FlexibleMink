@@ -800,15 +800,16 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a qaId is fully displayed inside the viewport.
+     * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully displayed$/
+     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully visible/
      *
-     * @param  string               $qaId The qaId of the dom element to find
-     * @param  bool                 $not  Asserts qaId is partially or not visible in the viewport.
+     * @param  string                           $qaId The qaId of the dom element to find
+     * @param  bool                             $not  Asserts qaId is partially or not visible in the viewport.
      * @throws ExpectationException
+     * @throws UnsupportedDriverActionException
      */
-    public function assertQaIDIsFullyDisplayed($qaId, $not = false)
+    public function assertQaIDIsFullyVisible($qaId, $not = false)
     {
         $qaId = $this->injectStoredValues($qaId);
 
@@ -828,7 +829,7 @@ class FlexibleContext extends MinkContext
         }
 
         try {
-            $this->assertNodeIsFullyDisplayed($nodeElement, $not);
+            $this->assertNodeIsFullyVisible($nodeElement, $not);
         } catch (ExpectationException $ExpectationException) {
             throw new ExpectationException(
                 str_replace(['Node', 'node'], $qaId, $ExpectationException->getMessage()),
@@ -838,13 +839,14 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a NodeElement is fully displayed inside the viewport.
+     * Asserts that a NodeElement is fully visible.
      *
-     * @param  NodeElement          $element
-     * @param  bool                 $not     Asserts NodeElement is partially or not visible in the viewport.
+     * @param  NodeElement                      $element
+     * @param  bool                             $not     Asserts NodeElement is partially or not visible in the viewport.
      * @throws ExpectationException
+     * @throws UnsupportedDriverActionException
      */
-    public function assertNodeIsFullyDisplayed(NodeElement $element, $not = false)
+    public function assertNodeIsFullyVisible(NodeElement $element, $not = false)
     {
         $driver = $this->getSession()->getDriver();
 
@@ -868,13 +870,13 @@ class FlexibleContext extends MinkContext
 
         $allAreIn = true;
 
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
         $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
 
         if (count($parents) < 1) {
             throw new ExpectationException('Invalid number of node elements', $driver);
         }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
 
         foreach ($parents as $parent) {
             if (!$parent->isVisible()) {
@@ -887,9 +889,7 @@ class FlexibleContext extends MinkContext
                 return;
             }
 
-            $parentViewportRectangle = $this->getElementViewportRectangle($parent);
-
-            $isIn = $elementViewportRectangle->isFullyIn($parentViewportRectangle, $not);
+            $isIn = $elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent), $not);
 
             $allAreIn = $allAreIn && !$isIn;
 

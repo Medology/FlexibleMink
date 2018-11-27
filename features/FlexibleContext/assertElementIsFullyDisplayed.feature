@@ -7,19 +7,19 @@ Feature: Assert element is fully displayed or not fully displayed
     Given I am on "/ScrollableDivs.html"
 
   Scenario: Assert Test Text is fully displayed
-    Then "All Centered 1" should be fully displayed
-     And "All Centered 2" should be fully displayed
-     And "All Centered 3" should be fully displayed
-     And "All Centered 4" should be fully displayed
-     And "Partial Left" should not be fully displayed
-     And "Partial Right" should not be fully displayed
-     And "Partial Top" should not be fully displayed
-     And "Partial Bottom" should not be fully displayed
-     And "Out to left" should not be fully displayed
-     And "Out to right" should not be fully displayed
-     And "Out to top" should not be fully displayed
-     And "Out to bottom" should not be fully displayed
-     And "Visible" should be fully displayed
-     And "Invisible" should not be fully displayed
-     And "Invisible 2" should not be fully displayed
-     And "Visible 3" should not be fully displayed
+    Then "All Centered 1" should be fully visible
+     And "All Centered 2" should be fully visible
+     And "All Centered 3" should be fully visible
+     And "All Centered 4" should be fully visible
+     And "Partial Left" should not be fully visible
+     And "Partial Right" should not be fully visible
+     And "Partial Top" should not be fully visible
+     And "Partial Bottom" should not be fully visible
+     And "Out to left" should not be fully visible
+     And "Out to right" should not be fully visible
+     And "Out to top" should not be fully visible
+     And "Out to bottom" should not be fully visible
+     And "Visible" should be fully visible
+     And "Invisible" should not be fully visible
+     And "Invisible 2" should not be fully visible
+     And "Visible 3" should not be fully visible

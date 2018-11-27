@@ -802,7 +802,7 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully visible/
+     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully visible$/
      *
      * @param  string                           $qaId The qaId of the dom element to find
      * @param  bool                             $not  Asserts qaId is partially or not visible in the viewport.

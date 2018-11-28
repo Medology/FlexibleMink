@@ -134,6 +134,7 @@ class JavaScriptContext implements Context
      * Asserts that a set of javascript variables have specified values.
      * The $table should have the variable name in the first column, and the value in the second.
      *
+     * @Then   the javascript variables should be:
      * @param  TableNode            $table The variable names and values to check.
      * @throws ExpectationException If variable value does not match expected value.
      */

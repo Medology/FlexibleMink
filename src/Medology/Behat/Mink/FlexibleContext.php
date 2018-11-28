@@ -1404,4 +1404,87 @@ class FlexibleContext extends MinkContext
 
         return $NodeElements;
     }
+
+    /**
+     * Step to assert that the specified element is not covered.
+     *
+     * @param  string               $identifier Element Id to find the element used in the assertion.
+     * @throws ExpectationException If element is found to be covered by another.
+     *
+     * @Then the :identifier element should not be covered by another
+     */
+    public function assertElementIsNotCoveredByIdStep($identifier)
+    {
+        /** @var NodeElement $element */
+        $element = $this->getSession()->getPage()->find('css', "#$identifier");
+
+        $this->assertElementIsNotCovered($element);
+    }
+
+    /**
+     * Asserts that the specified element is not covered by another element.
+     *
+     * Keep in mind that at the moment, this method performs a check in a square area so this may not work
+     * correctly with elements of different shapes.
+     *
+     * @param  NodeElement              $element   The element to assert that is not covered by something else.
+     * @param  int                      $threshold Minimum resolution percentage checked.  100 will be all points, and 0 will be none.
+     *                                             Percent relative to the size of the element.
+     * @throws ExpectationException     If element is found to be covered by another.
+     * @throws InvalidArgumentException The threshold provided is outside of the 0-100 range accepted.
+     */
+    public function assertElementIsNotCovered(NodeElement $element, $threshold = 90)
+    {
+        if ($threshold < 1 || $threshold > 100) {
+            throw new InvalidArgumentException('The threshold provided is outside of the 1-100 range accepted.');
+        }
+
+        $xpath = $element->getXpath();
+
+        /** @var array $coordinates */
+        $coordinates = $this->getSession()->evaluateScript(<<<JS
+          return document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.getBoundingClientRect();
+JS
+        );
+
+        $width = $coordinates['width'];
+        $height = $coordinates['height'];
+
+        // X and Y are the starting points.
+        $x = $coordinates['left'];
+        $y = $coordinates['top'];
+        $resolution = floor($threshold * $width / 100);
+
+        $expected = $element->getOuterHtml();
+
+        /**
+         * Asserts that each point checked on the row isn't covered by an element that doesn't match the expected.
+         *
+         * @param  int                  $x     Starting X position.
+         * @param  int                  $y     Starting Y position.
+         * @param  int                  $width Width of element.
+         * @throws ExpectationException If element is found to be covered by another in the row specified.
+         */
+        $assertRow = function ($x, $y, $width) use ($expected, $resolution) {
+            while ($x <= $width) {
+                $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
+
+                if ($expected != $found) {
+                    throw new ExpectationException(
+                        'An element is above an interacting element.',
+                        $this->getSession()
+                    );
+                }
+
+                $x += $resolution;
+            }
+        };
+
+        // Go through each row in the square area found.
+        while ($y <= $height) {
+            $assertRow($x, $y, $width);
+            $y += $resolution;
+        }
+    }
 }

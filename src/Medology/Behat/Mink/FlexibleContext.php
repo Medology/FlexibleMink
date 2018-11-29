@@ -896,6 +896,36 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * @noinspection PhpDocRedundantThrowsInspection Exceptions bubble up from waitFor.
+     *
+     * {@inheritdoc}
+     *
+     * @throws ExpectationException    if the value of the input does not match expected after the file is
+     *                                 attached.
+     * @throws SpinnerTimeoutException if the timeout expired before the assertion could be made even once.
+     */
+    public function attachFileToField($field, $path)
+    {
+        Spinner::waitFor(function () use ($field, $path) {
+            parent::attachFileToField($field, $path);
+
+            $session = $this->getSession();
+            $value = $session->getPage()->findField($field)->getValue();
+
+            // Workaround for browser's fake path stuff that obscures the directory of the attached file.
+            $fileParts = explode(DIRECTORY_SEPARATOR, $path);
+            $filename = end($fileParts); // end() cannot take inline expressions, only variables.
+
+            if (strpos($value, $filename) === false) {
+                throw new ExpectationException(
+                    "Value of $field is '$value', expected to contain '$filename'",
+                    $session
+                );
+            }
+        });
+    }
+
+    /**
      * Blurs (unfocuses) selected field.
      *
      * @When   /^(?:I |)(?:blur|unfocus) (?:the |)"(?P<locator>[^"]+)"(?: field|)$/

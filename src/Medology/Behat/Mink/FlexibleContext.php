@@ -1427,16 +1427,15 @@ class FlexibleContext extends MinkContext
      * Keep in mind that at the moment, this method performs a check in a square area so this may not work
      * correctly with elements of different shapes.
      *
-     * @param  NodeElement              $element   The element to assert that is not covered by something else.
-     * @param  int                      $threshold Minimum resolution percentage checked.  100 will be all points, and 0 will be none.
-     *                                             Percent relative to the size of the element.
+     * @param  NodeElement              $element  The element to assert that is not covered by something else.
+     * @param  int                      $leniency Percent of leniency when performing each pixel check.
      * @throws ExpectationException     If element is found to be covered by another.
      * @throws InvalidArgumentException The threshold provided is outside of the 0-100 range accepted.
      */
-    public function assertElementIsNotCovered(NodeElement $element, $threshold = 90)
+    public function assertElementIsNotCovered(NodeElement $element, $leniency = 20)
     {
-        if ($threshold < 1 || $threshold > 100) {
-            throw new InvalidArgumentException('The threshold provided is outside of the 1-100 range accepted.');
+        if ($leniency < 0 || $leniency > 99) {
+            throw new InvalidArgumentException('The leniency provided is outside of the 0-50 range accepted.');
         }
 
         $xpath = $element->getXpath();
@@ -1448,28 +1447,31 @@ class FlexibleContext extends MinkContext
 JS
         );
 
-        $width = $coordinates['width'];
-        $height = $coordinates['height'];
+        $width = $coordinates['width'] - 1;
+        $height = $coordinates['height'] - 1;
+        $right = $coordinates['right'];
+        $bottom = $coordinates['bottom'];
 
         // X and Y are the starting points.
         $x = $coordinates['left'];
         $y = $coordinates['top'];
-        $resolution = floor($threshold * $width / 100);
+
+        $xSpacing = ($width * ($leniency / 100)) ?: 1;
+        $ySpacing = ($height * ($leniency / 100)) ?: 1;
 
         $expected = $element->getOuterHtml();
 
         /**
          * Asserts that each point checked on the row isn't covered by an element that doesn't match the expected.
          *
-         * @param  int                  $x     Starting X position.
-         * @param  int                  $y     Starting Y position.
-         * @param  int                  $width Width of element.
+         * @param  int                  $x      Starting X position.
+         * @param  int                  $y      Starting Y position.
+         * @param  int                  $xLimit Width of element.
          * @throws ExpectationException If element is found to be covered by another in the row specified.
          */
-        $assertRow = function ($x, $y, $width) use ($expected, $resolution) {
-            while ($x <= $width) {
+        $assertRow = function ($x, $y, $xLimit) use ($expected, $xSpacing) {
+            while ($x < $xLimit) {
                 $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
-
                 if ($expected != $found) {
                     throw new ExpectationException(
                         'An element is above an interacting element.',
@@ -1477,14 +1479,38 @@ JS
                     );
                 }
 
-                $x += $resolution;
+                $x += $xSpacing;
             }
         };
 
         // Go through each row in the square area found.
-        while ($y <= $height) {
-            $assertRow($x, $y, $width);
-            $y += $resolution;
+        while ($y < $bottom) {
+            $assertRow($x, $y, $right);
+            $y += $ySpacing;
         }
+    }
+
+    /**
+     * Stipple drawing method for points specified on a page canvas.
+     *
+     * @param int    $x     X coordinate where to place dot.
+     * @param int    $y     Y coordinate where to place dot.
+     * @param string $color The hex color code for the color of the point being drawn.  Keep in mind, the item will
+     *                      appear semi transparent.
+     *
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @throws DriverException                  When the operation cannot be done
+     */
+    protected function stipple($x, $y, $color = '#0f0')
+    {
+        $script = <<<JS
+(function () {
+        var point = document.createElement('div');
+        point.style.cssText = "position:absolute;top:{$y}px;left:{$x}px;width:1px;z-index:9999999;height:1px;" 
+            + "opacity: 0.5;background-color:$color";
+        document.body.appendChild(point);
+}());
+JS;
+        $this->getSession()->getDriver()->executeScript($script);
     }
 }

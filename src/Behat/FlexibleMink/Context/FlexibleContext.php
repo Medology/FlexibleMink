@@ -1253,30 +1253,6 @@ JS
     }
 
     /**
-     * Stipple drawing method for points specified on a page canvas.
-     *
-     * @param int    $x     X coordinate where to place dot.
-     * @param int    $y     Y coordinate where to place dot.
-     * @param string $color The hex color code for the color of the point being drawn.  Keep in mind, the item will
-     *                      appear semi transparent.
-     *
-     * @throws UnsupportedDriverActionException When operation not supported by the driver
-     * @throws DriverException                  When the operation cannot be done
-     */
-    protected function stipple($x, $y, $color = '#0f0')
-    {
-        $script = <<<JS
-(function () {
-        var point = document.createElement('div');
-        point.style.cssText = "position:absolute;top:{$y}px;left:{$x}px;width:1px;z-index:9999999;height:1px;" 
-            + "opacity: 0.5;background-color:$color";
-        document.body.appendChild(point);
-}());
-JS;
-        $this->getSession()->getDriver()->executeScript($script);
-    }
-
-    /**
      * Asserts that the current driver is Selenium 2 in preparation for performing an action that requires it.
      *
      * @param  string                           $operation the operation that you will attempt to perform that requires

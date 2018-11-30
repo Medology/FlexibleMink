@@ -1189,8 +1189,8 @@ class FlexibleContext extends MinkContext
      * Keep in mind that at the moment, this method performs a check in a square area so this may not work
      * correctly with elements of different shapes.
      *
-     * @param  NodeElement              $element   The element to assert that is not covered by something else.
-     * @param  int                      $leniency  Percent of leniency when performing each pixel check.
+     * @param  NodeElement              $element  The element to assert that is not covered by something else.
+     * @param  int                      $leniency Percent of leniency when performing each pixel check.
      * @throws ExpectationException     If element is found to be covered by another.
      * @throws InvalidArgumentException The threshold provided is outside of the 0-100 range accepted.
      */
@@ -1218,8 +1218,7 @@ JS
         $x = $coordinates['left'];
         $y = $coordinates['top'];
 
-
-        $xSpacing = ($width * ($leniency/100)) ?: 1;
+        $xSpacing = ($width * ($leniency / 100)) ?: 1;
         $ySpacing = ($height * ($leniency / 100)) ?: 1;
 
         $expected = $element->getOuterHtml();
@@ -1236,7 +1235,6 @@ JS
             while ($x < $xLimit) {
                 $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
                 if ($expected != $found) {
-
                     throw new ExpectationException(
                         'An element is above an interacting element.',
                         $this->getSession()
@@ -1252,14 +1250,13 @@ JS
             $assertRow($x, $y, $right);
             $y += $ySpacing;
         }
-
     }
 
     /**
      * Stipple drawing method for points specified on a page canvas.
      *
-     * @param int $x X coordinate where to place dot.
-     * @param int $y Y coordinate where to place dot.
+     * @param int    $x     X coordinate where to place dot.
+     * @param int    $y     Y coordinate where to place dot.
      * @param string $color The hex color code for the color of the point being drawn.  Keep in mind, the item will
      *                      appear semi transparent.
      *

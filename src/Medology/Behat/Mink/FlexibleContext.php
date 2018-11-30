@@ -22,6 +22,7 @@ use Medology\Spinner;
 use Medology\SpinnerTimeoutException;
 use OutOfBoundsException;
 use ReflectionException;
+use WebDriver\Exception;
 use ZipArchive;
 
 /**
@@ -809,6 +810,25 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Returns all cookies.
+     *
+     * @throws Exception                        If the operation failed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return array                            Key/value pairs of cookie name/value.
+     */
+    public function getCookies()
+    {
+        $driver = $this->assertSelenium2Driver('Get all cookies');
+
+        $cookies = [];
+        foreach ($driver->getWebDriverSession()->getAllCookies() as $cookie) {
+            $cookies[$cookie['name']] = urldecode($cookie['value']);
+        }
+
+        return $cookies;
+    }
+
+    /**
      * Deletes a cookie.
      *
      * @When   /^(?:|I )delete the cookie "(?P<key>(?:[^"]|\\")*)"$/
@@ -819,6 +839,19 @@ class FlexibleContext extends MinkContext
     public function deleteCookie($key)
     {
         $this->getSession()->setCookie($key, null);
+    }
+
+    /**
+     * Deletes all cookies.
+     *
+     * @When   /^(?:|I )delete all cookies"$/
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws Exception                        If the operation failed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     */
+    public function deleteCookies()
+    {
+        $this->assertSelenium2Driver('Delete all cookies')->getWebDriverSession()->deleteAllCookies();
     }
 
     /**
@@ -834,6 +867,8 @@ class FlexibleContext extends MinkContext
      */
     public function addLocalFileToField($path, $field)
     {
+        $driver = $this->assertSelenium2Driver('Add local file to field');
+
         $field = $this->fixStepArgument($field);
 
         if ($this->getMinkParameter('files_path')) {
@@ -850,11 +885,6 @@ class FlexibleContext extends MinkContext
         $zip->addFile($path, basename($path));
         $zip->close();
 
-        $driver = $this->getSession()->getDriver();
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException('getWebDriverSession() is not supported by %s', $driver);
-        }
-
         /** @noinspection PhpUndefinedMethodInspection file() method annotation is missing from WebDriver\Session */
         $remotePath = $driver->getWebDriverSession()->file([
             'file' => base64_encode(file_get_contents($tempZip)),
@@ -863,6 +893,36 @@ class FlexibleContext extends MinkContext
         $this->attachFileToField($field, $remotePath);
 
         unlink($tempZip);
+    }
+
+    /**
+     * @noinspection PhpDocRedundantThrowsInspection Exceptions bubble up from waitFor.
+     *
+     * {@inheritdoc}
+     *
+     * @throws ExpectationException    if the value of the input does not match expected after the file is
+     *                                 attached.
+     * @throws SpinnerTimeoutException if the timeout expired before the assertion could be made even once.
+     */
+    public function attachFileToField($field, $path)
+    {
+        Spinner::waitFor(function () use ($field, $path) {
+            parent::attachFileToField($field, $path);
+
+            $session = $this->getSession();
+            $value = $session->getPage()->findField($field)->getValue();
+
+            // Workaround for browser's fake path stuff that obscures the directory of the attached file.
+            $fileParts = explode(DIRECTORY_SEPARATOR, $path);
+            $filename = end($fileParts); // end() cannot take inline expressions, only variables.
+
+            if (strpos($value, $filename) === false) {
+                throw new ExpectationException(
+                    "Value of $field is '$value', expected to contain '$filename'",
+                    $session
+                );
+            }
+        });
     }
 
     /**
@@ -1349,16 +1409,13 @@ class FlexibleContext extends MinkContext
      * Get a rectangle that represents the location of a NodeElements viewport.
      *
      * @param  NodeElement                      $element NodeElement to get the viewport of.
-     * @throws UnsupportedDriverActionException
+     * @throws Exception                        If the operation failed.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
      * @return Rectangle                        representing the viewport
      */
     public function getElementViewportRectangle(NodeElement $element)
     {
-        $driver = $this->getSession()->getDriver();
-
-        if (!$driver instanceof Selenium2Driver) {
-            throw new UnsupportedDriverActionException('%s does not support assertNodeIsFullyVisibleInViewPort', $driver);
-        }
+        $driver = $this->assertSelenium2Driver('Get XPath Element Dimensions');
 
         $dimensions = $driver->getXpathElementDimensions($element->getXpath());
 
@@ -1512,5 +1569,23 @@ JS
 }());
 JS;
         $this->getSession()->getDriver()->executeScript($script);
+    }
+
+    /**
+     * Asserts that the current driver is Selenium 2 in preparation for performing an action that requires it.
+     *
+     * @param  string                           $operation the operation that you will attempt to perform that requires
+     *                                                     the Selenium 2 driver.
+     * @throws UnsupportedDriverActionException if the current driver is not Selenium 2.
+     * @return Selenium2Driver
+     */
+    public function assertSelenium2Driver($operation)
+    {
+        $driver = $this->getSession()->getDriver();
+        if (!($driver instanceof Selenium2Driver)) {
+            throw new UnsupportedDriverActionException($operation . ' is not supported by %s', $driver);
+        }
+
+        return $driver;
     }
 }

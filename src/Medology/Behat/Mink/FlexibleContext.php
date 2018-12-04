@@ -1018,6 +1018,73 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
+     *
+     * {@inheritdoc}
+     *
+     * Overrides the base method to support injecting stored values and restricting interaction to visible options.
+     *
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ElementNotFoundException         when the option is not found in the select box
+     * @throws ExpectationException             If a visible select was not found.
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
+     * @throws SpinnerTimeoutException          If the timeout expires before the assertion can be made even once.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     */
+    public function selectOption($select, $option)
+    {
+        $select = $this->storeContext->injectStoredValues($select);
+        $option = $this->storeContext->injectStoredValues($option);
+
+        /** @var NodeElement $field */
+        $field = Spinner::waitFor(function () use ($select) {
+            return $this->assertVisibleOptionField($select);
+        });
+
+        $field->selectOption($option);
+    }
+
+    /**
+     * Finds all of the matching selects or radios on the page.
+     *
+     * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @return NodeElement[]
+     */
+    public function getOptionFields($locator)
+    {
+        return array_filter(
+            $this->getSession()->getPage()->findAll('named', ['field', $locator]),
+            function (NodeElement $field) {
+                return $field->getTagName() == 'select' || $field->getAttribute('type') == 'radio';
+            }
+        );
+    }
+
+    /**
+     * Finds the first matching visible select or radio on the page.
+     *
+     * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             If a visible select was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     * @return NodeElement                      The select or radio.
+     */
+    public function assertVisibleOptionField($locator)
+    {
+        foreach ($this->getOptionFields($locator) as $field) {
+            if ($field->isVisible()) {
+                return $field;
+            }
+        }
+
+        throw new ExpectationException("No visible selects or radios for '$locator' were found", $this->getSession());
+    }
+
+    /**
      * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.
      *
      * @Given  /^the page is scrolled to the (?P<where>top|bottom)$/

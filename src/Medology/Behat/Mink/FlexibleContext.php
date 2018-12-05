@@ -1596,7 +1596,7 @@ JS
         $assertRow = function ($x, $y, $xLimit) use ($expected, $xSpacing) {
             while ($x < $xLimit) {
                 $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
-                if ($expected != $found) {
+                if (strpos($expected, $found) === false) {
                     throw new ExpectationException(
                         'An element is above an interacting element.',
                         $this->getSession()

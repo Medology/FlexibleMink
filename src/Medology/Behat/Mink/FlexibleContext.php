@@ -1049,23 +1049,24 @@ class FlexibleContext extends MinkContext
      *
      * Overrides the base method to support injecting stored values and restricting interaction to visible options.
      *
+     * @param  TraversableElement|null          $context the context to find the option within. Defaults to entire page.
      * @throws DriverException                  When the operation cannot be done
      * @throws ElementNotFoundException         when the option is not found in the select box
      * @throws ExpectationException             If a visible select was not found.
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     *                                                  passed. This should never happen. If it does, there is a problem with
+     *                                                  the injectStoredValues method.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
-    public function selectOption($select, $option)
+    public function selectOption($select, $option, TraversableElement $context = null)
     {
         $select = $this->storeContext->injectStoredValues($select);
         $option = $this->storeContext->injectStoredValues($option);
 
         /** @var NodeElement $field */
         /** @noinspection PhpUnhandledExceptionInspection */
-        $field = Spinner::waitFor(function () use ($select) {
-            return $this->assertVisibleOptionField($select);
+        $field = Spinner::waitFor(function () use ($select, $context) {
+            return $this->assertVisibleOptionField($select, $context);
         });
 
         $field->selectOption($option);
@@ -1075,14 +1076,17 @@ class FlexibleContext extends MinkContext
      * Finds all of the matching selects or radios on the page.
      *
      * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @param  TraversableElement|null          $context the context to find the option within. Defaults to entire page.
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @return NodeElement[]
      */
-    public function getOptionFields($locator)
+    public function getOptionFields($locator, TraversableElement $context = null)
     {
+        $context = $context ?: $this->getSession()->getPage();
+
         return array_filter(
-            $this->getSession()->getPage()->findAll('named', ['field', $locator]),
+            $context->findAll('named', ['field', $locator]),
             function (NodeElement $field) {
                 return $field->getTagName() == 'select' || $field->getAttribute('type') == 'radio';
             }
@@ -1093,14 +1097,15 @@ class FlexibleContext extends MinkContext
      * Finds the first matching visible select or radio on the page.
      *
      * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @param  TraversableElement|null          $context the context to find the option within. Defaults to entire page.
      * @throws DriverException                  When the operation cannot be done
      * @throws ExpectationException             If a visible select was not found.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @return NodeElement                      The select or radio.
      */
-    public function assertVisibleOptionField($locator)
+    public function assertVisibleOptionField($locator, TraversableElement $context = null)
     {
-        foreach ($this->getOptionFields($locator) as $field) {
+        foreach ($this->getOptionFields($locator, $context) as $field) {
             if ($field->isVisible()) {
                 return $field;
             }

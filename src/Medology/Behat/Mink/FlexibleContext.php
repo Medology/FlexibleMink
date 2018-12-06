@@ -1370,56 +1370,62 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a qaId is fully visible.
-     *
-     * @param  TraversableElement               $element The element to assert visibility of.
-     * @param  bool                             $not     Asserts qaId is partially or not visible in the viewport.
-     * @throws ExpectationException
-     * @throws SpinnerTimeoutException
-     * @throws UnsupportedDriverActionException
-     */
-    public function assertElementIsFullyVisible(TraversableElement $element, $not = false)
-    {
-        $driver = $this->getSession()->getDriver();
-
-        if (!$element instanceof NodeElement && !$not) {
-            throw new ExpectationException(
-                "Couldn't find node element by qaId in " . __FUNCTION__,
-                $driver
-            );
-        } elseif (!$element instanceof NodeElement && $not) {
-            return;
-        }
-
-        $this->assertNodeIsFullyVisible($element, $not);
-    }
-
-    /**
      * Asserts that a NodeElement is fully visible.
      *
-     * @param  NodeElement                      $element
-     * @param  bool                             $not     Asserts NodeElement is partially or not visible in the viewport.
+     * @param NodeElement                       $element
+     * @throws Exception
      * @throws ExpectationException
      * @throws SpinnerTimeoutException
      * @throws UnsupportedDriverActionException
      */
-    public function assertNodeIsFullyVisible(NodeElement $element, $not = false)
+    public function assertElementIsFullyVisible(NodeElement $element)
     {
         $this->waitForPageLoad();
 
         $driver = $this->getSession()->getDriver();
 
         if (!$element->isVisible()) {
-            if (!$not) {
-                throw new ExpectationException('The element is not visible', $driver);
+            throw new ExpectationException('The element is not visible', $driver);
+        }
+
+        if (count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1) {
+            throw new ExpectationException('Invalid number of node elements', $driver);
+        }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+
+        foreach ($parents as $parent) {
+
+            if (!$parent->isVisible()) {
+                throw new ExpectationException( 'One of the node elements parents is not visible', $driver);
             }
 
+            if (!$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent))) {
+                throw new ExpectationException('Node is not fully visible in the viewport.', $driver);
+            }
+        }
+    }
+
+    /**
+     * @param NodeElement                       $element
+     * @throws Exception
+     * @throws ExpectationException
+     * @throws SpinnerTimeoutException
+     * @throws UnsupportedDriverActionException
+     */
+    public function assertElementIsNotFullyVisible(NodeElement $element)
+    {
+        $this->waitForPageLoad();
+
+        $driver = $this->getSession()->getDriver();
+
+        if (!$element->isVisible()) {
             return;
         }
 
-        $allAreIn = true;
+        $isInAll = true;
 
-        $parents = array_reverse($this->getListOfAllNodeElementParents($element, 'html'));
+        $parents = $this->getListOfAllNodeElementParents($element, 'html');
 
         if (count($parents) < 1) {
             throw new ExpectationException('Invalid number of node elements', $driver);
@@ -1429,23 +1435,15 @@ class FlexibleContext extends MinkContext
 
         foreach ($parents as $parent) {
             if (!$parent->isVisible()) {
-                if (!$not) {
-                    throw new ExpectationException(
-                        'One of the node elements parents is not visible', $driver
-                    );
-                }
-
                 return;
             }
-            $isIn = $elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent), $not);
-            $allAreIn = $allAreIn && !$isIn;
-            if (!$not && !$isIn) {
-                throw new ExpectationException(
-                    'Node is not fully visible in the viewport.', $driver
-                );
-            }
+
+            $isIn = $elementViewportRectangle->isNotFullyIn($this->getElementViewportRectangle($parent));
+
+            $isInAll = $isInAll && !$isIn;
         }
-        if ($not && $allAreIn) {
+
+        if ($isInAll) {
             throw new ExpectationException(
                 'Node is fully visible in the viewport.', $driver
             );
@@ -1482,7 +1480,7 @@ class FlexibleContext extends MinkContext
      *
      * @param  NodeElement $nodeElement
      * @param  string      $stopAt       html tag to stop at
-     * @return array       of nodeElements
+     * @return NodeElement[]
      */
     private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)
     {

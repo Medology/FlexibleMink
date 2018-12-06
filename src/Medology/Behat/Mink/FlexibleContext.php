@@ -1411,9 +1411,7 @@ class FlexibleContext extends MinkContext
 
         if (!$element->isVisible()) {
             if (!$not) {
-                throw new ExpectationException(
-                    'The element is not visible', $driver
-                );
+                throw new ExpectationException('The element is not visible', $driver);
             }
 
             return;

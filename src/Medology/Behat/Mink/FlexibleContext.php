@@ -1466,16 +1466,8 @@ class FlexibleContext extends MinkContext
 
         $dimensions = $driver->getXpathElementDimensions($element->getXpath());
 
-        $YScrollBarWidth = 0;
-        $XScrollBarHeight = 0;
-
-        if ($dimensions['clientWidth'] > 0) {
-            $YScrollBarWidth = $dimensions['width'] - $dimensions['clientWidth'];
-        }
-
-        if ($dimensions['clientHeight'] > 0) {
-            $XScrollBarHeight = $dimensions['height'] - $dimensions['clientHeight'];
-        }
+        $YScrollBarWidth = $dimensions['clientWidth'] > 0 ? $dimensions['width'] - $dimensions['clientWidth'] : 0;
+        $XScrollBarHeight = $dimensions['clientHeight'] > 0 ? $dimensions['height'] - $dimensions['clientHeight'] : 0;
 
         return new Rectangle(
             $dimensions['left'],

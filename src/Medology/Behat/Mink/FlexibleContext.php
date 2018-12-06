@@ -1480,25 +1480,25 @@ class FlexibleContext extends MinkContext
     /**
      * Get list of of all NodeElement parents.
      *
-     * @param  NodeElement $NodeElement
+     * @param  NodeElement $nodeElement
      * @param  string      $stopAt       html tag to stop at
      * @param  bool        $reverseOrder list parents in reverse order (root element will be at index 0)
      * @return array       of nodeElements
      */
-    private function getListOfAllNodeElementParents(NodeElement $NodeElement, $stopAt, $reverseOrder)
+    private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt, $reverseOrder)
     {
-        $NodeElements = [];
-        while ($NodeElement->getParent() instanceof NodeElement) {
-            $NodeElements[] = ($NodeElement = $NodeElement->getParent());
-            if (strtolower($NodeElement->getTagName()) === strtolower($stopAt)) {
+        $nodeElements = [];
+        while ($nodeElement->getParent() instanceof NodeElement) {
+            $nodeElements[] = ($nodeElement = $nodeElement->getParent());
+            if (strtolower($nodeElement->getTagName()) === strtolower($stopAt)) {
                 break;
             }
         }
         if ($reverseOrder) {
-            $NodeElements = array_reverse($NodeElements);
+            $nodeElements = array_reverse($nodeElements);
         }
 
-        return $NodeElements;
+        return $nodeElements;
     }
 
     /**

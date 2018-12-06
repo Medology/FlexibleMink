@@ -7,24 +7,16 @@ namespace Medology\Behat\Mink\Models\Geometry;
  */
 class Rectangle
 {
-    /**
-     * @var int Top left x position
-     */
+    /** @var int Top left x position */
     public $corner1x = 0;
 
-    /**
-     * @var int Top left y position
-     */
+    /** @var int Top left y position */
     public $corner1y = 0;
 
-    /**
-     * @var int Bottom right x position
-     */
+    /** @var int Bottom right x position */
     public $corner3x = 0;
 
-    /**
-     * @var int Bottom right y position
-     */
+    /** @var int Bottom right y position */
     public $corner3y = 0;
 
     /**

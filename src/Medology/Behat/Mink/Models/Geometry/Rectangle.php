@@ -41,27 +41,27 @@ class Rectangle
     /**
      * Checks if this is|is not inside another rectangle.
      *
-     * @param  self $Rectangle Rectangle to check if this one is inside of
+     * @param  self $rectangle Rectangle to check if this one is inside of
      * @param  bool $not       Changes to not fully in
      * @return bool returns
      */
-    public function isFullyIn(self $Rectangle, $not = false)
+    public function isFullyIn(self $rectangle, $not = false)
     {
         if (
             $not &&
-            $this->corner1x >= $Rectangle->corner1x &&
-            $this->corner3x <= $Rectangle->corner3x &&
-            $this->corner1y >= $Rectangle->corner1y &&
-            $this->corner3y <= $Rectangle->corner3y
+            $this->corner1x >= $rectangle->corner1x &&
+            $this->corner3x <= $rectangle->corner3x &&
+            $this->corner1y >= $rectangle->corner1y &&
+            $this->corner3y <= $rectangle->corner3y
         ) {
             return false;
         } elseif (
             !$not &&
             (
-                $this->corner1x < $Rectangle->corner1x ||
-                $this->corner3x > $Rectangle->corner3x ||
-                $this->corner1y < $Rectangle->corner1y ||
-                $this->corner3y > $Rectangle->corner3y
+                $this->corner1x < $rectangle->corner1x ||
+                $this->corner3x > $rectangle->corner3x ||
+                $this->corner1y < $rectangle->corner1y ||
+                $this->corner3y > $rectangle->corner3y
             )
         ) {
             return false;

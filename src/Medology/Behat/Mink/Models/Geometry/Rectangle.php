@@ -41,11 +41,11 @@ class Rectangle
     /**
      * Checks if this is|is not inside another rectangle.
      *
-     * @param  self $rectangle Rectangle to check if this one is inside of
-     * @param  bool $not       Changes to not fully in
-     * @return bool returns
+     * @param  Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param  bool      $not       Changes to not fully in
+     * @return bool      returns
      */
-    public function isFullyIn(self $rectangle, $not = false)
+    public function isFullyIn(Rectangle $rectangle, $not = false)
     {
         if (
             $not &&

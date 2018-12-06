@@ -1419,7 +1419,7 @@ class FlexibleContext extends MinkContext
 
         $allAreIn = true;
 
-        $parents = $this->getListOfAllNodeElementParents($element, 'html', true);
+        $parents = array_reverse($this->getListOfAllNodeElementParents($element, 'html'));
 
         if (count($parents) < 1) {
             throw new ExpectationException('Invalid number of node elements', $driver);
@@ -1482,10 +1482,9 @@ class FlexibleContext extends MinkContext
      *
      * @param  NodeElement $nodeElement
      * @param  string      $stopAt       html tag to stop at
-     * @param  bool        $reverseOrder list parents in reverse order (root element will be at index 0)
      * @return array       of nodeElements
      */
-    private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt, $reverseOrder)
+    private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)
     {
         $nodeElements = [];
         while ($nodeElement->getParent() instanceof NodeElement) {
@@ -1493,9 +1492,6 @@ class FlexibleContext extends MinkContext
             if (strtolower($nodeElement->getTagName()) === strtolower($stopAt)) {
                 break;
             }
-        }
-        if ($reverseOrder) {
-            $nodeElements = array_reverse($nodeElements);
         }
 
         return $nodeElements;

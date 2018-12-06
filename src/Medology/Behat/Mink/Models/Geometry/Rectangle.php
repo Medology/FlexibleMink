@@ -46,27 +46,10 @@ class Rectangle
      */
     public function isFullyIn(Rectangle $rectangle)
     {
-        return !(
-            $this->left < $rectangle->left ||
-            $this->right > $rectangle->right ||
-            $this->top < $rectangle->top ||
-            $this->bottom > $rectangle->bottom
-        );
-    }
-
-    /**
-     * Checks if this is not inside another rectangle.
-     *
-     * @param  Rectangle $rectangle Rectangle to check if this one is not inside of
-     * @return bool      returns
-     */
-    public function isNotFullyIn(Rectangle $rectangle)
-    {
-        return !(
-                $this->left >= $rectangle->left &&
-                $this->right <= $rectangle->right &&
-                $this->top >= $rectangle->top &&
-                $this->bottom <= $rectangle->bottom
-            );
+        return
+            $this->left   >= $rectangle->left   &&
+            $this->right  <= $rectangle->right  &&
+            $this->top    >= $rectangle->top    &&
+            $this->bottom <= $rectangle->bottom ;
     }
 }

@@ -1438,7 +1438,7 @@ class FlexibleContext extends MinkContext
                 return;
             }
 
-            $isIn = $elementViewportRectangle->isNotFullyIn($this->getElementViewportRectangle($parent));
+            $isIn = !$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent));
 
             $isInAll = $isInAll && !$isIn;
         }

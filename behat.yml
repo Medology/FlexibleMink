@@ -9,6 +9,7 @@ default:
         - Medology\Behat\Mink\AlertContext
         - Medology\Behat\Mink\FlexibleContext
         - Medology\Behat\Mink\JavaScriptContext
+        - Medology\Behat\Mink\QualityAssurance
         - Medology\Behat\Mink\ScreenShotContext
         - Medology\Behat\Mink\TableContext
         - Medology\Behat\Mink\WebDownloadContext

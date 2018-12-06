@@ -1372,42 +1372,26 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should(?P<not> not|) be fully visible$/
-     *
-     * @param  string                           $qaId The qaId of the dom element to find
-     * @param  bool                             $not  Asserts qaId is partially or not visible in the viewport.
+     * @param  TraversableElement               $element The element to assert visibility of.
+     * @param  bool                             $not     Asserts qaId is partially or not visible in the viewport.
      * @throws ExpectationException
-     * @throws ReflectionException
      * @throws SpinnerTimeoutException
      * @throws UnsupportedDriverActionException
      */
-    public function assertQaIDIsFullyVisible($qaId, $not = false)
+    public function assertElementIsFullyVisible(TraversableElement $element, $not = false)
     {
-        $qaId = $this->storeContext->injectStoredValues($qaId);
-
-        $this->waitForPageLoad();
-
         $driver = $this->getSession()->getDriver();
 
-        $nodeElement = $this->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
-
-        if (!$nodeElement instanceof NodeElement && !$not) {
+        if (!$element instanceof NodeElement && !$not) {
             throw new ExpectationException(
                 "Couldn't find node element by qaId in " . __FUNCTION__,
                 $driver
             );
-        } elseif (!$nodeElement instanceof NodeElement && $not) {
+        } elseif (!$element instanceof NodeElement && $not) {
             return;
         }
 
-        try {
-            $this->assertNodeIsFullyVisible($nodeElement, $not);
-        } catch (ExpectationException $ExpectationException) {
-            throw new ExpectationException(
-                str_replace(['Node', 'node'], $qaId, $ExpectationException->getMessage()),
-                $driver
-            );
-        }
+        $this->assertNodeIsFullyVisible($element, $not);
     }
 
     /**

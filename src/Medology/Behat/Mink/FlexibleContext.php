@@ -1408,9 +1408,7 @@ class FlexibleContext extends MinkContext
         $this->waitForPageLoad();
 
         $driver = $this->getSession()->getDriver();
-        if (!$element instanceof NodeElement) {
-            throw new ExpectationException('Invalid node sent to ' . __FUNCTION__, $driver);
-        }
+
         if (!$element->isVisible()) {
             if (!$not) {
                 throw new ExpectationException(

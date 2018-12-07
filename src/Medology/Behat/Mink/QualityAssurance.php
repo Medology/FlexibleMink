@@ -7,8 +7,14 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Medology\Behat\UsesStoreContext;
 use Medology\SpinnerTimeoutException;
 use ReflectionException;
-use WebDriver\Exception as WebDriverException;
 
+/**
+ * Overwrites some MinkContext step definitions to make them more resilient to failures caused by browser/driver
+ * discrepancies and unpredictable load times.
+ *
+ * Class QualityAssurance
+ * @package Medology\Behat\Mink
+ */
 class QualityAssurance implements Context
 {
     use UsesFlexibleContext;
@@ -17,12 +23,11 @@ class QualityAssurance implements Context
     /**
      * Get a NodeElement by qaId
      *
-     * @param $qaId string the qaId of the Element to get
-     *
-     * @return NodeElement
-     *
-     * @throws ExpectationException
-     * @throws SpinnerTimeoutException
+     * @param string                   $qaId string the qaId of the Element to get
+     * @return NodeElement             Page element node
+     * @throws ExpectationException    Exception thrown for failed expectations
+     * @throws SpinnerTimeoutException Thrown when the Spinner did not execute a
+     *                                 single attempt of the closure before the timeout expired.
      */
     protected function getNodeElementByQaID($qaId) {
         $this->flexibleContext->waitForPageLoad();
@@ -30,24 +35,9 @@ class QualityAssurance implements Context
     }
 
     /**
-     * Get a array of NodeElements by qaId
-     *
-     * @param $qaId string the qaId of the Elements to get
-     *
-     * @return NodeElement[]
-     *
-     * @throws ExpectationException
-     * @throws SpinnerTimeoutException
-     */
-    protected function getNodeElementsByQaID($qaId) {
-        $this->flexibleContext->waitForPageLoad();
-        return $this->flexibleContext->getSession()->getPage()->findAll('xpath', '//*[@data-qa-id="' . $qaId . '"]');
-    }
-
-    /**
      * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should be fully visible$/
+     * @Then /^"(?P<qaId>[^"]+)" should be fully visible in the viewport$/
      *
      * @param string $qaId
      * @throws ExpectationException             If the element is fully visible
@@ -56,9 +46,9 @@ class QualityAssurance implements Context
      *                                          the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
-     * @throws WebDriverException
+     * @throws \WebDriver\Exception
      */
-    public function assertQaIDIsFullyVisible($qaId)
+    public function assertQaIDIsFullyVisibleInViewport($qaId)
     {
         $this->flexibleContext->waitForPageLoad();
 
@@ -71,13 +61,17 @@ class QualityAssurance implements Context
             );
         }
 
-        $this->flexibleContext->assertElementIsFullyVisible($element);
+        if (!$this->flexibleContext->nodeIsFullyVisibleInViewport($element)) {
+            throw new ExpectationException('Node is not visible in the viewport.',
+                $this->flexibleContext->getSession()->getDriver()
+            );
+        }
     }
 
     /**
      * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should not be fully visible$/
+     * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
      *
      * @param string $qaId
      * @throws ExpectationException             If the element is fully visible
@@ -85,10 +79,10 @@ class QualityAssurance implements Context
      *                                          passed. This should never happen. If it does, there is a problem with
      *                                          the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
-     * @throws UnsupportedDriverActionException
-     * @throws WebDriverException
+     * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
+     * @throws \WebDriver\Exception
      */
-    public function assertQaIDIsNotFullyVisible($qaId)
+    public function assertQaIDIsNotFullyVisibleInViewport($qaId)
     {
         $this->flexibleContext->waitForPageLoad();
 
@@ -98,6 +92,10 @@ class QualityAssurance implements Context
             return;
         }
 
-        $this->flexibleContext->assertElementIsNotFullyVisible($element);
+        if ($this->flexibleContext->nodeIsFullyVisibleInViewport($element)) {
+            throw new ExpectationException('Node is visible in the viewport.',
+                $this->flexibleContext->getSession()->getDriver()
+            );
+        }
     }
 }

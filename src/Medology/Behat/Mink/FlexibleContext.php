@@ -1370,91 +1370,37 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a NodeElement is fully visible.
+     * Asserts that a NodeElement is fully visible in viewport.
      *
-     * @param NodeElement                       $element
+     * @param NodeElement $element
+     * @return bool
      * @throws Exception
-     * @throws ExpectationException
-     * @throws SpinnerTimeoutException
      * @throws UnsupportedDriverActionException
      */
-    public function assertElementIsFullyVisible(NodeElement $element)
+    public function nodeIsFullyVisibleInViewport(NodeElement $element)
     {
-        $this->waitForPageLoad();
 
-        $driver = $this->getSession()->getDriver();
-
-        if (!$element->isVisible()) {
-            throw new ExpectationException('The element is not visible', $driver);
-        }
-
-        if (count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1) {
-            throw new ExpectationException('Invalid number of node elements', $driver);
-        }
+        if (
+            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1 ||
+            !$element->isVisible()
+        ) return false;
 
         $elementViewportRectangle = $this->getElementViewportRectangle($element);
 
         foreach ($parents as $parent) {
-
-            if (!$parent->isVisible()) {
-                throw new ExpectationException( 'One of the node elements parents is not visible', $driver);
-            }
-
-            if (!$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent))) {
-                throw new ExpectationException('Node is not fully visible in the viewport.', $driver);
-            }
+            if (
+                !$parent->isVisible() ||
+                !$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent))
+            )
+            { return false; }
         }
-    }
-
-    /**
-     * @param NodeElement                       $element
-     * @throws Exception
-     * @throws ExpectationException
-     * @throws SpinnerTimeoutException
-     * @throws UnsupportedDriverActionException
-     */
-    public function assertElementIsNotFullyVisible(NodeElement $element)
-    {
-        $this->waitForPageLoad();
-
-        $driver = $this->getSession()->getDriver();
-
-        if (!$element->isVisible()) {
-            return;
-        }
-
-        $isInAll = true;
-
-        $parents = $this->getListOfAllNodeElementParents($element, 'html');
-
-        if (count($parents) < 1) {
-            throw new ExpectationException('Invalid number of node elements', $driver);
-        }
-
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
-        foreach ($parents as $parent) {
-            if (!$parent->isVisible()) {
-                return;
-            }
-
-            $isIn = !$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent));
-
-            $isInAll = $isInAll && !$isIn;
-        }
-
-        if ($isInAll) {
-            throw new ExpectationException(
-                'Node is fully visible in the viewport.', $driver
-            );
-        }
+        return true;
     }
 
     /**
      * Get a rectangle that represents the location of a NodeElements viewport.
      *
      * @param  NodeElement                      $element NodeElement to get the viewport of.
-     * @throws Exception                        If the operation failed.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      * @return Rectangle                        representing the viewport
      */

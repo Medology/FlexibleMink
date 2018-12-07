@@ -1372,13 +1372,12 @@ class FlexibleContext extends MinkContext
     /**
      * Returns true is $element is fully visible in the viewport, otherwise false.
      *
-     * @param NodeElement $element the NodeElement to look for in the viewport.
-     * @return bool True is $element is fully visible in the viewport, otherwise false.
+     * @param  NodeElement                      $element the NodeElement to look for in the viewport.
      * @throws UnsupportedDriverActionException if driver does not support the requested action.
+     * @return bool                             True is $element is fully visible in the viewport, otherwise false.
      */
     public function nodeIsFullyVisibleInViewport(NodeElement $element)
     {
-
         if (!$element->isVisible() ||
             count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
         ) {
@@ -1394,6 +1393,7 @@ class FlexibleContext extends MinkContext
                 return false;
             }
         }
+
         return true;
     }
 
@@ -1424,8 +1424,8 @@ class FlexibleContext extends MinkContext
     /**
      * Get list of of all NodeElement parents.
      *
-     * @param  NodeElement $nodeElement
-     * @param  string      $stopAt       html tag to stop at
+     * @param  NodeElement   $nodeElement
+     * @param  string        $stopAt      html tag to stop at
      * @return NodeElement[]
      */
     private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)

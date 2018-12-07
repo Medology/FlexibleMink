@@ -7,7 +7,6 @@ namespace Medology\Behat\Mink\Models\Geometry;
  */
 class Rectangle
 {
-
     /** @var int left x position */
     public $left = 0;
 
@@ -20,14 +19,13 @@ class Rectangle
     /** @var int bottom y position */
     public $bottom = 0;
 
-
     /**
      * Rectangle constructor.
      *
      *
-     * @param int $left left x position
-     * @param int $top Top y position
-     * @param int $right right x position
+     * @param int $left   left x position
+     * @param int $top    Top y position
+     * @param int $right  right x position
      * @param int $bottom Bottom y position
      */
     public function __construct($left, $top, $right, $bottom)
@@ -44,12 +42,12 @@ class Rectangle
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    public function isFullyIn(Rectangle $rectangle)
+    public function isFullyIn(self $rectangle)
     {
         return
-            $this->left   >= $rectangle->left   &&
-            $this->right  <= $rectangle->right  &&
-            $this->top    >= $rectangle->top    &&
-            $this->bottom <= $rectangle->bottom ;
+            $this->left >= $rectangle->left &&
+            $this->right <= $rectangle->right &&
+            $this->top >= $rectangle->top &&
+            $this->bottom <= $rectangle->bottom;
     }
 }

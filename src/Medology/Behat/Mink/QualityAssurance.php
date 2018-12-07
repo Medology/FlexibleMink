@@ -13,7 +13,6 @@ use ReflectionException;
  * discrepancies and unpredictable load times.
  *
  * Class QualityAssurance
- * @package Medology\Behat\Mink
  */
 class QualityAssurance implements Context
 {
@@ -21,16 +20,18 @@ class QualityAssurance implements Context
     use UsesStoreContext;
 
     /**
-     * Get a NodeElement by qaId
+     * Get a NodeElement by qaId.
      *
-     * @param string                   $qaId string the qaId of the Element to get
-     * @return NodeElement             Page element node
+     * @param  string                  $qaId string the qaId of the Element to get
      * @throws ExpectationException    Exception thrown for failed expectations
      * @throws SpinnerTimeoutException Thrown when the Spinner did not execute a
-     *                                 single attempt of the closure before the timeout expired.
+     *                                      single attempt of the closure before the timeout expired.
+     * @return NodeElement             Page element node
      */
-    protected function getNodeElementByQaID($qaId) {
+    protected function getNodeElementByQaID($qaId)
+    {
         $this->flexibleContext->waitForPageLoad();
+
         return $this->flexibleContext->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
     }
 
@@ -39,11 +40,11 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should be fully visible in the viewport$/
      *
-     * @param string $qaId
+     * @param  string                           $qaId
      * @throws ExpectationException             If the element is fully visible
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     *                                               passed. This should never happen. If it does, there is a problem with
+     *                                               the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @throws \WebDriver\Exception
@@ -73,11 +74,11 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
      *
-     * @param string $qaId
+     * @param  string                           $qaId
      * @throws ExpectationException             If the element is fully visible
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     *                                               passed. This should never happen. If it does, there is a problem with
+     *                                               the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
      */

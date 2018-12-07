@@ -69,7 +69,7 @@ class QualityAssurance implements Context
     }
 
     /**
-     * Asserts that a qaId is fully visible.
+     * Asserts that a qaId is not fully visible.
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
      *
@@ -80,7 +80,6 @@ class QualityAssurance implements Context
      *                                          the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
-     * @throws \WebDriver\Exception
      */
     public function assertQaIDIsNotFullyVisibleInViewport($qaId)
     {

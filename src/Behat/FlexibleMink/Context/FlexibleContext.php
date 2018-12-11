@@ -213,6 +213,7 @@ class FlexibleContext extends MinkContext
         });
 
         $element->setValue($value);
+        $element->blur();
     }
 
     /**

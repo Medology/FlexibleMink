@@ -5,16 +5,16 @@ use Behat\Mink\Exception\ExpectationException;
 
 trait QualityAssurance
 {
-
     /**
      * Get a NodeElement by qaId.
      *
-     * @param  string                  $qaId string the qaId of the Element to get
-     * @return NodeElement             Page element node
+     * @param  string      $qaId string the qaId of the Element to get
+     * @return NodeElement Page element node
      */
     protected function getNodeElementByQaID($qaId)
     {
         $this->waitForPageLoad();
+
         return $this->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
     }
 
@@ -23,10 +23,10 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should be fully visible in the viewport$/
      *
-     * @param  string                           $qaId
-     * @throws ExpectationException             If the element is fully visible
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
+     *                                   passed. This should never happen. If it does, there is a problem with
+     *                                   the injectStoredValues method.
      */
     public function assertQaIDIsFullyVisibleInViewport($qaId)
     {
@@ -50,10 +50,10 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
      *
-     * @param  string                           $qaId
-     * @throws ExpectationException             If the element is fully visible
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
+     *                                   passed. This should never happen. If it does, there is a problem with
+     *                                   the injectStoredValues method.
      */
     public function assertQaIDIsNotFullyVisibleInViewport($qaId)
     {

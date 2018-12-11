@@ -7,7 +7,6 @@ namespace Behat\FlexibleMink\Models\Geometry;
  */
 class Rectangle
 {
-
     /** @var int left x position */
     public $left = 0;
 

@@ -1090,6 +1090,7 @@ class FlexibleContext extends MinkContext
                 return false;
             }
         }
+
         return true;
     }
 
@@ -1106,6 +1107,7 @@ class FlexibleContext extends MinkContext
         $dimensions = $driver->getXpathElementDimensions($element->getXpath());
         $YScrollBarWidth = $dimensions['clientWidth'] > 0 ? $dimensions['width'] - $dimensions['clientWidth'] : 0;
         $XScrollBarHeight = $dimensions['clientHeight'] > 0 ? $dimensions['height'] - $dimensions['clientHeight'] : 0;
+
         return new Rectangle(
             $dimensions['left'],
             $dimensions['top'],
@@ -1130,6 +1132,7 @@ class FlexibleContext extends MinkContext
                 break;
             }
         }
+
         return $nodeElements;
     }
 

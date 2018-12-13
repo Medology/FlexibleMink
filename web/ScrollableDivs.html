@@ -1,51 +1,52 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Scrollable Divs</title>
     <script>
-      /**
-       * Centers all scrolls
-       *
-       * @param ClassName
-       * @param x x offset from center
-       * @param y y offset from center
-       * @constructor
-       */
-      function SetScrolls(ClassName,x=0,y=0) {
-        let divs = document.body.getElementsByClassName(ClassName);
-        for (let i = 0; i < divs.length; i++) {
-          let div = divs[i];
-          let rect = div.getBoundingClientRect();
-          let YScrollBarWidth = ( rect.width - div.clientWidth );
-          let XScrollBarHeight = ( rect.height - div.clientHeight );
-          let clientWidth = div.clientWidth + YScrollBarWidth;
-          let clientHeight = div.clientHeight + XScrollBarHeight;
-          let scrollWidth = div.scrollWidth;
-          let scrollHeight = div.scrollHeight;
-          div.style.lineHeight = (scrollHeight*1) + 'px';
-          div.scrollLeft = ( scrollWidth  / 2  ) - ( ( clientWidth  - YScrollBarWidth  ) / 2 )  - (YScrollBarWidth/2) + x;
-          div.scrollTop  = ( scrollHeight / 2  ) - ( ( clientHeight - XScrollBarHeight ) / 2 )  - (XScrollBarHeight/2) + y;
+        /**
+         * Centers all scrolls
+         *
+         * @param ClassName
+         * @param x x offset from center
+         * @param y y offset from center
+         * @constructor
+         */
+        function SetScrolls(ClassName,x=0,y=0) {
+            let divs = document.body.getElementsByClassName(ClassName);
+            for (let i = 0; i < divs.length; i++) {
+                let div = divs[i];
+                let rect = div.getBoundingClientRect();
+                let YScrollBarWidth = ( rect.width - div.clientWidth );
+                let XScrollBarHeight = ( rect.height - div.clientHeight );
+                let clientWidth = div.clientWidth + YScrollBarWidth;
+                let clientHeight = div.clientHeight + XScrollBarHeight;
+                let scrollWidth = div.scrollWidth;
+                let scrollHeight = div.scrollHeight;
+                div.style.lineHeight = (scrollHeight*1) + 'px';
+                div.scrollLeft = ( scrollWidth  / 2  ) - ( ( clientWidth  - YScrollBarWidth  ) / 2 )  - (YScrollBarWidth/2) + x;
+                div.scrollTop  = ( scrollHeight / 2  ) - ( ( clientHeight - XScrollBarHeight ) / 2 )  - (XScrollBarHeight/2) + y;
+            }
         }
-      }
-      document.addEventListener('DOMContentLoaded', function () {
-        document.body.onload = function () {
-          SetScrolls('AllCenter1', 5, 12);
-          SetScrolls('AllCenter2', 5, -12);
-          SetScrolls('AllCenter3', -5, 12);
-          SetScrolls('AllCenter4', -5, -12);
-          SetScrolls('PartialLeft', 15);
-          SetScrolls('PartialRight', -15);
-          SetScrolls('PartialTop', 0, 15);
-          SetScrolls('PartialBottom', 0, -14);
-          SetScrolls('OutToLeft', 30);
-          SetScrolls('OutToRight', -30);
-          SetScrolls('OutToTop', 0, 30);
-          SetScrolls('OutToBottom', 0, -30);
-          SetScrolls('visible');
-          SetScrolls('invisible');
-        }
-      });
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.onload = function () {
+                SetScrolls('AllCenter1', 5, 12);
+                SetScrolls('AllCenter2', 5, -12);
+                SetScrolls('AllCenter3', -5, 12);
+                SetScrolls('AllCenter4', -5, -12);
+                SetScrolls('PartialLeft', 15);
+                SetScrolls('PartialRight', -15);
+                SetScrolls('PartialTop', 0, 15);
+                SetScrolls('PartialBottom', 0, -14);
+                SetScrolls('OutToLeft', 30);
+                SetScrolls('OutToRight', -30);
+                SetScrolls('OutToTop', 0, 30);
+                SetScrolls('OutToBottom', 0, -30);
+                SetScrolls('visible');
+                SetScrolls('invisible');
+            }
+        });
     </script>
     <style>
         div {
@@ -279,10 +280,10 @@
 <div class="invisible top">
     <div class="invisible">
         <div class="invisible">
-            <div class="invisible">
+            <div class="invisible" style="visibility: hidden;">
                 <div class="invisible">
                     <div class="invisible">
-                        <span data-qa-id="Invisible 2" style="visibility: hidden;">Invisible 2</span>
+                        <span data-qa-id="Invisible 2">Invisible 2</span>
                     </div>
                 </div>
             </div>
@@ -302,5 +303,188 @@
         </div>
     </div>
 </div>
+<button data-qa-id="Button 1">
+    Button 1
+</button>
+<button style="visibility: hidden;" data-qa-id="Button 2">
+    Button 2
+</button>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<button data-qa-id="Button 3">
+    Button 3
+</button>
+<button style="display:none;" data-qa-id="Button 4">
+    Button 4
+</button>
+<div>
+    <div style="display:none;">
+        <div>
+            <div>
+                <div>
+                    <button data-qa-id="Button 5">
+                        Button 5
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+Button 6 does not exist.
 </body>
 </html>

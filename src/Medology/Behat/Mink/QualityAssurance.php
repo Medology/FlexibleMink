@@ -159,4 +159,63 @@ class QualityAssurance implements Context
             );
         }
     }
+
+    /**
+     * Asserts that a qaId is visible in the document.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should be visible in the document/
+     *
+     * @param string $qaId
+     * @throws ExpectationException             If the element is fully visible
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
+     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     */
+    public function assertQaIDIsVisibleInDocument($qaId)
+    {
+        $this->flexibleContext->waitForPageLoad();
+
+        $element = $this->getNodeElementByQaID($this->storeContext->injectStoredValues($qaId));
+
+        if (!$element) {
+            throw new ExpectationException(
+                "Data QA ID '$qaId' is not visible, but it should be",
+                $this->flexibleContext->getSession()
+            );
+        }
+
+        if (!$this->flexibleContext->nodeIsVisibleInDocument($element)) {
+            throw new ExpectationException('Node is not visible in the document.',
+                $this->flexibleContext->getSession()->getDriver()
+            );
+        }
+    }
+
+    /**
+     * Asserts that a qaId is not visible in the document.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the document$/
+     *
+     * @param string $qaId
+     * @throws ExpectationException             If the element is fully visible
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
+     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     */
+    public function assertQaIDIsNotVisibleInDocument($qaId)
+    {
+        $this->flexibleContext->waitForPageLoad();
+
+        $element = $this->getNodeElementByQaID($this->storeContext->injectStoredValues($qaId));
+
+        if (!$element) return;
+
+        if ($this->flexibleContext->nodeIsVisibleInDocument($element)) {
+            throw new ExpectationException('Node is visible in the document.',
+                $this->flexibleContext->getSession()->getDriver()
+            );
+        }
+    }
 }

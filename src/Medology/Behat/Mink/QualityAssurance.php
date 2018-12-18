@@ -104,12 +104,12 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should be visible in the viewport$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
-     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is fully visible
+     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
+     *                                      passed. This should never happen. If it does, there is a problem with
+     *                                      the injectStoredValues method.
+     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
      */
     public function assertQaIDIsVisibleInViewport($qaId)
     {
@@ -136,12 +136,12 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be visible in the viewport$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
-     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is fully visible
+     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
+     *                                      passed. This should never happen. If it does, there is a problem with
+     *                                      the injectStoredValues method.
+     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
      */
     public function assertQaIDIsNotVisibleInViewport($qaId)
     {
@@ -165,12 +165,12 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should be visible in the document/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
-     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is fully visible
+     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
+     *                                      passed. This should never happen. If it does, there is a problem with
+     *                                      the injectStoredValues method.
+     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
      */
     public function assertQaIDIsVisibleInDocument($qaId)
     {
@@ -197,12 +197,12 @@ class QualityAssurance implements Context
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be visible in the document$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
-     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                          passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is fully visible
+     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
+     *                                      passed. This should never happen. If it does, there is a problem with
+     *                                      the injectStoredValues method.
+     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
      */
     public function assertQaIDIsNotVisibleInDocument($qaId)
     {
@@ -210,7 +210,9 @@ class QualityAssurance implements Context
 
         $element = $this->getNodeElementByQaID($this->storeContext->injectStoredValues($qaId));
 
-        if (!$element) return;
+        if (!$element) {
+            return;
+        }
 
         if ($this->flexibleContext->nodeIsVisibleInDocument($element)) {
             throw new ExpectationException('Node is visible in the document.',

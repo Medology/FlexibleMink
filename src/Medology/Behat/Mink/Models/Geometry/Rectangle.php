@@ -7,7 +7,6 @@ namespace Medology\Behat\Mink\Models\Geometry;
  */
 class Rectangle
 {
-
     /** @var int left x position */
     public $left = 0;
 
@@ -20,14 +19,13 @@ class Rectangle
     /** @var int bottom y position */
     public $bottom = 0;
 
-
     /**
      * Rectangle constructor.
      *
      *
-     * @param int $left left x position
-     * @param int $top Top y position
-     * @param int $right right x position
+     * @param int $left   left x position
+     * @param int $top    Top y position
+     * @param int $right  right x position
      * @param int $bottom Bottom y position
      */
     public function __construct($left, $top, $right, $bottom)
@@ -44,13 +42,13 @@ class Rectangle
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    public function isFullyIn(Rectangle $rectangle)
+    public function isFullyIn(self $rectangle)
     {
         return
-            $this->left   >= $rectangle->left   &&
-            $this->right  <= $rectangle->right  &&
-            $this->top    >= $rectangle->top    &&
-            $this->bottom <= $rectangle->bottom ;
+            $this->left >= $rectangle->left &&
+            $this->right <= $rectangle->right &&
+            $this->top >= $rectangle->top &&
+            $this->bottom <= $rectangle->bottom;
     }
 
     /**
@@ -59,10 +57,11 @@ class Rectangle
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    private function xIntersectsWith(Rectangle $rectangle) {
+    private function xIntersectsWith(self $rectangle)
+    {
         return (
-                $this->left  >= $rectangle->left &&
-                $this->left  <= $rectangle->right
+                $this->left >= $rectangle->left &&
+                $this->left <= $rectangle->right
             ) || (
                 $this->right <= $rectangle->right &&
                 $this->right >= $rectangle->left
@@ -75,10 +74,11 @@ class Rectangle
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    private function yIntersectsWith(Rectangle $rectangle) {
+    private function yIntersectsWith(self $rectangle)
+    {
         return (
-                $this->top  >= $rectangle->top &&
-                $this->top  <= $rectangle->bottom
+                $this->top >= $rectangle->top &&
+                $this->top <= $rectangle->bottom
             ) || (
                 $this->bottom <= $rectangle->bottom &&
                 $this->bottom >= $rectangle->top
@@ -91,7 +91,7 @@ class Rectangle
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    public function isIn(Rectangle $rectangle)
+    public function isIn(self $rectangle)
     {
         return $this->yIntersectsWith($rectangle) && $this->xIntersectsWith($rectangle);
     }

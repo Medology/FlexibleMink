@@ -68,4 +68,57 @@ trait QualityAssurance
             );
         }
     }
+
+    /**
+     * Asserts that a qaId is visible in the viewport.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should be visible in the viewport$/
+     *
+     * @param string $qaId
+     * @throws ExpectationException             If the element is fully visible
+     */
+    public function assertQaIDIsVisibleInViewport($qaId)
+    {
+        $this->waitForPageLoad();
+
+        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+
+        if (!$element) {
+            throw new ExpectationException(
+                "Data QA ID '$qaId' is not visible, but it should be",
+                $this->getSession()
+            );
+        }
+
+        if (!$this->nodeIsVisibleInViewport($element)) {
+            throw new ExpectationException('Node is not visible in the viewport.',
+                $this->getSession()->getDriver()
+            );
+        }
+    }
+
+    /**
+     * Asserts that a qaId is not visible in the viewport.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the viewport$/
+     *
+     * @param string $qaId
+     * @throws ExpectationException             If the element is fully visible
+     */
+    public function assertQaIDIsNotVisibleInViewport($qaId)
+    {
+        $this->waitForPageLoad();
+
+        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+
+        if (!$element) {
+            return;
+        }
+
+        if ($this->nodeIsVisibleInViewport($element)) {
+            throw new ExpectationException('Node is visible in the viewport.',
+                $this->getSession()->getDriver()
+            );
+        }
+    }
 }

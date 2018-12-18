@@ -50,8 +50,8 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should be visible in the viewport$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
      */
     public function assertQaIDIsVisibleInViewport($qaId)
     {
@@ -78,8 +78,8 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be visible in the viewport$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
      */
     public function assertQaIDIsNotVisibleInViewport($qaId)
     {
@@ -127,8 +127,8 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should be visible in the document/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
      */
     public function assertQaIDIsVisibleInDocument($qaId)
     {
@@ -155,8 +155,8 @@ trait QualityAssurance
      *
      * @Then /^"(?P<qaId>[^"]+)" should not be visible in the document$/
      *
-     * @param string $qaId
-     * @throws ExpectationException             If the element is fully visible
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
      */
     public function assertQaIDIsNotVisibleInDocument($qaId)
     {
@@ -164,7 +164,9 @@ trait QualityAssurance
 
         $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        if (!$element) return;
+        if (!$element) {
+            return;
+        }
 
         if ($this->nodeIsVisibleInDocument($element)) {
             throw new ExpectationException('Node is visible in the document.',

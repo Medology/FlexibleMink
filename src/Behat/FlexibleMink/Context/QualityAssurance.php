@@ -70,14 +70,14 @@ trait QualityAssurance
     }
 
     /**
-     * Asserts that a qaId is visible in the viewport.
+     * Asserts that a qaId is visible in the document.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should be visible in the viewport$/
+     * @Then /^"(?P<qaId>[^"]+)" should be visible in the document/
      *
      * @param string $qaId
      * @throws ExpectationException             If the element is fully visible
      */
-    public function assertQaIDIsVisibleInViewport($qaId)
+    public function assertQaIDIsVisibleInDocument($qaId)
     {
         $this->waitForPageLoad();
 
@@ -90,33 +90,31 @@ trait QualityAssurance
             );
         }
 
-        if (!$this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException('Node is not visible in the viewport.',
+        if (!$this->nodeIsVisibleInDocument($element)) {
+            throw new ExpectationException('Node is not visible in the document.',
                 $this->getSession()->getDriver()
             );
         }
     }
 
     /**
-     * Asserts that a qaId is not visible in the viewport.
+     * Asserts that a qaId is not visible in the document.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the viewport$/
+     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the document$/
      *
      * @param string $qaId
      * @throws ExpectationException             If the element is fully visible
      */
-    public function assertQaIDIsNotVisibleInViewport($qaId)
+    public function assertQaIDIsNotVisibleInDocument($qaId)
     {
         $this->waitForPageLoad();
 
         $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        if (!$element) {
-            return;
-        }
+        if (!$element) return;
 
-        if ($this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException('Node is visible in the viewport.',
+        if ($this->nodeIsVisibleInDocument($element)) {
+            throw new ExpectationException('Node is visible in the document.',
                 $this->getSession()->getDriver()
             );
         }

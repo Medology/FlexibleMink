@@ -1095,6 +1095,39 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that a NodeElement is visible in viewport.
+     *
+     * @param NodeElement $element
+     * @return bool
+     * @throws DriverException
+     * @throws UnsupportedDriverActionException
+     */
+    public function nodeIsVisibleInViewport(NodeElement $element)
+    {
+        $driver = $this->getSession()->getDriver();
+
+        if (
+            !$driver->isDisplayed($element->getXpath())||
+            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
+        ) {
+            return false;
+        }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+
+        foreach ($parents as $parent) {
+            if (
+                !$driver->isDisplayed($parent->getXpath()) ||
+                !$elementViewportRectangle->isIn($this->getElementViewportRectangle($parent))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Asserts that a NodeElement is visible in document.
      *
      * @param NodeElement $element

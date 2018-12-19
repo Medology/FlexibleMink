@@ -52,12 +52,28 @@ class Rectangle
     }
 
     /**
-     * Checks if rectangle intersects in x.
+     * Checks if X lines of (this)rectangle are in between the x lines of $rectangle
+     *
+     *  ______________________________
+     * |                              |
+     * |          $rectangle          |
+     * |          Rectangle           |
+     * |         ____________         |
+     * |        |            |        |
+     * |        |   ($this)  |        |
+     * |  <-->  |  rectangle |  <-->  |
+     * |        |            |        |
+     * |        |____________|        |
+     * |                              |
+     * |                              |
+     * |                              |
+     * |______________________________|
+     *
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    private function xIntersectsWith(self $rectangle)
+    private function isInX(self $rectangle)
     {
         return (
                 $this->left >= $rectangle->left &&
@@ -65,16 +81,34 @@ class Rectangle
             ) || (
                 $this->right <= $rectangle->right &&
                 $this->right >= $rectangle->left
+            ) || (
+                $this->left <= $rectangle->left &&
+                $this->right >= $rectangle->right
             );
     }
 
     /**
-     * Checks if rectangles intersects in y.
+     * Checks if Y lines of (this)rectangle are in between the Y lines of $rectangle
+     *
+     *  ______________________________
+     * |               ↑              |
+     * | $rectangle    |              |
+     * | Rectangle     ↓              |
+     * |         ____________         |
+     * |        |            |        |
+     * |        |   ($this)  |        |
+     * |        |  rectangle |        |
+     * |        |            |        |
+     * |        |____________|        |
+     * |               ↑              |
+     * |               |              |
+     * |               ↓              |
+     * |______________________________|
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      * @return bool      returns
      */
-    private function yIntersectsWith(self $rectangle)
+    private function isInY(self $rectangle)
     {
         return (
                 $this->top >= $rectangle->top &&
@@ -82,6 +116,9 @@ class Rectangle
             ) || (
                 $this->bottom <= $rectangle->bottom &&
                 $this->bottom >= $rectangle->top
+            ) || (
+                $this->top <= $rectangle->top &&
+                $this->bottom >= $rectangle->bottom
             );
     }
 
@@ -93,6 +130,6 @@ class Rectangle
      */
     public function isIn(self $rectangle)
     {
-        return $this->yIntersectsWith($rectangle) && $this->xIntersectsWith($rectangle);
+        return $this->isInY($rectangle) && $this->isInX($rectangle);
     }
 }

@@ -40,7 +40,6 @@ class Rectangle
      * Checks if this is fully inside another rectangle.
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
-     * @return bool      returns
      */
     public function isFullyIn(self $rectangle)
     {
@@ -71,7 +70,6 @@ class Rectangle
      *
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
-     * @return bool      returns
      */
     private function isInX(self $rectangle)
     {
@@ -106,7 +104,6 @@ class Rectangle
      * |______________________________|
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
-     * @return bool      returns
      */
     private function isInY(self $rectangle)
     {
@@ -126,7 +123,6 @@ class Rectangle
      * Checks if this is inside another rectangle.
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
-     * @return bool      returns
      */
     public function isIn(self $rectangle)
     {

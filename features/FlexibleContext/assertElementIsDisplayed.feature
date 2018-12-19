@@ -47,7 +47,7 @@ Feature: Assert an element is displayed or not displayed
   Scenario Outline: Throw an ExpectationException when a test fails
     When I assert that <Step Text to Assert>
     Then the assertion should throw a ExpectationException
-    And the assertion should fail with the message "<Expected Exception Message>"
+     And the assertion should fail with the message "<Expected Exception Message>"
 
     Examples:
       | Step Text to Assert                                          | Expected Exception Message                           |

@@ -1143,12 +1143,6 @@ class FlexibleContext extends MinkContext
             return false;
         }
 
-        foreach ($parents as $parent) {
-            if (!$driver->isDisplayed($parent->getXpath())) {
-                return false;
-            }
-        }
-
         return true;
     }
 

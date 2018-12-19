@@ -30,19 +30,20 @@ trait QualityAssurance
      */
     public function assertQaIDIsFullyVisibleInViewport($qaId)
     {
-        $this->waitForPageLoad();
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
-        if (!$element) {
-            throw new ExpectationException(
-                "$qaId is not in the DOM, and it should be.",
-                $this->getSession()
-            );
-        }
-        if (!$this->nodeIsFullyVisibleInViewport($element)) {
-            throw new ExpectationException("$qaId is not fully visible in the viewport.",
-                $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
-            );
-        }
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                throw new ExpectationException(
+                    "$qaId is not in the DOM, and it should be.",
+                    $this->getSession()
+                );
+            }
+            if (!$this->nodeIsFullyVisibleInViewport($element)) {
+                throw new ExpectationException("$qaId is not fully visible in the viewport.",
+                    $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+                );
+            }
+        });
     }
 
     /**
@@ -57,16 +58,17 @@ trait QualityAssurance
      */
     public function assertQaIDIsNotFullyVisibleInViewport($qaId)
     {
-        $this->waitForPageLoad();
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
-        if (!$element) {
-            return;
-        }
-        if ($this->nodeIsFullyVisibleInViewport($element)) {
-            throw new ExpectationException("$qaId is fully visible in the viewport.",
-                $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
-            );
-        }
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                return;
+            }
+            if ($this->nodeIsFullyVisibleInViewport($element)) {
+                throw new ExpectationException("$qaId is fully visible in the viewport.",
+                    $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+                );
+            }
+        });
     }
 
     /**
@@ -79,22 +81,22 @@ trait QualityAssurance
      */
     public function assertQaIDIsVisibleInViewport($qaId)
     {
-        $this->waitForPageLoad();
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                throw new ExpectationException(
+                    "$qaId is not in the DOM, and it should be.",
+                    $this->getSession()
+                );
+            }
 
-        if (!$element) {
-            throw new ExpectationException(
-                "$qaId is not in the DOM, and it should be.",
-                $this->getSession()
-            );
-        }
-
-        if (!$this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException("$qaId is not visible in the viewport.",
-                $this->getSession()->getDriver()
-            );
-        }
+            if (!$this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException("$qaId is not visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
     }
 
     /**
@@ -107,19 +109,19 @@ trait QualityAssurance
      */
     public function assertQaIDIsNotVisibleInViewport($qaId)
     {
-        $this->waitForPageLoad();
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                return;
+            }
 
-        if (!$element) {
-            return;
-        }
-
-        if ($this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException("$qaId is visible in the viewport.",
-                $this->getSession()->getDriver()
-            );
-        }
+            if ($this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException("$qaId is visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
     }
 
     /**
@@ -132,22 +134,22 @@ trait QualityAssurance
      */
     public function assertQaIDIsVisibleInDocument($qaId)
     {
-        $this->waitForPageLoad();
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                throw new ExpectationException(
+                    "$qaId is not in the DOM, and it should be.",
+                    $this->getSession()
+                );
+            }
 
-        if (!$element) {
-            throw new ExpectationException(
-                "$qaId is not in the DOM, and it should be.",
-                $this->getSession()
-            );
-        }
-
-        if (!$this->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException("$qaId is not visible in the document.",
-                $this->getSession()->getDriver()
-            );
-        }
+            if (!$this->nodeIsVisibleInDocument($element)) {
+                throw new ExpectationException("$qaId is not visible in the document.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
     }
 
     /**
@@ -160,18 +162,18 @@ trait QualityAssurance
      */
     public function assertQaIDIsNotVisibleInDocument($qaId)
     {
-        $this->waitForPageLoad();
+        $this->waitFor(function () use ($qaId) {
+            $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
 
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+            if (!$element) {
+                return;
+            }
 
-        if (!$element) {
-            return;
-        }
-
-        if ($this->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException("$qaId is visible in the document.",
-                $this->getSession()->getDriver()
-            );
-        }
+            if ($this->nodeIsVisibleInDocument($element)) {
+                throw new ExpectationException("$qaId is visible in the document.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
     }
 }

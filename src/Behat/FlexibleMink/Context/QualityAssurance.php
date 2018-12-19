@@ -21,7 +21,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should be fully visible in the viewport$/
+     * @Then :qaId should be fully visible in the viewport
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible
@@ -40,7 +40,7 @@ trait QualityAssurance
             }
             if (!$this->nodeIsFullyVisibleInViewport($element)) {
                 throw new ExpectationException("$qaId is not fully visible in the viewport.",
-                    $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+                    $this->getSession()->getDriver()
                 );
             }
         });
@@ -49,7 +49,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is not fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
+     * @Then :qaId should not be fully visible in the viewport
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible
@@ -65,7 +65,7 @@ trait QualityAssurance
             }
             if ($this->nodeIsFullyVisibleInViewport($element)) {
                 throw new ExpectationException("$qaId is fully visible in the viewport.",
-                    $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+                    $this->getSession()->getDriver()
                 );
             }
         });
@@ -74,7 +74,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is visible in the viewport.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should be visible in the viewport$/
+     * @Then :qaId should be visible in the viewport
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible
@@ -102,7 +102,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is not visible in the viewport.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the viewport$/
+     * @Then :qaId should not be visible in the viewport
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible
@@ -127,7 +127,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is visible in the document.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should be visible in the document/
+     * @Then :qaId should be visible in the document
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible
@@ -155,7 +155,7 @@ trait QualityAssurance
     /**
      * Asserts that a qaId is not visible in the document.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should not be visible in the document$/
+     * @Then :qaId should not be visible in the document
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is fully visible

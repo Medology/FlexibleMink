@@ -1108,7 +1108,7 @@ class FlexibleContext extends MinkContext
 
         if (
             !$driver->isDisplayed($element->getXpath()) ||
-            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
+            count($parents = $this->getListOfAllNodeElementParents($element, 'html')) < 1
         ) {
             return false;
         }

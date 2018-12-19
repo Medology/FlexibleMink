@@ -34,12 +34,36 @@ trait QualityAssurance
         $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
         if (!$element) {
             throw new ExpectationException(
-                "Data QA ID '$qaId' is not visible, but it should be",
+                "$qaId is not in the DOM, and it should be.",
                 $this->getSession()
             );
         }
         if (!$this->nodeIsFullyVisibleInViewport($element)) {
-            throw new ExpectationException('Node is not visible in the viewport.',
+            throw new ExpectationException("$qaId is not fully visible in the viewport.",
+                $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+            );
+        }
+    }
+
+    /**
+     * Asserts that a qaId is not fully visible.
+     *
+     * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
+     *
+     * @param  string               $qaId
+     * @throws ExpectationException If the element is fully visible
+     *                                   passed. This should never happen. If it does, there is a problem with
+     *                                   the injectStoredValues method.
+     */
+    public function assertQaIDIsNotFullyVisibleInViewport($qaId)
+    {
+        $this->waitForPageLoad();
+        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
+        if (!$element) {
+            return;
+        }
+        if ($this->nodeIsFullyVisibleInViewport($element)) {
+            throw new ExpectationException("$qaId is fully visible in the viewport.",
                 $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
             );
         }
@@ -61,13 +85,13 @@ trait QualityAssurance
 
         if (!$element) {
             throw new ExpectationException(
-                "Data QA ID '$qaId' is not visible, but it should be",
+                "$qaId is not in the DOM, and it should be.",
                 $this->getSession()
             );
         }
 
         if (!$this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException('Node is not visible in the viewport.',
+            throw new ExpectationException("$qaId is not visible in the viewport.",
                 $this->getSession()->getDriver()
             );
         }
@@ -92,32 +116,8 @@ trait QualityAssurance
         }
 
         if ($this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException('Node is visible in the viewport.',
-                $this->getSession()->getDriver()
-            );
-        }
-    }
-
-    /**
-     * Asserts that a qaId is not fully visible.
-     *
-     * @Then /^"(?P<qaId>[^"]+)" should not be fully visible in the viewport$/
-     *
-     * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
-     *                                   passed. This should never happen. If it does, there is a problem with
-     *                                   the injectStoredValues method.
-     */
-    public function assertQaIDIsNotFullyVisibleInViewport($qaId)
-    {
-        $this->waitForPageLoad();
-        $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
-        if (!$element) {
-            return;
-        }
-        if ($this->nodeIsFullyVisibleInViewport($element)) {
             throw new ExpectationException("$qaId is visible in the viewport.",
-                $this->assertSelenium2Driver(__CLASS__ . '::' . __FUNCTION__)
+                $this->getSession()->getDriver()
             );
         }
     }
@@ -138,13 +138,13 @@ trait QualityAssurance
 
         if (!$element) {
             throw new ExpectationException(
-                "Data QA ID '$qaId' is not visible, but it should be",
+                "$qaId is not in the DOM, and it should be.",
                 $this->getSession()
             );
         }
 
         if (!$this->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException('Node is not visible in the document.',
+            throw new ExpectationException("$qaId is not visible in the document.",
                 $this->getSession()->getDriver()
             );
         }
@@ -169,7 +169,7 @@ trait QualityAssurance
         }
 
         if ($this->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException('Node is visible in the document.',
+            throw new ExpectationException("$qaId is visible in the document.",
                 $this->getSession()->getDriver()
             );
         }

@@ -67,7 +67,7 @@ Feature: Assert an element is displayed or not displayed
       | "Visible" should not be fully visible in the viewport        | Visible is fully visible in the viewport.            |
       | "Invisible" should be fully visible in the viewport          | Invisible is not fully visible in the viewport.      |
       | "Invisible 2" should be fully visible in the viewport        | Invisible 2 is not fully visible in the viewport.    |
-      | "Visible 2" should be fully visible in the viewport          | Visible 2 is not in the DOM, and it should be.       |
+      | "Visible 2" should be fully visible in the viewport          | Visible 2 was not found in the document.             |
       | "Big DIV" should not be visible in the viewport              | Big DIV is visible in the viewport.                  |
       | "All Centered 1" should not be visible in the viewport       | All Centered 1 is visible in the viewport.           |
       | "All Centered 2" should not be visible in the viewport       | All Centered 2 is visible in the viewport.           |
@@ -84,4 +84,4 @@ Feature: Assert an element is displayed or not displayed
       | "Visible" should not be visible in the viewport              | Visible is visible in the viewport.                  |
       | "Invisible" should be visible in the viewport                | Invisible is not visible in the viewport.            |
       | "Invisible 2" should be visible in the viewport              | Invisible 2 is not visible in the viewport.          |
-      | "Visible 2" should be visible in the viewport                | Visible 2 is not in the DOM, and it should be.       |
+      | "Visible 2" should be visible in the viewport                | Visible 2 was not found in the document.             |

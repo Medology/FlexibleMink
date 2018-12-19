@@ -26,4 +26,4 @@ Feature: Assert element is visible in the document or not
       | "Scrolled Out Of Sight Button" should not be visible in the document                        | Scrolled Out Of Sight Button is visible in the document.                                |
       | "Scrolled Out Of Sight Button With No Display" should be visible in the document            | Scrolled Out Of Sight Button With No Display is not visible in the document.            |
       | "Scrolled Out Of Sight Button Inside a Not Displayed DIV" should be visible in the document | Scrolled Out Of Sight Button Inside a Not Displayed DIV is not visible in the document. |
-      | "A Non-Existent Button" should be visible in the document                                   | A Non-Existent Button is not in the DOM.                                                |
+      | "A Non-Existent Button" should be visible in the document                                   | A Non-Existent Button was not found in the document.                                    |

@@ -1098,8 +1098,8 @@ class FlexibleContext extends MinkContext
      * Asserts that a NodeElement is visible in viewport.
      *
      * @param  NodeElement                      $element
-     * @throws DriverException
-     * @throws UnsupportedDriverActionException
+     * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException if driver does not support the requested action.
      * @return bool
      */
     public function nodeIsVisibleInViewport(NodeElement $element)

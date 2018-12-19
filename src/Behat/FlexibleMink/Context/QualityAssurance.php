@@ -34,12 +34,13 @@ trait QualityAssurance
             $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM.",
+                    "$qaId was not found in the document.",
                     $this->getSession()
                 );
             }
             if (!$this->nodeIsFullyVisibleInViewport($element)) {
-                throw new ExpectationException("$qaId is not fully visible in the viewport.",
+                throw new ExpectationException(
+                    "$qaId is not fully visible in the viewport.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -64,7 +65,8 @@ trait QualityAssurance
                 return;
             }
             if ($this->nodeIsFullyVisibleInViewport($element)) {
-                throw new ExpectationException("$qaId is fully visible in the viewport.",
+                throw new ExpectationException(
+                    "$qaId is fully visible in the viewport.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -86,13 +88,14 @@ trait QualityAssurance
 
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM.",
+                    "$qaId was not found in the document.",
                     $this->getSession()
                 );
             }
 
             if (!$this->nodeIsVisibleInViewport($element)) {
-                throw new ExpectationException("$qaId is not visible in the viewport.",
+                throw new ExpectationException(
+                    "$qaId is not visible in the viewport.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -117,7 +120,8 @@ trait QualityAssurance
             }
 
             if ($this->nodeIsVisibleInViewport($element)) {
-                throw new ExpectationException("$qaId is visible in the viewport.",
+                throw new ExpectationException(
+                    "$qaId is visible in the viewport.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -139,13 +143,14 @@ trait QualityAssurance
 
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM.",
+                    "$qaId was not found in the document.",
                     $this->getSession()
                 );
             }
 
             if (!$this->nodeIsVisibleInDocument($element)) {
-                throw new ExpectationException("$qaId is not visible in the document.",
+                throw new ExpectationException(
+                    "$qaId is not visible in the document.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -170,7 +175,8 @@ trait QualityAssurance
             }
 
             if ($this->nodeIsVisibleInDocument($element)) {
-                throw new ExpectationException("$qaId is visible in the document.",
+                throw new ExpectationException(
+                    "$qaId is visible in the document.",
                     $this->getSession()->getDriver()
                 );
             }

@@ -34,7 +34,7 @@ trait QualityAssurance
             $element = $this->getNodeElementByQaID($this->injectStoredValues($qaId));
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM, and it should be.",
+                    "$qaId is not in the DOM.",
                     $this->getSession()
                 );
             }
@@ -86,7 +86,7 @@ trait QualityAssurance
 
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM, and it should be.",
+                    "$qaId is not in the DOM.",
                     $this->getSession()
                 );
             }
@@ -139,7 +139,7 @@ trait QualityAssurance
 
             if (!$element) {
                 throw new ExpectationException(
-                    "$qaId is not in the DOM, and it should be.",
+                    "$qaId is not in the DOM.",
                     $this->getSession()
                 );
             }

@@ -39,7 +39,7 @@ class Rectangle
     /**
      * Checks if this is fully inside another rectangle.
      *
-     * @param  Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check if this one is inside of
      */
     public function contains(self $rectangle)
     {
@@ -51,7 +51,7 @@ class Rectangle
     }
 
     /**
-     * Checks if X lines of (this)rectangle are in between the x lines of $rectangle
+     * Checks if X lines of (this)rectangle are in between the x lines of $rectangle.
      *
      *  ______________________________
      * |                              |
@@ -69,7 +69,7 @@ class Rectangle
      * |______________________________|
      *
      *
-     * @param  Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check if this one is inside of
      */
     private function overlapsInX(self $rectangle)
     {
@@ -86,7 +86,7 @@ class Rectangle
     }
 
     /**
-     * Checks if Y lines of (this)rectangle are in between the Y lines of $rectangle
+     * Checks if Y lines of (this)rectangle are in between the Y lines of $rectangle.
      *
      *  ______________________________
      * |               ↑              |
@@ -103,7 +103,7 @@ class Rectangle
      * |               ↓              |
      * |______________________________|
      *
-     * @param  Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check if this one is inside of
      */
     private function overlapsInY(self $rectangle)
     {
@@ -122,7 +122,7 @@ class Rectangle
     /**
      * Checks if this is inside another rectangle.
      *
-     * @param  Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check if this one is inside of
      */
     public function overlaps(self $rectangle)
     {

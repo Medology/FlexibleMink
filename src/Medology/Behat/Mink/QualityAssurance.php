@@ -98,12 +98,12 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should be visible in the viewport
      *
-     * @param  string                  $qaId
-     * @throws ExpectationException    If the element is not visible
-     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
-     *                                      passed. This should never happen. If it does, there is a problem with
-     *                                      the injectStoredValues method.
-     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is not visible
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                               passed. This should never happen. If it does, there is a problem with
+     *                                               the injectStoredValues method.
+     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
      */
     public function assertQaIDIsVisibleInViewport($qaId)
@@ -129,12 +129,12 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should not be visible in the viewport
      *
-     * @param  string                  $qaId
-     * @throws ExpectationException    If the element is visible
-     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
-     *                                      passed. This should never happen. If it does, there is a problem with
-     *                                      the injectStoredValues method.
-     * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is visible
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
+     *                                               passed. This should never happen. If it does, there is a problem with
+     *                                               the injectStoredValues method.
+     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
      */
     public function assertQaIDIsNotVisibleInViewport($qaId)
@@ -192,8 +192,8 @@ class QualityAssurance implements Context
      * @param  string                  $qaId
      * @throws ExpectationException    If the element is visible in the document
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
-     *                                 passed. This should never happen. If it does, there is a problem with
-     *                                 the injectStoredValues method.
+     *                                      passed. This should never happen. If it does, there is a problem with
+     *                                      the injectStoredValues method.
      * @throws SpinnerTimeoutException If the timeout expired before the assertion could be run even once.
      */
     public function assertQaIDIsNotVisibleInDocument($qaId)

@@ -1097,7 +1097,7 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that a NodeElement is visible in viewport.
      *
-     * @param  NodeElement                      $element
+     * @param  NodeElement                      $element The NodeElement to check for in the viewport
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException if driver does not support the requested action.
      * @return bool
@@ -1130,7 +1130,7 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that a NodeElement is visible in document.
      *
-     * @param  NodeElement $element
+     * @param  NodeElement $element The NodeElement to check for in the document
      * @return bool
      */
     public function nodeIsVisibleInDocument(NodeElement $element)

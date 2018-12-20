@@ -1137,8 +1137,6 @@ class FlexibleContext extends MinkContext
     {
         $driver = $this->getSession()->getDriver();
 
-        $parents = $this->getListOfAllNodeElementParents($element, 'html');
-
         if (!$driver->isDisplayed($element->getXpath())) {
             return false;
         }

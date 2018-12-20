@@ -51,7 +51,7 @@ class Rectangle
     }
 
     /**
-     * Checks if X lines of (this)rectangle are in between the x lines of $rectangle.
+     * Checks if X lines of (this)rectangle overlaps the x lines of $rectangle.
      *
      *  ______________________________
      * |                              |
@@ -74,19 +74,22 @@ class Rectangle
     private function overlapsInX(self $rectangle)
     {
         return (
+                //Right overlap
                 $this->left >= $rectangle->left &&
                 $this->left <= $rectangle->right
             ) || (
+                //Left overlap
                 $this->right <= $rectangle->right &&
                 $this->right >= $rectangle->left
             ) || (
+                //Left and right overlap
                 $this->left <= $rectangle->left &&
                 $this->right >= $rectangle->right
             );
     }
 
     /**
-     * Checks if Y lines of (this)rectangle are in between the Y lines of $rectangle.
+     * Checks if Y lines of (this)rectangle overlaps the Y lines of $rectangle.
      *
      *  ______________________________
      * |               ↑              |
@@ -108,12 +111,15 @@ class Rectangle
     private function overlapsInY(self $rectangle)
     {
         return (
+                //Top overlap
                 $this->top >= $rectangle->top &&
                 $this->top <= $rectangle->bottom
             ) || (
+                //Bottom overlap
                 $this->bottom <= $rectangle->bottom &&
                 $this->bottom >= $rectangle->top
             ) || (
+                //Top and bottom overlap
                 $this->top <= $rectangle->top &&
                 $this->bottom >= $rectangle->bottom
             );

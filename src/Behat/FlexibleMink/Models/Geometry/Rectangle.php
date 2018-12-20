@@ -41,7 +41,7 @@ class Rectangle
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      */
-    public function isFullyIn(self $rectangle)
+    public function contains(self $rectangle)
     {
         return
             $this->left >= $rectangle->left &&
@@ -71,7 +71,7 @@ class Rectangle
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      */
-    private function isInX(self $rectangle)
+    private function overlapsInX(self $rectangle)
     {
         return (
                 $this->left >= $rectangle->left &&
@@ -105,7 +105,7 @@ class Rectangle
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      */
-    private function isInY(self $rectangle)
+    private function overlapsInY(self $rectangle)
     {
         return (
                 $this->top >= $rectangle->top &&
@@ -124,8 +124,8 @@ class Rectangle
      *
      * @param  Rectangle $rectangle Rectangle to check if this one is inside of
      */
-    public function isIn(self $rectangle)
+    public function overlaps(self $rectangle)
     {
-        return $this->isInY($rectangle) && $this->isInX($rectangle);
+        return $this->overlapsInY($rectangle) && $this->overlapsInX($rectangle);
     }
 }

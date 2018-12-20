@@ -1085,7 +1085,7 @@ class FlexibleContext extends MinkContext
         $elementViewportRectangle = $this->getElementViewportRectangle($element);
         foreach ($parents as $parent) {
             if (!$parent->isVisible() ||
-                !$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent))
+                !$elementViewportRectangle->contains($this->getElementViewportRectangle($parent))
             ) {
                 return false;
             }
@@ -1118,7 +1118,7 @@ class FlexibleContext extends MinkContext
         foreach ($parents as $parent) {
             if (
                 !$driver->isDisplayed($parent->getXpath()) ||
-                !$elementViewportRectangle->isIn($this->getElementViewportRectangle($parent))
+                !$elementViewportRectangle->overlaps($this->getElementViewportRectangle($parent))
             ) {
                 return false;
             }

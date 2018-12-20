@@ -24,7 +24,7 @@ trait QualityAssurance
      * @Then :qaId should be fully visible in the viewport
      *
      * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
+     * @throws ExpectationException If the element is not fully visible
      *                                   passed. This should never happen. If it does, there is a problem with
      *                                   the injectStoredValues method.
      */
@@ -79,7 +79,7 @@ trait QualityAssurance
      * @Then :qaId should be visible in the viewport
      *
      * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
+     * @throws ExpectationException If the element is not visible
      */
     public function assertQaIDIsVisibleInViewport($qaId)
     {
@@ -108,7 +108,7 @@ trait QualityAssurance
      * @Then :qaId should not be visible in the viewport
      *
      * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
+     * @throws ExpectationException If the element is visible
      */
     public function assertQaIDIsNotVisibleInViewport($qaId)
     {
@@ -134,7 +134,7 @@ trait QualityAssurance
      * @Then :qaId should be visible in the document
      *
      * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
+     * @throws ExpectationException If the element is not visible in the document
      */
     public function assertQaIDIsVisibleInDocument($qaId)
     {
@@ -163,7 +163,7 @@ trait QualityAssurance
      * @Then :qaId should not be visible in the document
      *
      * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
+     * @throws ExpectationException If the element is visible in the document
      */
     public function assertQaIDIsNotVisibleInDocument($qaId)
     {

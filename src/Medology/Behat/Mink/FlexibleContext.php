@@ -1383,9 +1383,7 @@ class FlexibleContext extends MinkContext
         ) {
             return false;
         }
-
         $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
         foreach ($parents as $parent) {
             if (!$parent->isVisible() ||
                 !$elementViewportRectangle->isFullyIn($this->getElementViewportRectangle($parent))
@@ -1401,7 +1399,6 @@ class FlexibleContext extends MinkContext
      * Asserts that a NodeElement is visible in viewport.
      *
      * @param  NodeElement                      $element
-     * @throws DriverException
      * @throws UnsupportedDriverActionException
      * @return bool
      */
@@ -1411,7 +1408,7 @@ class FlexibleContext extends MinkContext
 
         if (
             !$driver->isDisplayed($element->getXpath()) ||
-            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
+            count($parents = $this->getListOfAllNodeElementParents($element, 'html')) < 1
         ) {
             return false;
         }
@@ -1434,23 +1431,14 @@ class FlexibleContext extends MinkContext
      * Asserts that a NodeElement is visible in document.
      *
      * @param  NodeElement     $element
-     * @throws DriverException
      * @return bool
      */
     public function nodeIsVisibleInDocument(NodeElement $element)
     {
         $driver = $this->getSession()->getDriver();
 
-        $parents = $this->getListOfAllNodeElementParents($element, 'html');
-
         if (!$driver->isDisplayed($element->getXpath())) {
             return false;
-        }
-
-        foreach ($parents as $parent) {
-            if (!$driver->isDisplayed($parent->getXpath())) {
-                return false;
-            }
         }
 
         return true;

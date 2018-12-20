@@ -41,7 +41,7 @@ class QualityAssurance implements Context
      * @Then :qaId should be fully visible in the viewport
      *
      * @param  string                           $qaId
-     * @throws ExpectationException             If the element is fully visible
+     * @throws ExpectationException             If the element is not fully visible
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
@@ -99,7 +99,7 @@ class QualityAssurance implements Context
      * @Then :qaId should be visible in the viewport
      *
      * @param  string                  $qaId
-     * @throws ExpectationException    If the element is fully visible
+     * @throws ExpectationException    If the element is not visible
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
      *                                      passed. This should never happen. If it does, there is a problem with
      *                                      the injectStoredValues method.
@@ -130,7 +130,7 @@ class QualityAssurance implements Context
      * @Then :qaId should not be visible in the viewport
      *
      * @param  string                  $qaId
-     * @throws ExpectationException    If the element is fully visible
+     * @throws ExpectationException    If the element is visible
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
      *                                      passed. This should never happen. If it does, there is a problem with
      *                                      the injectStoredValues method.
@@ -158,7 +158,7 @@ class QualityAssurance implements Context
      * @Then :qaId should be visible in the document
      *
      * @param  string                  $qaId
-     * @throws ExpectationException    If the element is fully visible
+     * @throws ExpectationException    If the element is not visible in the document
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
      *                                      passed. This should never happen. If it does, there is a problem with
      *                                      the injectStoredValues method.
@@ -190,7 +190,7 @@ class QualityAssurance implements Context
      * @Then :qaId should not be visible in the document
      *
      * @param  string                  $qaId
-     * @throws ExpectationException    If the element is fully visible
+     * @throws ExpectationException    If the element is visible in the document
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
      *                                 passed. This should never happen. If it does, there is a problem with
      *                                 the injectStoredValues method.

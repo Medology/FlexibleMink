@@ -2,66 +2,174 @@
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;
+use ReflectionException;
 
 trait QualityAssurance
 {
+
     /**
      * Get a NodeElement by qaId.
      *
-     * @param  string      $qaId string the qaId of the Element to get
-     * @return NodeElement Page element node
+     * @param  string                  $qaId string the qaId of the Element to get
+     * @return NodeElement|null        Page element node
      */
-    public function getNodeElementByQaId($qaId)
+    public function getNodeElementByQaID($qaId)
     {
-        $this->waitForPageLoad();
+        $xpath = '//*[@data-qa-id="' . $this->injectStoredValues($qaId) . '"]';
 
-        return $this->getSession()->getPage()->find('xpath', '//*[@data-qa-id="' . $qaId . '"]');
+        return $this->getSession()->getPage()->find('xpath', $xpath);
     }
 
     /**
-     * Asserts the a qaId was located in the document.
+     * Assert a NodeElement by qaId.
      *
-     * @param  string               $qaId    The qaId of the element
-     * @param  NodeElement|null     $element NodeElement located by the qaId
-     * @throws ExpectationException If the element was not found
+     * @param  string                  $qaId string the qaId of the Element to get
+     * @throws ExpectationException    Exception thrown for failed expectations
+     * @return NodeElement             Page element node
      */
-    protected function assertQaIdWasFoundInTheDocument($qaId, $element)
+    public function assertNodeElementExistsByQaId($qaId)
     {
+        $element = $this->getNodeElementByQaID($qaId);
+
         if (!$element) {
             throw new ExpectationException(
                 "$qaId was not found in the document.",
                 $this->getSession()
             );
         }
+
+        return $element;
     }
 
     /**
-     * Asserts the visibility of a QA element.
+     * Asserts that a qaId is fully visible.
      *
-     * @Then /^"(?P<qaId>[^"]+)" should (?:|(?P<not>not) )be (?P<visibility>fully|partially) visible in the (?P<place>viewport)$/
-     * @Then /^"(?P<qaId>[^"]+)" should (?:|(?P<not>not) )be visible in the (?P<place>document)$/
+     * @Then :qaId should be fully visible in the viewport
      *
-     * @param  string               $qaId       The qaId of the element
-     * @param  string               $place      Where to check for visibility
-     * @param  string               $visibility Type of visibility to check for
-     * @param  bool                 $not        If not
-     * @throws ExpectationException If the element is not fully visible
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is not fully visible
      */
-    public function assertVisibilityOfQaId($qaId, $place, $visibility = '', $not = false)
+    public function assertQaIDIsFullyVisibleInViewport($qaId)
     {
-        $this->waitForPageLoad();
-        $element = $this->getNodeElementByQaId($this->injectStoredValues($qaId));
-        if ($not && !$element) {
-            return;
-        }
-        $this->assertQaIdWasFoundInTheDocument($qaId, $element);
-        $nodeIsVisible = $this->nodeIsVisible($element, $place, $visibility);
-        if (($not && $nodeIsVisible) || (!$not && !$nodeIsVisible)) {
-            throw new ExpectationException(
-                $qaId . ' is' . ($not ? '' : ' not') . ($visibility ? ' ' . $visibility : '') . ' visible'
-                . " in the $place.",
-                $this->getSession()
-            );
-        }
+        //$this->waitFor(function() use ($qaId) {
+            $element = $this->assertNodeElementExistsByQaId($qaId);
+
+            if (!$this->nodeIsFullyVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    "$qaId is not fully visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        //});
+    }
+
+    /**
+     * Asserts that a qaId is not fully visible.
+     *
+     * @Then :qaId should not be fully visible in the viewport
+     *
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is fully visible
+     */
+    public function assertQaIDIsNotFullyVisibleInViewport($qaId)
+    {
+        $this->waitFor(function() use ($qaId) {
+            $element = $this->getNodeElementByQaID($qaId);
+
+            if ($element && $this->nodeIsFullyVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    "$qaId is fully visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
+    }
+
+    /**
+     * Asserts that a qaId is visible in the viewport.
+     *
+     * @Then :qaId should be visible in the viewport
+     *
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is not visible
+     */
+    public function assertQaIDIsVisibleInViewport($qaId)
+    {
+        $this->waitFor(function() use ($qaId) {
+            $element = $this->assertNodeElementExistsByQaId($qaId);
+
+            if (!$this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    "$qaId is not visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
+    }
+
+    /**
+     * Asserts that a qaId is not visible in the viewport.
+     *
+     * @Then :qaId should not be visible in the viewport
+     *
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is visible
+     */
+    public function assertQaIDIsNotVisibleInViewport($qaId)
+    {
+        $this->waitFor(function() use ($qaId) {
+            $element = $this->getNodeElementByQaID($qaId);
+
+            if ($element && $this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    "$qaId is visible in the viewport.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
+    }
+
+    /**
+     * Asserts that a qaId is visible in the document.
+     *
+     * @Then :qaId should be visible in the document
+     *
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is not visible in the document
+     */
+    public function assertQaIDIsVisibleInDocument($qaId)
+    {
+        //$this->waitFor(function() use ($qaId) {
+            $element = $this->assertNodeElementExistsByQaId($qaId);
+
+            if (!$this->nodeIsVisibleInDocument($element)) {
+                throw new ExpectationException(
+                    "$qaId is not visible in the document.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        //});
+    }
+
+    /**
+     * Asserts that a qaId is not visible in the document.
+     *
+     * @Then :qaId should not be visible in the document
+     *
+     * @param  string                  $qaId
+     * @throws ExpectationException    If the element is visible in the document
+     */
+    public function assertQaIDIsNotVisibleInDocument($qaId)
+    {
+        $this->waitFor(function() use ($qaId) {
+            $element = $this->getNodeElementByQaID($qaId);
+
+            if ($element && $this->nodeIsVisibleInDocument($element)) {
+                throw new ExpectationException(
+                    "$qaId is visible in the document.",
+                    $this->getSession()->getDriver()
+                );
+            }
+        });
     }
 }

@@ -59,13 +59,13 @@ class Rectangle
     private function overlapsInX(self $rectangle)
     {
         /** @var bool $leftOverlap If overlaps on the left */
-        $leftOverlap         = $this->right <= $rectangle->right && $this->right >= $rectangle->left;
+        $leftOverlap = $this->right <= $rectangle->right && $this->right >= $rectangle->left;
 
         /** @var bool $leftOverlap If overlaps on the right */
-        $rightOverlap        = $this->left  >= $rectangle->left  && $this->left  <= $rectangle->right;
+        $rightOverlap = $this->left >= $rectangle->left && $this->left <= $rectangle->right;
 
         /** @var bool $leftOverlap If overlaps on the left and right */
-        $leftAndRightOverlap = $this->left  <= $rectangle->left  && $this->right >= $rectangle->right;
+        $leftAndRightOverlap = $this->left <= $rectangle->left && $this->right >= $rectangle->right;
 
         return $leftOverlap || $rightOverlap || $leftAndRightOverlap;
     }

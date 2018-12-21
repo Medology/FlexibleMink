@@ -26,7 +26,7 @@ class QualityAssurance implements Context
      * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
      * @throws ExpectationException    Exception thrown for failed expectations
      * @throws SpinnerTimeoutException Thrown when the Spinner did not execute a
-     *                                   single attempt of the closure before the timeout expired.
+     *                                      single attempt of the closure before the timeout expired.
      * @return NodeElement|null        Page element node
      */
     public function getNodeElementByQaID($qaId)

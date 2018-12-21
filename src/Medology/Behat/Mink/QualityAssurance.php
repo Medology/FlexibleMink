@@ -36,14 +36,15 @@ class QualityAssurance implements Context
     }
 
     /**
-     * Asserts the a qaId was located in the document
+     * Asserts the a qaId was located in the document.
      *
-     * @param string                $qaId    The qaId of the element
-     * @param NodeElement|null      $element NodeElement located by the qaId
+     * @param  string               $qaId    The qaId of the element
+     * @param  NodeElement|null     $element NodeElement located by the qaId
      * @throws ExpectationException If the element was not found
      */
-    protected function assertQaIdWasFoundInTheDocument($qaId, $element) {
-        if(!$element) {
+    protected function assertQaIdWasFoundInTheDocument($qaId, $element)
+    {
+        if (!$element) {
             throw new ExpectationException(
                 "$qaId was not found in the document.",
                 $this->flexibleContext->getSession()
@@ -57,14 +58,14 @@ class QualityAssurance implements Context
      * @Then /^"(?P<qaId>[^"]+)" should (?:|(?P<not>not) )be (?:|(?P<visibility>fully|partially) )visible in the (?P<place>viewport)$/
      * @Then /^"(?P<qaId>[^"]+)" should (?:|(?P<not>not) )be visible in the (?P<place>document)$/
      *
-     * @param string $qaId                      The qaId of the element
-     * @param string $place                     Where to check for visibility
-     * @param string $visibility                Type of visibility to check for
-     * @param bool $not                         If not
+     * @param string $qaId       The qaId of the element
+     * @param string $place      Where to check for visibility
+     * @param string $visibility Type of visibility to check for
+     * @param bool   $not        If not
      *
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                               passed. This should never happen. If it does, there is a problem with
-     *                                               the injectStoredValues method.
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws ExpectationException             If the element is not fully visible
      * @throws UnsupportedDriverActionException If driver does not support the requested action.
@@ -73,14 +74,14 @@ class QualityAssurance implements Context
     {
         $this->flexibleContext->waitForPageLoad();
         $element = $this->getNodeElementByQaId($this->storeContext->injectStoredValues($qaId));
-        if($not && !$element) {
+        if ($not && !$element) {
             return;
         }
         $this->assertQaIdWasFoundInTheDocument($qaId, $element);
         $nodeIsVisible = $this->flexibleContext->nodeIsVisible($element, $place, $visibility);
-        if ( ($not && $nodeIsVisible) || (!$not && !$nodeIsVisible) ) {
+        if (($not && $nodeIsVisible) || (!$not && !$nodeIsVisible)) {
             throw new ExpectationException(
-                $qaId . ' is' . ($not ? '':' not') . ($visibility ? ' ' . $visibility : '') . ' visible'
+                $qaId . ' is' . ($not ? '' : ' not') . ($visibility ? ' ' . $visibility : '') . ' visible'
                     . " in the $place.",
                 $this->flexibleContext->getSession()
             );

@@ -36,6 +36,11 @@ class FlexibleContext extends MinkContext
     use TypeCaster;
     use QualityAssurance;
 
+    const FULLY_VISIBLE = 'fully';
+    const PARTIALLY_VISIBLE = 'partially';
+    const VISIBLE_IN_VIEWPORT = 'viewport';
+    const VISIBLE_IN_DOCUMENT = 'document';
+
     /** @var array map of common key names to key codes */
     protected static $keyCodes = [
         'down arrow' => 40,
@@ -1066,6 +1071,30 @@ class FlexibleContext extends MinkContext
                 throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
             }
         }, $timeout);
+    }
+
+    /**
+     * @param NodeElement $element              The node element to check for visibility
+     * @param string $place                     Where to check for visibility
+     * @param string $visibility                The type of visibility to check for
+     * @return bool|null
+     * @throws DriverException                  When the operation cannot be done
+     * @throws UnsupportedDriverActionException If driver does not support the requested action.
+     */
+    public function nodeIsVisible(NodeElement $element, $place, $visibility) {
+        switch($place) {
+            case self::VISIBLE_IN_VIEWPORT:
+                switch($visibility) {
+                    case self::FULLY_VISIBLE:
+                        return $this->nodeIsFullyVisibleInViewport($element);
+                    case self::PARTIALLY_VISIBLE:
+                        return $this->nodeIsVisibleInViewport($element);
+                }
+                break;
+            case self::VISIBLE_IN_DOCUMENT:
+                return $this->nodeIsVisibleInDocument($element);
+        }
+        return null;
     }
 
     /**

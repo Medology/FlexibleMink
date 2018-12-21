@@ -1074,17 +1074,18 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * @param NodeElement $element              The node element to check for visibility
-     * @param string $place                     Where to check for visibility
-     * @param string $visibility                The type of visibility to check for
-     * @return bool|null
+     * @param  NodeElement                      $element    The node element to check for visibility
+     * @param  string                           $place      Where to check for visibility
+     * @param  string                           $visibility The type of visibility to check for
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException If driver does not support the requested action.
+     * @return bool|null
      */
-    public function nodeIsVisible(NodeElement $element, $place, $visibility) {
-        switch($place) {
+    public function nodeIsVisible(NodeElement $element, $place, $visibility)
+    {
+        switch ($place) {
             case self::VISIBLE_IN_VIEWPORT:
-                switch($visibility) {
+                switch ($visibility) {
                     case self::FULLY_VISIBLE:
                         return $this->nodeIsFullyVisibleInViewport($element);
                     case self::PARTIALLY_VISIBLE:
@@ -1094,7 +1095,6 @@ class FlexibleContext extends MinkContext
             case self::VISIBLE_IN_DOCUMENT:
                 return $this->nodeIsVisibleInDocument($element);
         }
-        return null;
     }
 
     /**

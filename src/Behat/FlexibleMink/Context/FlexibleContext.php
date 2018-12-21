@@ -1074,7 +1074,7 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Checks if a node Element is fully visible in the viewport
+     * Checks if a node Element is fully visible in the viewport.
      *
      * @param  NodeElement                      $element the NodeElement to look for in the viewport.
      * @throws UnsupportedDriverActionException If driver does not support the requested action.
@@ -1103,7 +1103,7 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Checks if a node Element is visible in the viewport
+     * Checks if a node Element is visible in the viewport.
      *
      * @param  NodeElement                      $element The NodeElement to check for in the viewport
      * @throws UnsupportedDriverActionException If driver does not support the requested action.
@@ -1132,9 +1132,9 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Checks if a node Element is visible in the document
+     * Checks if a node Element is visible in the document.
      *
-     * @param  NodeElement $element NodeElement to to check for in the document
+     * @param  NodeElement          $element NodeElement to to check for in the document
      * @throws \WebDriver\Exception If cannot get the Web Driver
      * @return bool
      */

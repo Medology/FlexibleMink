@@ -34,11 +34,6 @@ class FlexibleContext extends MinkContext
     use TypeCaster;
     use UsesStoreContext;
 
-    const FULLY_VISIBLE = 'fully';
-    const PARTIALLY_VISIBLE = 'partially';
-    const VISIBLE_IN_VIEWPORT = 'viewport';
-    const VISIBLE_IN_DOCUMENT = 'document';
-
     /** @var array map of common key names to key codes */
     protected static $keyCodes = [
         'down arrow' => 40,
@@ -1375,38 +1370,18 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * @param  NodeElement                      $element    The node element to check for visibility
-     * @param  string                           $place      Where to check for visibility
-     * @param  string                           $visibility The type of visibility to check for
-     * @throws UnsupportedDriverActionException If driver does not support the requested action.
-     * @return bool
-     */
-    public function nodeIsVisible(NodeElement $element, $place, $visibility)
-    {
-        switch ($place) {
-            case self::VISIBLE_IN_VIEWPORT:
-                switch ($visibility) {
-                    case self::FULLY_VISIBLE:
-                        return $this->nodeIsFullyVisibleInViewport($element);
-                    case self::PARTIALLY_VISIBLE:
-                        return $this->nodeIsVisibleInViewport($element);
-                }
-                break;
-            case self::VISIBLE_IN_DOCUMENT:
-                return $this->nodeIsVisibleInDocument($element);
-        }
-    }
-
-    /**
-     * Returns true is $element is fully visible in the viewport, otherwise false.
+     * Checks if a node Element is fully visible in the viewport
      *
      * @param  NodeElement                      $element the NodeElement to look for in the viewport.
-     * @throws UnsupportedDriverActionException if driver does not support the requested action.
-     * @return bool                             True is $element is fully visible in the viewport, otherwise false.
+     * @throws UnsupportedDriverActionException If driver does not support the requested action.
+     * @throws Exception                        If cannot get the Web Driver
+     * @return bool
      */
     public function nodeIsFullyVisibleInViewport(NodeElement $element)
     {
-        if (!$element->isVisible() ||
+        /** @var Selenium2Driver $driver */
+        $driver = $this->getSession()->getDriver();
+        if (!$driver->isDisplayed($element->getXpath()) ||
             count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
         ) {
             return false;
@@ -1424,30 +1399,27 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a NodeElement is visible in viewport.
+     * Checks if a node Element is visible in the viewport
      *
      * @param  NodeElement                      $element The NodeElement to check for in the viewport
      * @throws UnsupportedDriverActionException if driver does not support the requested action.
+     * @throws Exception                        If cannot get the Web Driver
      * @return bool
      */
     public function nodeIsVisibleInViewport(NodeElement $element)
     {
+        /** @var Selenium2Driver $driver */
         $driver = $this->getSession()->getDriver();
+        $parents = $this->getListOfAllNodeElementParents($element, 'html');
 
-        if (
-            !$driver->isDisplayed($element->getXpath()) ||
-            count($parents = $this->getListOfAllNodeElementParents($element, 'html')) < 1
-        ) {
+        if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
             return false;
         }
 
         $elementViewportRectangle = $this->getElementViewportRectangle($element);
 
         foreach ($parents as $parent) {
-            if (
-                !$driver->isDisplayed($parent->getXpath()) ||
-                !$elementViewportRectangle->overlaps($this->getElementViewportRectangle($parent))
-            ) {
+            if (!$elementViewportRectangle->overlaps($this->getElementViewportRectangle($parent))) {
                 return false;
             }
         }
@@ -1456,13 +1428,15 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Asserts that a NodeElement is visible in document.
+     * Checks if a node Element is visible in the document
      *
-     * @param  NodeElement $element The NodeElement to check for in the document
+     * @param  NodeElement $element NodeElement to to check for in the document
+     * @throws Exception            If cannot get the Web Driver
      * @return bool
      */
     public function nodeIsVisibleInDocument(NodeElement $element)
     {
+        /** @var Selenium2Driver $driver */
         $driver = $this->getSession()->getDriver();
 
         if (!$driver->isDisplayed($element->getXpath())) {

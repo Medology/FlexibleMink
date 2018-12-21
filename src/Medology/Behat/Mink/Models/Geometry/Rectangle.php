@@ -39,7 +39,7 @@ class Rectangle
     /**
      * Checks if this is fully inside another rectangle.
      *
-     * @param Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check against this one
      */
     public function contains(self $rectangle)
     {
@@ -51,84 +51,48 @@ class Rectangle
     }
 
     /**
-     * Checks if X lines of (this)rectangle overlaps the x lines of $rectangle.
+     * Checks if the specified rectangle overlaps with this rectangle on the X-axis.
      *
-     *  ______________________________
-     * |                              |
-     * |          $rectangle          |
-     * |          Rectangle           |
-     * |         ____________         |
-     * |        |            |        |
-     * |        |   ($this)  |        |
-     * |  <-->  |  rectangle |  <-->  |
-     * |        |            |        |
-     * |        |____________|        |
-     * |                              |
-     * |                              |
-     * |                              |
-     * |______________________________|
-     *
-     *
-     * @param Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param  Rectangle $rectangle Rectangle to check against this one
+     * @return bool
      */
     private function overlapsInX(self $rectangle)
     {
-        return (
-                //Right overlap
-                $this->left >= $rectangle->left &&
-                $this->left <= $rectangle->right
-            ) || (
-                //Left overlap
-                $this->right <= $rectangle->right &&
-                $this->right >= $rectangle->left
-            ) || (
-                //Left and right overlap
-                $this->left <= $rectangle->left &&
-                $this->right >= $rectangle->right
-            );
+        /** @var bool $leftOverlap If overlaps on the left */
+        $leftOverlap         = $this->right <= $rectangle->right && $this->right >= $rectangle->left;
+
+        /** @var bool $leftOverlap If overlaps on the right */
+        $rightOverlap        = $this->left  >= $rectangle->left  && $this->left  <= $rectangle->right;
+
+        /** @var bool $leftOverlap If overlaps on the left and right */
+        $leftAndRightOverlap = $this->left  <= $rectangle->left  && $this->right >= $rectangle->right;
+
+        return $leftOverlap || $rightOverlap || $leftAndRightOverlap;
     }
 
     /**
-     * Checks if Y lines of (this)rectangle overlaps the Y lines of $rectangle.
+     * Checks if the specified rectangle overlaps with this rectangle on the Y-axis.
      *
-     *  ______________________________
-     * |               ↑              |
-     * | $rectangle    |              |
-     * | Rectangle     ↓              |
-     * |         ____________         |
-     * |        |            |        |
-     * |        |   ($this)  |        |
-     * |        |  rectangle |        |
-     * |        |            |        |
-     * |        |____________|        |
-     * |               ↑              |
-     * |               |              |
-     * |               ↓              |
-     * |______________________________|
-     *
-     * @param Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check against this one
      */
     private function overlapsInY(self $rectangle)
     {
-        return (
-                //Top overlap
-                $this->top >= $rectangle->top &&
-                $this->top <= $rectangle->bottom
-            ) || (
-                //Bottom overlap
-                $this->bottom <= $rectangle->bottom &&
-                $this->bottom >= $rectangle->top
-            ) || (
-                //Top and bottom overlap
-                $this->top <= $rectangle->top &&
-                $this->bottom >= $rectangle->bottom
-            );
+        /** @var bool $topOverlap If the top overlaps */
+        $topOverlap = $this->top >= $rectangle->top && $this->top <= $rectangle->bottom;
+
+        /** @var bool $isOverlappingAtBottom If the bottom overlaps */
+        $isOverlappingAtBottom = $this->bottom <= $rectangle->bottom && $this->bottom >= $rectangle->top;
+
+        /** @var bool $isOverlappingAtTopAndBottom If the top and bottom overlaps */
+        $isOverlappingAtTopAndBottom = $this->top <= $rectangle->top && $this->bottom >= $rectangle->bottom;
+
+        return $topOverlap || $isOverlappingAtBottom || $isOverlappingAtTopAndBottom;
     }
 
     /**
-     * Checks if this is inside another rectangle.
+     * Checks if the specified rectangle overlaps with this rectangle.
      *
-     * @param Rectangle $rectangle Rectangle to check if this one is inside of
+     * @param Rectangle $rectangle Rectangle to check against this one
      */
     public function overlaps(self $rectangle)
     {

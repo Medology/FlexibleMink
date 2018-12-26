@@ -47,7 +47,7 @@ trait QualityAssurance
      * @param  string               $qaId
      * @throws ExpectationException If the element is not fully visible
      */
-    public function assertQaIDIsFullyVisibleInViewport($qaId)
+    public function assertQaIdIsFullyVisibleInViewport($qaId)
     {
         $this->waitFor(function () use ($qaId) {
             $element = $this->assertNodeElementExistsByQaId($qaId);
@@ -62,43 +62,24 @@ trait QualityAssurance
     }
 
     /**
-     * Asserts that a qaId is not fully visible.
+     * Asserts that a qaId is partially visible in the viewport.
      *
-     * @Then :qaId should not be fully visible in the viewport
-     *
-     * @param  string               $qaId
-     * @throws ExpectationException If the element is fully visible
-     */
-    public function assertQaIDIsNotFullyVisibleInViewport($qaId)
-    {
-        $this->waitFor(function () use ($qaId) {
-            $element = $this->getNodeElementByQaID($qaId);
-
-            if ($element && $this->nodeIsFullyVisibleInViewport($element)) {
-                throw new ExpectationException(
-                    "$qaId is fully visible in the viewport.",
-                    $this->getSession()->getDriver()
-                );
-            }
-        });
-    }
-
-    /**
-     * Asserts that a qaId is visible in the viewport.
-     *
-     * @Then :qaId should be visible in the viewport
+     * @Then :qaId should be partially visible in the viewport
      *
      * @param  string               $qaId
      * @throws ExpectationException If the element is not visible
      */
-    public function assertQaIDIsVisibleInViewport($qaId)
+    public function assertQaIdIsPartiallyVisibleInViewport($qaId)
     {
         $this->waitFor(function () use ($qaId) {
             $element = $this->assertNodeElementExistsByQaId($qaId);
 
-            if (!$this->nodeIsVisibleInViewport($element)) {
+            if (
+                $this->nodeIsFullyVisibleInViewport($element) ||
+                !$this->nodeIsVisibleInViewport($element)
+            ) {
                 throw new ExpectationException(
-                    "$qaId is not visible in the viewport.",
+                    "$qaId is not partially visible in the viewport.",
                     $this->getSession()->getDriver()
                 );
             }
@@ -113,7 +94,7 @@ trait QualityAssurance
      * @param  string               $qaId
      * @throws ExpectationException If the element is visible
      */
-    public function assertQaIDIsNotVisibleInViewport($qaId)
+    public function assertQaIdIsNotVisibleInViewport($qaId)
     {
         $this->waitFor(function () use ($qaId) {
             $element = $this->getNodeElementByQaID($qaId);

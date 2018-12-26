@@ -1429,7 +1429,7 @@ class FlexibleContext extends MinkContext
     /**
      * Checks if a node Element is visible in the document.
      *
-     * @param  NodeElement $element             NodeElement to to check for in the document
+     * @param  NodeElement                      $element NodeElement to to check for in the document
      * @throws Exception                        If cannot get the Web Driver
      * @throws UnsupportedDriverActionException If driver is not the selenium 2 driver
      * @return bool

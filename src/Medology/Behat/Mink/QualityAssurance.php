@@ -7,7 +7,7 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Medology\Behat\UsesStoreContext;
 use Medology\SpinnerTimeoutException;
 use ReflectionException;
-use \WebDriver\Exception as WebDriverException;
+use WebDriver\Exception as WebDriverException;
 
 /**
  * Overwrites some MinkContext step definitions to make them more resilient to failures caused by browser/driver
@@ -150,8 +150,8 @@ class QualityAssurance implements Context
      * @param  string                           $qaId
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      * @throws ExpectationException             If the element is not visible in the document
-     *                                            passed. This should never happen. If it does, there is a problem with
-     *                                          the injectStoredValues method.
+     *                                               passed. This should never happen. If it does, there is a problem with
+     *                                               the injectStoredValues method.
      * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws WebDriverException               If cannot get the Web Driver
      * @throws UnsupportedDriverActionException
@@ -173,14 +173,14 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should not be visible in the document
      *
-     * @param  string                            $qaId
-     * @throws ExpectationException              If the element is visible in the document
-     * @throws ReflectionException               If injectStoredValues incorrectly believes one or more closures were
+     * @param  string                           $qaId
+     * @throws ExpectationException             If the element is visible in the document
+     * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
-     * @throws SpinnerTimeoutException           If the timeout expired before the assertion could be run even once.
-     * @throws UnsupportedDriverActionException  If driver is not the selenium 2 driver
-     * @throws WebDriverException                If cannot get the Web Driver
+     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
+     * @throws UnsupportedDriverActionException If driver is not the selenium 2 driver
+     * @throws WebDriverException               If cannot get the Web Driver
      */
     public function assertQaIdIsNotVisibleInDocument($qaId)
     {

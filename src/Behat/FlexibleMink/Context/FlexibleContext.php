@@ -36,11 +36,6 @@ class FlexibleContext extends MinkContext
     use TypeCaster;
     use QualityAssurance;
 
-    const FULLY_VISIBLE = 'fully';
-    const PARTIALLY_VISIBLE = 'partially';
-    const VISIBLE_IN_VIEWPORT = 'viewport';
-    const VISIBLE_IN_DOCUMENT = 'document';
-
     /** @var array map of common key names to key codes */
     protected static $keyCodes = [
         'down arrow' => 40,

@@ -1134,7 +1134,7 @@ class FlexibleContext extends MinkContext
      */
     public function nodeIsVisibleInDocument(NodeElement $element)
     {
-        return $this->assertSelenium2Driver('Checks if a node Element is visible in the document.')
+        return $this->assertSelenium2Driver('Check if element is displayed')
             ->isDisplayed($element->getXpath());
     }
 

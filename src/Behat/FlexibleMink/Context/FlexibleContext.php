@@ -1080,7 +1080,7 @@ class FlexibleContext extends MinkContext
     {
         $driver = $this->assertSelenium2Driver('Checks if a node Element is fully visible in the viewport.');
         if (!$driver->isDisplayed($element->getXpath()) ||
-            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
+            count(($parents = $this->getListOfAllNodeElementParents($element, 'body'))) < 1
         ) {
             return false;
         }
@@ -1107,7 +1107,7 @@ class FlexibleContext extends MinkContext
     public function nodeIsVisibleInViewport(NodeElement $element)
     {
         $driver = $this->assertSelenium2Driver('Checks if a node Element is visible in the viewport.');
-        $parents = $this->getListOfAllNodeElementParents($element, 'html');
+        $parents = $this->getListOfAllNodeElementParents($element, 'body');
 
         if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
             return false;

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrollable Divs</title>
+    <style>
+        div.top {
+            height:5000px;
+        }
+        div.bottom {
+            height:200px;
+            transform: translate(0, 20px);
+        }
+    </style>
+</head>
+<body>
+<div class="top">Scroll down.</div>
+<div class="bottom" data-qa-id="the almost-last div">Hello!</div>
+<div class="bottom" data-qa-id="the last div">Hello!</div>
+</body>
+</html>

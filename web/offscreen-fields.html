@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Off-screen form elements</title>
+    <style>
+        .screen-size {
+            display: block;
+            height: 2222px;
+        }
+
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+    <div class="screen-size">This scrolls the below elements off-screen!</div>
+    <form action="">
+        <label>
+            Visible off-screen field
+            <input type="text">
+        </label>
+        <label class="hide">
+            Invisible off-screen field
+            <input type="text">
+        </label>
+    </form>
+</body>
+</html>

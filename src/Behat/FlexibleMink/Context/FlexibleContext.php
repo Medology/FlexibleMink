@@ -274,7 +274,7 @@ class FlexibleContext extends MinkContext
         $field = $this->injectStoredValues($field);
         $value = $this->injectStoredValues($value);
         $element = $this->waitFor(function () use ($field) {
-            return $this->assertFieldExists($field);
+            return $this->scrollToField($field);
         });
 
         $element->setValue($value);
@@ -432,6 +432,23 @@ class FlexibleContext extends MinkContext
         }
 
         throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scrollToField($fieldName, TraversableElement $context = null)
+    {
+        $context = $context ?: $this->getSession()->getPage();
+
+        /** @var NodeElement[] $fields */
+        $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
+            throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+        }
+
+        return $element;
     }
 
     /**
@@ -897,6 +914,41 @@ class FlexibleContext extends MinkContext
         }
 
         $this->getSession()->executeScript("window.scrollTo($x, $y)");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scrollWindowToFirstVisibleElement(array $elements)
+    {
+        foreach ($elements as $field) {
+            if ($field->isVisible()) {
+                return $field;
+            }
+        }
+
+        // No fields are visible on the page, so try scrolling to each field and see if they become visible that way.
+        foreach ($elements as $field) {
+            $this->scrollWindowToElement($field);
+
+            if ($field->isVisible()) {
+                return $field;
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scrollWindowToElement(NodeElement $element)
+    {
+        $xpath = json_encode($element->getXpath());
+        $this->getSession()->evaluateScript(<<<JS
+                document.evaluate($xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+                    .singleNodeValue
+                    .scrollIntoView(false)
+JS
+        );
     }
 
     /**

@@ -195,6 +195,16 @@ trait FlexibleContextInterface
     abstract public function assertVisibleOption($locator);
 
     /**
+     * Checks that the page contains a visible input field, scrolls to it if it's not in the viewport, then returns it.
+     *
+     * @param  string                  $fieldName The input name.
+     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
+     * @throws ExpectationException    If a visible input field is not found.
+     * @return NodeElement             The found input field.
+     */
+    abstract public function scrollToField($fieldName, TraversableElement $context = null);
+
+    /**
      * Checks that the page contains a visible input field and then returns it.
      *
      * @param  string                  $fieldName The input name.
@@ -328,6 +338,22 @@ trait FlexibleContextInterface
      * @throws DriverException                  When the operation cannot be done
      */
     abstract public function scrollWindowToBody($where);
+
+    /**
+     * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if
+     * necessary.
+     *
+     * @param  NodeElement[] $elements The elements to look for.
+     * @return NodeElement   The first visible element.
+     */
+    abstract public function scrollWindowToFirstVisibleElement(array $elements);
+
+    /**
+     * Scrolls the window to the given element.
+     *
+     * @param NodeElement $element The element to scroll to.
+     */
+    abstract public function scrollWindowToElement(NodeElement $element);
 
     /**
      * This overrides MinkContext::visit() to inject stored values into the URL.

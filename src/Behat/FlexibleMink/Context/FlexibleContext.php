@@ -247,7 +247,7 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->injectStoredValues($locator);
         $element = $this->waitFor(function () use ($locator) {
-            return $this->assertVisibleLink($locator);
+            return $this->scrollToLink($locator);
         });
 
         $element->click();
@@ -389,6 +389,30 @@ class FlexibleContext extends MinkContext
         }
 
         throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scrollToLink($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        // the link selector in Behat/Min/src/Selector/NamedSelector requires anchor tags have href
+        // we don't want that, because some don't, so rip out that section. Ideally we would load our own
+        // selector with registerNamedXpath, but I want to re-use the link named selector so we're doing it
+        // this way
+        $xpath = $this->getSession()->getSelectorsHandler()->selectorToXpath('named', ['link', $locator]);
+        $xpath = preg_replace('/\[\.\/@href\]/', '', $xpath);
+
+        /** @var NodeElement[] $links */
+        $links = $this->getSession()->getPage()->findAll('xpath', $xpath);
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement( $links))) {
+            throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
+        }
+
+        return $element;
     }
 
     /**

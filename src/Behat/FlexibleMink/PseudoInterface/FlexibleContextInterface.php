@@ -184,6 +184,17 @@ trait FlexibleContextInterface
     abstract public function assertVisibleButton($locator);
 
     /**
+     * Finds the first matching visible link on the page, scrolling to it if necessary.
+     *
+     * Warning: Will return the first link if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The link name.
+     * @throws ExpectationException If a visible link was not found.
+     * @return NodeElement          The link.
+     */
+    abstract public function scrollToLink($locator);
+
+    /**
      * Finds the first matching visible link on the page.
      *
      * Warning: Will return the first link if the driver does not support visibility checks.

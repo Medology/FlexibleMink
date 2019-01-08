@@ -162,6 +162,17 @@ trait FlexibleContextInterface
     abstract public function assertButtonDisabled($locator, $disabled = true);
 
     /**
+     * Finds the first matching visible button on the page, scrolling to one if necessary.
+     *
+     * Warning: Will return the first button if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The button name.
+     * @throws ExpectationException If a visible button was not found.
+     * @return NodeElement          The button.
+     */
+    abstract public function scrollToButton($locator);
+
+    /**
      * Finds the first matching visible button on the page.
      *
      * Warning: Will return the first button if the driver does not support visibility checks.

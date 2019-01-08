@@ -355,6 +355,22 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
+    public function scrollToButton($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        $buttons = $this->getSession()->getPage()->findAll('named', ['button', $locator]);
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
+            throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
+        }
+
+        return $element;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function assertVisibleButton($locator)
     {
         $locator = $this->fixStepArgument($locator);
@@ -810,7 +826,7 @@ class FlexibleContext extends MinkContext
     {
         /** @var NodeElement $button */
         $button = $this->waitFor(function () use ($locator) {
-            return $this->assertVisibleButton($locator);
+            return $this->scrollToButton($locator);
         });
 
         $this->waitFor(function () use ($button, $locator) {

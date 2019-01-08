@@ -1091,17 +1091,16 @@ JS
                 throw new ExpectationException('Radio Button was not found on the page', $this->getSession());
             }
 
-            $radioButtons = array_filter($radioButtons, function (NodeElement $radio) {
-                return $radio->isVisible();
-            });
+            usort($radioButtons, [$this, 'compareElementsByCoords']);
 
-            if (!$radioButtons) {
+            $radioButton = $this->scrollWindowToFirstVisibleElement($radioButtons);
+
+            if (!$radioButton) {
                 throw new ExpectationException('No Visible Radio Button was found on the page', $this->getSession());
             }
 
-            usort($radioButtons, [$this, 'compareElementsByCoords']);
 
-            return $radioButtons[0];
+            return $radioButton;
         });
 
         return $radioButton;

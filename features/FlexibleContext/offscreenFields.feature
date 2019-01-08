@@ -29,3 +29,12 @@ Feature: Interacting with off-screen fields
       When I assert that I check "Invisible off-screen checkbox"
       Then the assertion should throw an ExpectationException
        And the assertion should fail with the message "No visible option found for 'Invisible off-screen checkbox'"
+
+    Scenario:
+      When I assert that I check radio button "Visible off-screen radio"
+      Then the assertion should pass
+
+    Scenario:
+      When I assert that I check radio button "Invisible off-screen radio"
+      Then the assertion should throw an ExpectationException
+       And the assertion should fail with the message "No Visible Radio Button was found on the page"

@@ -20,3 +20,12 @@ Feature: Interacting with off-screen fields
       When I assert that I press "Invisible off-screen button"
       Then the assertion should throw an ExpectationException
        And the assertion should fail with the message "No visible button found for 'Invisible off-screen button'"
+
+    Scenario:
+      When I assert that I check "Visible off-screen checkbox"
+      Then the assertion should pass
+
+    Scenario:
+      When I assert that I check "Invisible off-screen checkbox"
+      Then the assertion should throw an ExpectationException
+       And the assertion should fail with the message "No visible option found for 'Invisible off-screen checkbox'"

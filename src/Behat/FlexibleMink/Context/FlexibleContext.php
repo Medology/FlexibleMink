@@ -260,7 +260,7 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->injectStoredValues($locator);
         $element = $this->waitFor(function () use ($locator) {
-            return $this->assertVisibleOption($locator);
+            return $this->scrollToOption($locator);
         });
 
         $element->check();
@@ -420,6 +420,26 @@ class FlexibleContext extends MinkContext
 
         // $links is NOT numerically indexed, so just grab the first element and send it back
         return array_shift($links);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function scrollToOption($locator)
+    {
+
+        $locator = $this->fixStepArgument($locator);
+
+        $options = $this->getSession()->getPage()->findAll(
+            'named',
+            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
+        );
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
+            throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+        }
+
+        return $element;
     }
 
     /**

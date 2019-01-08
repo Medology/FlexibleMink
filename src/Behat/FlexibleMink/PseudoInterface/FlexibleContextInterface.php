@@ -195,6 +195,17 @@ trait FlexibleContextInterface
     abstract public function assertVisibleLink($locator);
 
     /**
+     * Finds the first matching visible option on the page, scrolling to it if necessary.
+     *
+     * Warning: Will return the first option if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The option name.
+     * @throws ExpectationException If a visible option was not found.
+     * @return NodeElement          The option.
+     */
+    abstract public function scrollToOption($locator);
+
+    /**
      * Finds the first matching visible option on the page.
      *
      * Warning: Will return the first option if the driver does not support visibility checks.

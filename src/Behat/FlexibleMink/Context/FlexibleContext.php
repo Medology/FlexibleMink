@@ -408,7 +408,7 @@ class FlexibleContext extends MinkContext
         /** @var NodeElement[] $links */
         $links = $this->getSession()->getPage()->findAll('xpath', $xpath);
 
-        if (!($element = $this->scrollWindowToFirstVisibleElement( $links))) {
+        if (!($element = $this->scrollWindowToFirstVisibleElement($links))) {
             throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
         }
 
@@ -451,7 +451,6 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToOption($locator)
     {
-
         $locator = $this->fixStepArgument($locator);
 
         $options = $this->getSession()->getPage()->findAll(
@@ -1122,7 +1121,6 @@ JS
             if (!$radioButton) {
                 throw new ExpectationException('No Visible Radio Button was found on the page', $this->getSession());
             }
-
 
             return $radioButton;
         });

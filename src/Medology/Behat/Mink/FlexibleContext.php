@@ -163,11 +163,22 @@ class FlexibleContext extends MinkContext
      * {@inheritdoc}
      *
      * Overrides the parent method to support injecting values from the store into the field and value.
+     *
+     * @throws InvalidArgumentException If the string references something that does not exist in the store.
+     * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
+     *                                  and they do not conform to its requirements. This method does not pass
+     *                                  closures, so if this happens, there is a problem with the
+     *                                  injectStoredValues method.
+     * @throws OutOfBoundsException     If the specified stored item does not have the specified property or
+     *                                  key.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were passed.
+     *                                  This should never happen. If it does, there is a problem with the
+     *                                  injectStoredValues method.
      */
     public function assertFieldContains($field, $value)
     {
-        $field = $this->injectStoredValues($field);
-        $value = $this->injectStoredValues($value);
+        $field = $this->storeContext->injectStoredValues($field);
+        $value = $this->storeContext->injectStoredValues($value);
 
         parent::assertFieldContains($field, $value);
     }

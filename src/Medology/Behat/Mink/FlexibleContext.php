@@ -63,16 +63,52 @@ class FlexibleContext extends MinkContext
     {
         $page = $this->storeContext->injectStoredValues($page);
 
-        // is the page a path, or a full URL?
-        if (preg_match('!^https?://!', $page) == 0) {
-            // it's just a path. delegate to parents implementation
-            parent::assertPageAddress($page);
-        } else {
-            // it's a full URL, compare manually
-            $actual = $this->getSession()->getCurrentUrl();
-            if (!strpos($actual, $page) === 0) {
+        /* @noinspection PhpUnhandledExceptionInspection */
+        Spinner::waitFor(function () use ($page) {
+            // is the page a path, or a full URL?
+            if (preg_match('!^https?://!', $page) == 0) {
+                // it's just a path. delegate to parents implementation
+                parent::assertPageAddress($page);
+            } else {
+                // it's a full URL, compare manually
+                $actual = $this->getSession()->getCurrentUrl();
+                if (!strpos($actual, $page) === 0) {
+                    throw new ExpectationException(
+                        sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                        $this->getSession()
+                    );
+                }
+            }
+        });
+    }
+
+    /**
+     * Checks that current url has the specified query parameters.
+     *
+     * @Then /^(?:|I )should be on "(?P<page>[^"]+)" with the following query parameters:$/
+     *
+     * @param  string               $page       the current page path of the query parameters.
+     * @param  TableNode            $parameters the values of the query parameters.
+     * @throws DriverException      If the driver failed to perform the action.
+     * @throws ReflectionException  If injectStoredValues incorrectly believes one or more closures were passed.
+     * @throws ExpectationException If the current page is not the expected page.
+     * @throws ExpectationException If the one of the current page params are not set.
+     * @throws ExpectationException If the one of the current page param values does not match with the expected.
+     */
+    public function assertPageAddressWithQueryParameters($page, TableNode $parameters)
+    {
+        $this->assertPageAddress($page);
+        $parts = parse_url($this->getSession()->getCurrentUrl());
+        parse_str($parts['query'], $params);
+
+        foreach ($parameters->getRowsHash() as $param => $value) {
+            if (!isset($params[$param])) {
+                throw new ExpectationException("Query did not contain a $param parameter", $this->getSession());
+            }
+
+            if ($params[$param] != $value) {
                 throw new ExpectationException(
-                    sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                    "Expected query parameter $param to be $value, but found " . print_r($params[$param], true),
                     $this->getSession()
                 );
             }

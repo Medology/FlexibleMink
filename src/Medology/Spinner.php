@@ -9,11 +9,11 @@ class Spinner
     public static $default_timeout = 30;
 
     /**
-     * Calls the $lambda until it returns true or the timeout expires.
+     * Calls the $lambda until it does not throw an exception or the timeout expires.
      *
-     * This method is a "spinner" that will check a condition as many times as possible during the specified timeout
-     * period. As soon as the lambda returns true, the method will return. This is useful when waiting on remote
-     * drivers such as Selenium.
+     * This method is a "spinner" that will check a condition as many times as possible (up to 10 times a second)
+     * during the specified timeout period. As soon as the lambda does not throw an exception, the method will return
+     * the value returned by the lambda. This is useful when waiting on remote drivers such as Selenium.
      *
      * @param  callable                $lambda  The lambda to call. Must return true on success.
      * @param  int                     $timeout The number of seconds to spin for.

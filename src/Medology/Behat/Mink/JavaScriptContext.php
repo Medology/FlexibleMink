@@ -5,6 +5,7 @@ namespace Medology\Behat\Mink;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
+use Medology\Behat\UsesStoreContext;
 
 /**
  * Provides functionality modifying and checking the Javascript environment in the browser.
@@ -12,6 +13,7 @@ use Behat\Mink\Exception\ExpectationException;
 class JavaScriptContext implements Context
 {
     use UsesFlexibleContext;
+    use UsesStoreContext;
 
     /**
      * Determines if a javascript variable is set and has a value.
@@ -140,7 +142,7 @@ class JavaScriptContext implements Context
      */
     public function assertJavascriptVariables(TableNode $table)
     {
-        $attributes = array_map([$this, 'injectStoredValues'], $table->getRowsHash());
+        $attributes = array_map([$this->storeContext, 'injectStoredValues'], $table->getRowsHash());
 
         foreach ($attributes as $key => $value) {
             $this->assertJavascriptVariable($key, $value);

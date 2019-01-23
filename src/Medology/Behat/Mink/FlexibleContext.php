@@ -19,7 +19,6 @@ use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
 use Medology\Spinner;
-use Medology\SpinnerTimeoutException;
 use OutOfBoundsException;
 use ReflectionException;
 use WebDriver\Exception;
@@ -911,12 +910,12 @@ class FlexibleContext extends MinkContext
      *
      * {@inheritdoc}
      *
-     * @throws ExpectationException    if the value of the input does not match expected after the file is
-     *                                 attached.
-     * @throws SpinnerTimeoutException if the timeout expired before the assertion could be made even once.
+     * @throws ExpectationException if the value of the input does not match expected after the file is
+     *                              attached.
      */
     public function attachFileToField($field, $path)
     {
+        /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($field, $path) {
             parent::attachFileToField($field, $path);
 
@@ -1009,16 +1008,17 @@ class FlexibleContext extends MinkContext
      * @param  string                           $locator button id, inner text, value or alt
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             If a visible button field is not found.
-     * @throws SpinnerTimeoutException          If the timeout expires and the lambda has thrown a Exception.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      */
     public function pressButton($locator)
     {
         /** @var NodeElement $button */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $button = Spinner::waitFor(function () use ($locator) {
             return $this->assertVisibleButton($locator);
         });
 
+        /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($button, $locator) {
             if ($button->getAttribute('disabled') === 'disabled') {
                 throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
@@ -1041,7 +1041,6 @@ class FlexibleContext extends MinkContext
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                          passed. This should never happen. If it does, there is a problem with
      *                                          the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expires before the assertion can be made even once.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function selectOption($select, $option)
@@ -1050,6 +1049,7 @@ class FlexibleContext extends MinkContext
         $option = $this->storeContext->injectStoredValues($option);
 
         /** @var NodeElement $field */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $field = Spinner::waitFor(function () use ($select) {
             return $this->assertVisibleOptionField($select);
         });
@@ -1367,11 +1367,11 @@ class FlexibleContext extends MinkContext
      * ready. This is done by waiting for the document.readyState to be "complete".
      *
      * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
-     * @throws ExpectationException    If the page did not finish loading before the timeout expired.
-     * @throws SpinnerTimeoutException If the timeout expires before the assertion can be made even once.
+     * @throws ExpectationException If the page did not finish loading before the timeout expired.
      */
     public function waitForPageLoad()
     {
+        /* @noinspection PhpUnhandledExceptionInspection throws ExpectationException, not Exception. */
         Spinner::waitFor(function () {
             $readyState = $this->getSession()->evaluateScript('document.readyState');
             if ($readyState !== 'complete') {

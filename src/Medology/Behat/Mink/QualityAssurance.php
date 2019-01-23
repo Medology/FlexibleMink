@@ -5,7 +5,6 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Medology\Behat\UsesStoreContext;
-use Medology\SpinnerTimeoutException;
 use ReflectionException;
 use WebDriver\Exception as WebDriverException;
 
@@ -23,12 +22,11 @@ class QualityAssurance implements Context
     /**
      * Get a NodeElement by qaId.
      *
-     * @param  string                  $qaId string the qaId of the Element to get
-     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
-     * @throws ExpectationException    Exception thrown for failed expectations
-     * @throws SpinnerTimeoutException Thrown when the Spinner did not execute a
-     *                                      single attempt of the closure before the timeout expired.
-     * @return NodeElement|null        Page element node
+     * @noinspection PhpDocMissingThrowsInspection waitForPageLoad throws ExpectationException, not Exception.
+     * @param  string               $qaId string the qaId of the Element to get
+     * @throws ReflectionException  If injectStoredValues incorrectly believes one or more closures were
+     * @throws ExpectationException Exception thrown for failed expectations
+     * @return NodeElement|null     Page element node
      */
     public function getNodeElementByQaId($qaId)
     {
@@ -41,12 +39,11 @@ class QualityAssurance implements Context
     /**
      * Assert a NodeElement by qaId.
      *
-     * @param  string                  $qaId string the qaId of the Element to get
-     * @throws ExpectationException    Exception thrown for failed expectations
-     * @throws SpinnerTimeoutException Thrown when the Spinner did not execute a
-     * @throws ReflectionException     If injectStoredValues incorrectly believes one or more closures were
-     *                                      single attempt of the closure before the timeout expired.
-     * @return NodeElement             Page element node
+     * @param  string               $qaId string the qaId of the Element to get
+     * @throws ExpectationException Exception thrown for failed expectations
+     * @throws ReflectionException  If injectStoredValues incorrectly believes one or more closures were
+     *                                   single attempt of the closure before the timeout expired.
+     * @return NodeElement          Page element node
      */
     public function assertNodeElementExistsByQaId($qaId)
     {
@@ -72,7 +69,6 @@ class QualityAssurance implements Context
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @throws WebDriverException               If cannot get the Web Driver
      */
@@ -98,7 +94,6 @@ class QualityAssurance implements Context
      * @throws ExpectationException             If the element is not visible
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
      * @throws WebDriverException               If cannot get the Web Driver
      */
@@ -126,7 +121,6 @@ class QualityAssurance implements Context
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                               passed. This should never happen. If it does, there is a problem
      *                                               with the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
      * @throws WebDriverException               If cannot get the Web Driver
      */
@@ -152,7 +146,6 @@ class QualityAssurance implements Context
      * @throws ExpectationException             If the element is not visible in the document
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws WebDriverException               If cannot get the Web Driver
      * @throws UnsupportedDriverActionException
      */
@@ -178,7 +171,6 @@ class QualityAssurance implements Context
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      *                                               passed. This should never happen. If it does, there is a problem with
      *                                               the injectStoredValues method.
-     * @throws SpinnerTimeoutException          If the timeout expired before the assertion could be run even once.
      * @throws UnsupportedDriverActionException If driver is not the selenium 2 driver
      * @throws WebDriverException               If cannot get the Web Driver
      */

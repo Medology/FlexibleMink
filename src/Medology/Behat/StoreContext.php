@@ -23,6 +23,9 @@ class StoreContext extends Store implements Context
     /** @var Assert */
     protected $assert;
 
+    /** @var callable[] array of functions to call after the registry is cleared to initialize it for use */
+    protected $initializations;
+
     /** @var Key the key service for the noun-store */
     protected $key;
 
@@ -31,6 +34,7 @@ class StoreContext extends Store implements Context
         parent::__construct();
 
         $this->assert = new Assert($this);
+        $this->initializations = [];
         $this->key = Key::getInstance();
     }
 
@@ -58,9 +62,19 @@ class StoreContext extends Store implements Context
     {
         $this->reset();
 
-        if (method_exists($this, 'onStoreInitialized')) {
-            $this->onStoreInitialized();
+        foreach ($this->initializations as $callable) {
+            $callable($this);
         }
+    }
+
+    /**
+     * Registers an initialization lambda to be called after the registry is cleared before each scenario.
+     *
+     * @param callable $callable must accept a single argument, which is the StoreContext
+     */
+    public function registerInitialization(callable $callable)
+    {
+        $this->initializations[] = $callable;
     }
 
     /**

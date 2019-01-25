@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Off-screen form elements</title>
+    <style>
+        .screen-size {
+            display: block;
+            height: 2222px;
+        }
+
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+<div class="screen-size">This scrolls the below elements off-screen!</div>
+<form action="">
+    <label>
+        Visible off-screen field
+        <input type="text">
+    </label>
+    <label class="hide">
+        Invisible off-screen field
+        <input type="text">
+    </label>
+
+    <button>Visible off-screen button</button>
+    <button class="hide">Invisible off-screen button</button>
+
+    <label>
+        Visible off-screen checkbox
+        <input type="checkbox">
+    </label>
+    <label class="hide">
+        Invisible off-screen checkbox
+        <input type="checkbox">
+    </label>
+
+    <label>
+        Visible off-screen radio
+        <input type="radio">
+    </label>
+    <label class="hide">
+        Invisible off-screen radio
+        <input type="radio">
+    </label>
+
+    <a href="#">Visible off-screen link</a>
+    <a class="hide" href="#">Invisible off-screen link</a>
+</form>
+</body>
+</html>

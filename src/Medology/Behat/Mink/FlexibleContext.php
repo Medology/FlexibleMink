@@ -328,7 +328,7 @@ class FlexibleContext extends MinkContext
     public function clickLink($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->wait->assertVisibleLink($locator)->click();
+        $this->wait->scrollToLink($locator)->click();
     }
 
     /**
@@ -354,7 +354,7 @@ class FlexibleContext extends MinkContext
     public function checkOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->wait->assertVisibleOption($locator)->check();
+        $this->wait->scrollToOption($locator)->check();
     }
 
     /**
@@ -381,7 +381,7 @@ class FlexibleContext extends MinkContext
     {
         $field = $this->storeContext->injectStoredValues($field);
         $value = $this->storeContext->injectStoredValues($value);
-        $this->wait->assertFieldExists($field)->setValue($value);
+        $this->wait->scrollToField($field)->setValue($value);
     }
 
     /**
@@ -403,7 +403,7 @@ class FlexibleContext extends MinkContext
     public function uncheckOption($locator)
     {
         $locator = $this->storeContext->injectStoredValues($locator);
-        $this->wait->assertVisibleOption($locator)->uncheck();
+        $this->wait->scrollToOption($locator)->uncheck();
     }
 
     /**
@@ -500,6 +500,28 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Finds the first matching visible button on the page, scrolling to it if necessary.
+     *
+     * @param  string                           $locator The button name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible button was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The button.
+     */
+    public function scrollToButton($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        $buttons = $this->getSession()->getPage()->findAll('named', ['button', $locator]);
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
+            throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
+        }
+
+        return $element;
+    }
+
+    /**
      * Finds the first matching visible link on the page.
      *
      * Warning: Will return the first link if the driver does not support visibility checks.
@@ -514,18 +536,9 @@ class FlexibleContext extends MinkContext
      */
     public function assertVisibleLink($locator)
     {
-        $locator = $this->fixStepArgument($locator);
+        $links = $this->getLinks($locator);
 
-        // the link selector in Behat/Min/src/Selector/NamedSelector requires anchor tags have href
-        // we don't want that, because some don't, so rip out that section. Ideally we would load our own
-        // selector with registerNamedXpath, but I want to re-use the link named selector so we're doing it
-        // this way
-        $xpath = $this->getSession()->getSelectorsHandler()->selectorToXpath('named', ['link', $locator]);
-        $xpath = preg_replace('/\[\.\/@href\]/', '', $xpath);
-
-        /** @var NodeElement[] $links */
-        $links = array_filter($this->getSession()->getPage()->findAll('xpath', $xpath), function ($link) {
-            /* @var NodeElement $link */
+        $links = array_filter($links, function (NodeElement $link) {
             return $link->isVisible();
         });
 
@@ -535,6 +548,47 @@ class FlexibleContext extends MinkContext
 
         // $links is NOT numerically indexed, so just grab the first element and send it back
         return array_shift($links);
+    }
+
+    /**
+     * Finds the first matching visible link on the page, scrolling to it if necessary.
+     *
+     * @param  string                           $locator The link name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible link was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The link.
+     */
+    public function scrollToLink($locator)
+    {
+        $links = $this->getLinks($locator);
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($links))) {
+            throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
+        }
+
+        return $element;
+    }
+
+    /**
+     * Returns a set of links matching the given locator.
+     *
+     * @param  string        $locator The link name.
+     * @return NodeElement[] The links matching the given name.
+     */
+    public function getLinks($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+
+        // the link selector in Behat/Min/src/Selector/NamedSelector requires anchor tags have href
+        // we don't want that, because some don't, so rip out that section. Ideally we would load our own
+        // selector with registerNamedXpath, but I want to re-use the link named selector so we're doing it
+        // this way
+        $xpath = $this->getSession()->getSelectorsHandler()->selectorToXpath('named', ['link', $locator]);
+        $xpath = preg_replace('/\[\.\/@href\]/', '', $xpath);
+
+        /* @var NodeElement[] $links */
+        return $this->getSession()->getPage()->findAll('xpath', $xpath);
     }
 
     /**
@@ -554,7 +608,7 @@ class FlexibleContext extends MinkContext
 
         $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
-        /** @var NodeElement $option */
+        /* @var NodeElement $option */
         foreach ($options as $option) {
             try {
                 $visible = $option->isVisible();
@@ -568,6 +622,27 @@ class FlexibleContext extends MinkContext
         }
 
         throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+    }
+
+    /**
+     * Finds the first matching visible option on the page, scrolling to it if necessary.
+     *
+     * @param  string                           $locator The option name.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible option was not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The option.
+     */
+    public function scrollToOption($locator)
+    {
+        $locator = $this->fixStepArgument($locator);
+        $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
+            throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+        }
+
+        return $element;
     }
 
     /**
@@ -594,6 +669,30 @@ class FlexibleContext extends MinkContext
         }
 
         throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+    }
+
+    /**
+     * Checks that the page contains a visible input field and then returns it, scrolling to it if necessary.
+     *
+     * @param  string                           $fieldName The input name.
+     * @param  TraversableElement|null          $context   The context to search in, if not provided defaults to page.
+     * @throws DriverException                  When the operation cannot be performed.
+     * @throws ExpectationException             If a visible input field is not found.
+     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @return NodeElement                      The found input field.
+     */
+    public function scrollToField($fieldName, TraversableElement $context = null)
+    {
+        $context = $context ?: $this->getSession()->getPage();
+
+        /** @var NodeElement[] $fields */
+        $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+
+        if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
+            throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+        }
+
+        return $element;
     }
 
     /**
@@ -1030,7 +1129,7 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator)
     {
-        $button = $this->wait->assertVisibleButton($locator);
+        $button = $this->wait->scrollToButton($locator);
 
         /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($button, $locator) {
@@ -1317,17 +1416,14 @@ class FlexibleContext extends MinkContext
             throw new ExpectationException('Radio Button was not found on the page', $this->getSession());
         }
 
-        $radioButtons = array_filter($radioButtons, function (NodeElement $radio) {
-            return $radio->isVisible();
-        });
+        usort($radioButtons, [$this, 'compareElementsByCoords']);
+        $radioButton = $this->scrollWindowToFirstVisibleElement($radioButtons);
 
-        if (!$radioButtons) {
+        if (!$radioButton) {
             throw new ExpectationException('No Visible Radio Button was found on the page', $this->getSession());
         }
 
-        usort($radioButtons, [$this, 'compareElementsByCoords']);
-
-        return $radioButtons[0];
+        return $radioButton;
     }
 
     /**
@@ -1609,5 +1705,50 @@ JS
         }
 
         return $driver;
+    }
+
+    /**
+     * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if
+     * necessary.
+     *
+     * @param  NodeElement[] $elements The elements to look for.
+     * @return NodeElement   The first visible element.
+     */
+    public function scrollWindowToFirstVisibleElement(array $elements)
+    {
+        foreach ($elements as $field) {
+            if ($field->isVisible()) {
+                return $field;
+            }
+        }
+
+        // No fields are visible on the page, so try scrolling to each field and see if they become visible that way.
+        foreach ($elements as $field) {
+            $this->scrollWindowToElement($field);
+
+            if ($field->isVisible()) {
+                $ret = $field;
+
+                break;
+            }
+        }
+
+        return isset($ret) ? $ret : null;
+    }
+
+    /**
+     * Scrolls the window to the given element.
+     *
+     * @param NodeElement $element The element to scroll to.
+     */
+    public function scrollWindowToElement(NodeElement $element)
+    {
+        $xpath = json_encode($element->getXpath());
+        $this->getSession()->evaluateScript(<<<JS
+            document.evaluate($xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+                .singleNodeValue
+                .scrollIntoView(false)
+JS
+        );
     }
 }

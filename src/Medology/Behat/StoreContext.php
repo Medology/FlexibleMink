@@ -334,7 +334,7 @@ class StoreContext extends Store implements Context
 
     /**
      * Adds a reference to a stored thing under the new specified key.
-     *
+     * @Given /^(?:the |)"(?P<current>[^"]*)" has an alias of "(?P<new>[^"]*)"$/
      * @When  /^(?:I |)refer to (?:the |)"(?P<current>[^"]*)" as "(?P<new>[^"]*)"$/
      * @param string $current The current key of the thing.
      * @param string $new     The new key under which to store the thing.

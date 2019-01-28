@@ -343,6 +343,7 @@ trait StoreContext
     /**
      * {@inheritdoc}
      *
+     * @Given /^(?:the |)"(?P<current>[^"]*)" has an alias of "(?P<new>[^"]*)"$/
      * @When /^(?:I |)refer to (?:the |)"(?P<current>[^"]*)" as "(?P<new>[^"]*)"$/
      */
     public function referToStoredAs($current, $new)

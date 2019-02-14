@@ -548,7 +548,7 @@ class FlexibleContext extends MinkContext
     {
         $context = $context ?: $this->getSession()->getPage();
 
-        $this->waitFor(function () use ($fieldName, $context) {
+        return $this->waitFor(function () use ($fieldName, $context) {
             /** @var NodeElement[] $fields */
             $fields = ($context->findAll('named', ['field', $fieldName]) ?:
                 $this->getInputsByLabel($fieldName, $context));

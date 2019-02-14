@@ -548,16 +548,19 @@ class FlexibleContext extends MinkContext
     {
         $context = $context ?: $this->getSession()->getPage();
 
-        /** @var NodeElement[] $fields */
-        $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+        $this->waitFor(function () use ($fieldName, $context) {
+            /** @var NodeElement[] $fields */
+            $fields = ($context->findAll('named', ['field', $fieldName]) ?:
+                $this->getInputsByLabel($fieldName, $context));
 
-        foreach ($fields as $field) {
-            if ($field->isVisible()) {
-                return $field;
+            foreach ($fields as $field) {
+                if ($field->isVisible()) {
+                    return $field;
+                }
             }
-        }
 
-        throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+            throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+        });
     }
 
     /**

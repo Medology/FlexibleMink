@@ -32,6 +32,10 @@ Feature:  Assert Fields exists
     Then the assertion should throw an ExpectationException
      And the assertion should fail with the message "No visible input found for 'Sushi'"
 
+  Scenario: Field assertions should retry before failing
+     Then I should see the following fields:
+        | Ice Cream |
+
   Scenario: Developer Can Test for option with varying input/label setup
     Then I should see the following fields:
        | Pizza     |

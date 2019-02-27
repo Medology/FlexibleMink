@@ -163,7 +163,7 @@ trait StoreContext
         preg_match_all('/\(the ([^\)]+) of the ([^\)]+?)( formatted as ([^\)]+))?\)/', $string, $matches);
         foreach ($matches[0] as $i => $match) {
             $thingName = $matches[2][$i];
-            $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
+            $thingProperty = $this->parseProperty($matches[1][$i]);
             $thingFormat = $matches[4][$i];
 
             if (!$this->isStored($thingName)) {
@@ -195,6 +195,24 @@ trait StoreContext
         }
 
         return $string;
+    }
+
+    /**
+     * Converts the property name used for reference to the actual key name.
+     *
+     * @param  string $property The property name used to reference the key.
+     * @return string
+     */
+    protected function parseProperty($property)
+    {
+        if (
+            substr($property, 0, 1) === "'" &&
+            substr($property, -1) === "'"
+        ) {
+            return trim($property, "'");
+        }
+
+        return str_replace(' ', '_', strtolower($property));
     }
 
     /**

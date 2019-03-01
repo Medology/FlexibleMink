@@ -209,10 +209,8 @@ class StoreContext extends Store implements Context
      */
     protected function parseProperty($property)
     {
-        if (
-            substr($property, 0, 1) === "'" &&
-            substr($property, -1) === "'"
-        ) {
+        if (substr($property, 0, 1) === "'" && substr($property, -1) === "'") {
+
             return trim($property, "'");
         }
 

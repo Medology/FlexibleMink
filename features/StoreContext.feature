@@ -60,18 +60,18 @@ Feature: Store Context
 
   Scenario: Keys wrapped in single quote should not be converted to snake case.
     Given the following is stored as "Commission":
-      | commissionId | commission-1234 |
-      | orderId      | order-4321 |
-    Then the "'commissionId'" of the "Commission" should contain "commission-1234"
-     And the "'orderId'" of the "Commission" should contain "order-4321"
+       | commissionId | commission-1234 |
+       | orderId      | order-4321 |
+     Then the "'commissionId'" of the "Commission" should contain "commission-1234"
+      And the "'orderId'" of the "Commission" should contain "order-4321"
 
   Scenario: Keys wrapped in single quotes that don't exist should throw an exception
     Given the following is stored as "Commission":
-      | commissionId | commission-1234 |
-      | orderId      | order-4321 |
-    When I assert that the "'commissionId'" of the "Commission" should contain "commission-4321"
-    Then the assertion should throw an Exception
-     And the assertion should fail with the message "Expected the 'commissionId' of the 'Commission' to contain 'commission-4321', but found 'commission-1234' instead"
-    When I assert that the "'orderId'" of the "Commission" should contain "order-1234"
-    Then the assertion should throw an Exception
-     And the assertion should fail with the message "Expected the 'orderId' of the 'Commission' to contain 'order-1234', but found 'order-4321' instead"
+       | commissionId | commission-1234 |
+       | orderId      | order-4321 |
+     When I assert that the "'commissionId'" of the "Commission" should contain "commission-4321"
+     Then the assertion should throw an Exception
+      And the assertion should fail with the message "Expected the 'commissionId' of the 'Commission' to contain 'commission-4321', but found 'commission-1234' instead"
+     When I assert that the "'orderId'" of the "Commission" should contain "order-1234"
+     Then the assertion should throw an Exception
+      And the assertion should fail with the message "Expected the 'orderId' of the 'Commission' to contain 'order-1234', but found 'order-4321' instead"

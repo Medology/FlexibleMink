@@ -46,9 +46,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $releaseVersion = explode('-', $releaseVersion, 2)[0];
 
         if ($majorVersion >= 7) {
-            $this->expectException('TypeError');
+            $this->setExpectedException('TypeError');
         } elseif ($majorVersion == 5 && $minorVersion == 6 && $releaseVersion >= 40) {
-            $this->expectException('PHPUnit_Framework_Error');
+            $this->setExpectedException('PHPUnit_Framework_Error');
         } else {
             throw new Exception('This php version is not supported. PHP version must be >= 5.6.40');
         }

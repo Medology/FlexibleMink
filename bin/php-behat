@@ -5,7 +5,7 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 . "${ROOT}"/bin/lib/exitCheck.sh
 
 if [ "$USE_PHP5" = "1" ]; then
-    bin/php5/phpunit "$@"
+    bin/php5/php-behat "$@"
     exitCheck $?
     exit 0;
 fi
@@ -20,6 +20,6 @@ docker run \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \
-	chekote/php:7.2.16-phpunit5 php ./vendor/phpunit/phpunit/phpunit --configuration=phpunit.xml "$@"
+	chekote/php:7.2.16-behat3.4 php "$@"
 
 exitCheck $?

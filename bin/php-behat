@@ -13,11 +13,6 @@ fi
 . "${ROOT}"/bin/lib/env.sh
 . "${ROOT}"/bin/lib/tty.sh
 
-if [ ! "$(docker image ls | grep php7-behat)" ]; then
-    docker build --tag "php7-behat" "${ROOT}"/docker/php7.2.8-behat3.4/
-    exitCheck $?
-fi
-
 docker run \
     -i${TTY} \
     --rm \

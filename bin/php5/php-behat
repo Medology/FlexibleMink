@@ -7,11 +7,6 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd )"
 . "${ROOT}"/bin/lib/env.sh
 . "${ROOT}"/bin/lib/tty.sh
 
-if [ ! "$(docker image ls | grep php5-behat)" ]; then
-    docker build --tag "php5-behat" "${ROOT}"/docker/php5.6.40-behat3.4/
-    exitCheck $?
-fi
-
 docker run \
     -i${TTY} \
     --rm \

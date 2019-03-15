@@ -36,12 +36,12 @@ commands:
       - run:
           name: Initialize the project
           command: |
-            mkdir -p ./artifacts
+            mkdir -p /tmp/artifacts
             bin/init_project
       - store_test_results:
-          path: artifacts
+          path: /tmp/artifacts
       - store_artifacts:
-          path: artifacts
+          path: /tmp/artifacts
       - persist_to_workspace:
           root: .
           paths:
@@ -61,14 +61,14 @@ commands:
             bin/init/wait_for_services.sh
       - run:
           name: Unit tests
-          command: phpunit --log-junit /tmp/phpunit/artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
+          command: phpunit --log-junit /tmp/artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
       - run:
           name: Behat tests
-          command: behat --strict -vv -f pretty -o std -f junit -o /tmp/behat/artifacts
+          command: behat --strict -vv -f pretty -o std -f junit -o /tmp/artifacts
       - store_test_results:
-          path: artifacts
+          path: /tmp/artifacts
       - store_artifacts:
-          path: artifacts
+          path: /tmp/artifacts
 
 jobs:
   build:

@@ -96,19 +96,6 @@ jobs:
       - build
       - test
 
-  build-php5:
-    working_directory: /tmp/FlexibleMink
-    parallelism: 1
-    machine:
-      enabled: true
-    environment:
-    - USE_PHP5: 1
-    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-    steps:
-    - prep
-    - build
-
   test-php5:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
@@ -131,7 +118,6 @@ workflows:
       - test:
           requires:
             - build
-      - build-php5
       - test-php5:
           requires:
-          - build-php5
+            - build

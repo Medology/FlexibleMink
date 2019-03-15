@@ -4,10 +4,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 . "${DIR}"/bin/lib/exitCheck.sh
 
-echo "Installing Composer dependencies..."
-composer install
-exitCheck $?
-
 echo "Building the php7-behat image..."
 docker build --tag "php7-behat" "${DIR}"/docker/php7.2.8-behat3.4/
 exitCheck $?
@@ -15,3 +11,9 @@ exitCheck $?
 echo "Building the php5-behat image..."
 docker build --tag "php5-behat" "${DIR}"/docker/php5.6.40-behat3.4/
 exitCheck $?
+
+echo "Installing Composer dependencies..."
+composer install
+exitCheck $?
+
+

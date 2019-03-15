@@ -20,6 +20,6 @@ docker run \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \
-	php7-behat php "$@"
+	chekote/php:7.2.16-behat3.4 php "$@"
 
 exitCheck $?

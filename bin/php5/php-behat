@@ -14,6 +14,6 @@ docker run \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \
-	php5-behat php "$@"
+	chekote/php:5.6.40-behat3.4 php "$@"
 
 exitCheck $?

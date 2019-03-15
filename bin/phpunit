@@ -20,6 +20,6 @@ docker run \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \
-	chekote/php:7.2.8-phpunit5 php ./vendor/phpunit/phpunit/phpunit --configuration=phpunit.xml "$@"
+	chekote/php:7.2.16-phpunit5 php ./vendor/phpunit/phpunit/phpunit --configuration=phpunit.xml "$@"
 
 exitCheck $?

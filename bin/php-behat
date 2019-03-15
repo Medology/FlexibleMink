@@ -5,13 +5,18 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 . "${ROOT}"/bin/lib/exitCheck.sh
 
 if [ "$USE_PHP5" = "1" ]; then
-    bin/php5/php "$@"
+    bin/php5/php-behat "$@"
     exitCheck $?
     exit 0;
 fi
 
 . "${ROOT}"/bin/lib/env.sh
 . "${ROOT}"/bin/lib/tty.sh
+
+if [ ! "$(docker image ls | grep php7-behat)" ]; then
+    docker build --tag "php7-behat" "${ROOT}"/docker/php7.2.8-behat3.4/
+    exitCheck $?
+fi
 
 docker run \
     -i${TTY} \
@@ -20,6 +25,6 @@ docker run \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \
-	chekote/php:7.2.8 php "$@"
+	php7-behat php "$@"
 
 exitCheck $?

@@ -36,6 +36,104 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Expects the correct type error exception depending on the php version.
+     *
+     * @throws Exception
+     */
+    protected function expectTypeErrorException()
+    {
+        list($majorVersion, $minorVersion, $releaseVersion) = explode('.', PHP_VERSION, 4);
+        $releaseVersion = explode('-', $releaseVersion, 2)[0];
+
+        //die(print_r($releaseVersion, 1) . PHP_EOL);
+
+        if ($majorVersion >= 7) {
+            $this->expectException('TypeError');
+        } elseif ($majorVersion == 5 && $minorVersion == 6 && $releaseVersion >= 40) {
+            $this->expectException('PHPUnit_Framework_Error');
+        } else {
+            throw new Exception('This php version is not supported. PHP version must be >= 5.6.40');
+        }
+    }
+
+    /**
+     * Asserts that a function throws a type error that contains a string.
+     *
+     * @param $fn
+     * @param $expectedMessage
+     * @throws Exception
+     */
+    protected function assertFunctionThrowsTypeErrorThatContainsMessage($fn, $expectedMessage)
+    {
+        $this->expectTypeErrorException();
+
+        try {
+            $fn();
+        } catch (TypeError $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        } catch (PHPUnit_Framework_Error $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnEmptyString()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', '');
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnInteger()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', 0);
+        }, 'injectStoredValues() must be callable');
+
+        // test null values
+        $this->assertEmpty($this->injectStoredValues('', null));
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnObject()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', $this->getMockObject());
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Test that a non-callable has value throws appropriate error.
+     *
+     * @throws Exception
+     */
+    public function testNonCallableHasValueThrowsAppropriateError()
+    {
+        foreach (['', 0, $this->getMockObject()] as $nonCallable) {
+            $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
+                $this->injectStoredValues('', null, $nonCallable);
+            }, 'injectStoredValues() must be callable');
+        }
+    }
+
+    /**
      * Tests the StoreContext::injectStoredValues method.
      */
     public function testInjectStoredValues()
@@ -118,28 +216,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test null values
         $this->assertEmpty($this->injectStoredValues('', null));
-
-        // test invalid values
-        try {
-            $this->injectStoredValues('', '');
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
-
-        try {
-            $this->injectStoredValues('', 0);
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
-
-        try {
-            $this->injectStoredValues('', $testObj);
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
 
         // test function with bad arguments
         $badFn = function () {
@@ -255,16 +331,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // Null $hasValue should default to using isset
         $this->assertEmpty($this->injectStoredValues('', null, null));
-
-        // Non-callable $hasValue throws appropriate error
-        foreach (['', 0, $testObj] as $nonCallable) {
-            try {
-                $this->injectStoredValues('', null, $nonCallable);
-                $this->setExpectedException('TypeError');
-            } catch (PHPUnit_Framework_Error $e) {
-                $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-            }
-        }
 
         // Lambda without two args throws appropriate error
         $wrongArgCounts = [

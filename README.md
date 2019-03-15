@@ -25,5 +25,10 @@ Once the setup is complete, usage is quite simple. Run the following in the proj
 > bin/behat
 ```
 
+<br>
+PHP 7.2 is set by default when this repository is cloned.<br>
+To run tests on PHP 5.6 run `export USE_PHP5=1` before running tests<br>
+To switch back to PHP 7.2 run `export USE_PHP5=0`
+
 ## Debugging
 Selenium is configured for VNC on the default port (5900). If you have a VNC client, simply point it to ```vnc://localhost``` on port 5900. The password is the default password provided by Selenium, which is `secret` (as documented on [Selenium](https://github.com/SeleniumHQ/docker-selenium)).

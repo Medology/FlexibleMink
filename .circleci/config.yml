@@ -1,13 +1,9 @@
-version: 2
-jobs:
-  build:
-    working_directory: /tmp/FlexibleMink
-    parallelism: 1
-    machine:
-      enabled: true
-    environment:
-      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+version: 2.1
 
+
+commands:
+  prep:
+    description: "Bring the repository up-to-date with master and handle setup"
     steps:
       - checkout
       - restore_cache:
@@ -25,6 +21,10 @@ jobs:
       - run:
           name: Merge master
           command: git fetch origin && git merge origin/1.0 --no-edit
+
+  build:
+    description: "Build the project."
+    steps:
       - run:
           name: Initialize docker .env
           command: bin/init/init_docker_env.sh
@@ -45,11 +45,44 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-             - .
+            - .
       - save_cache:
           key: composer-{{ checksum "composer.lock" }}
           paths:
             - ~/.composer/cache
+
+  test:
+    description: "Test the project."
+    steps:
+      - run:
+          name: Start containers
+          command: |
+            .circleci/containers up -d
+            bin/init/wait_for_services.sh
+      - run:
+          name: Unit tests
+          command: phpunit --log-junit /tmp/phpunit/artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
+      - run:
+          name: Behat tests
+          command: behat --strict -vv -f pretty -o std -f junit -o /tmp/behat/artifacts
+      - store_test_results:
+          path: artifacts
+      - store_artifacts:
+          path: artifacts
+
+jobs:
+  build:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+      - prep
+      - build
+
   test:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
@@ -59,23 +92,36 @@ jobs:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Start containers
-          command: |
-            .circleci/containers up -d
-            bin/init/wait_for_services.sh
-      - run:
-          name: Behat tests
-          command: behat --strict -vv -f pretty -o std -f junit -o ./artifacts
-      - run:
-          name: Unit tests
-          command: phpunit --log-junit artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
-      - store_test_results:
-          path: artifacts
-      - store_artifacts:
-          path: artifacts
+      - prep
+      - build
+      - test
+
+  build-php5:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+    - USE_PHP5: 1
+    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+    - prep
+    - build
+
+  test-php5:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+    - USE_PHP5: 1
+    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+    - prep
+    - build
+    - test
 
 workflows:
   version: 2
@@ -85,3 +131,7 @@ workflows:
       - test:
           requires:
             - build
+      - build-php5
+      - test-php5:
+          requires:
+          - build-php5

@@ -100,7 +100,8 @@ trait AssertionContext
         }
 
         $exception = $this->result->getException();
-        $actual = end(explode('\\', get_class($exception)));
+        $classNameParts = explode('\\', get_class($exception));
+        $actual = array_pop($classNameParts);
 
         if ($actual != $exceptionType) {
             throw new Exception("Assertion threw $actual but $exceptionType was expected");

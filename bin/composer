@@ -10,4 +10,4 @@ docker run \
     --rm \
     -v "$(pwd)":/data -w /data \
 	--net ${PROJECT_NAME}_default \
-	composer/composer:1.2 "$@"
+	composer:1.7.1 "$@"

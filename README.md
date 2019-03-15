@@ -25,7 +25,6 @@ Once the setup is complete, usage is quite simple. Run the following in the proj
 > bin/behat
 ```
 
-<br>
 PHP 7.2 is set by default when this repository is cloned.<br>
 To run tests on PHP 5.6 run `export USE_PHP5=1` before running tests<br>
 To switch back to PHP 7.2 run `export USE_PHP5=0`

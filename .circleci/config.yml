@@ -1,6 +1,5 @@
 version: 2.1
 
-
 commands:
   pull-merge:
     description: "Bring the repository up-to-date with master and handle setup"
@@ -25,6 +24,7 @@ commands:
   build:
     description: "Build the project."
     steps:
+      - pull-merge
       - run:
           name: Initialize docker .env
           command: bin/init/init_docker_env.sh
@@ -54,6 +54,8 @@ commands:
   test:
     description: "Test the project."
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: Start containers
           command: |
@@ -71,6 +73,17 @@ commands:
           path: /tmp/artifacts
 
 jobs:
+  build:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+      - build
+
   test:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
@@ -80,9 +93,19 @@ jobs:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-      - pull-merge
-      - build
       - test
+
+  build-php5:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+    - USE_PHP5: 1
+    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+    - build
 
   test-php5:
     working_directory: /tmp/FlexibleMink
@@ -94,13 +117,17 @@ jobs:
     - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - pull-merge
-    - build
     - test
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - test
-      - test-php5
+      - build
+      - test:
+          requires:
+            - build
+      - build-php5
+      - test-php5:
+          requires:
+            - build-php5

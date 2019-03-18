@@ -118,7 +118,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
      *
      * @dataProvider nonCallableValuesProvider
      *
-     * @param  mixed     $nonCallable Non-callable variable from data provider.
+     * @param mixed $nonCallable Non-callable variable from data provider.
      * @throws Exception When a unsupported version of PHP is being used.
      */
     public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
@@ -129,7 +129,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Returns a list of non-callable values.
+     * Returns a list of non-callable values
      *
      * @return array
      */

@@ -135,7 +135,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
     {
         $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
-            $this->injectStoredValues('', null, $nonCallable);
+            $this->storeContext->injectStoredValues('', null, $nonCallable);
         }, 'injectStoredValues() must be callable');
     }
 

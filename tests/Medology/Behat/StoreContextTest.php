@@ -53,15 +53,14 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
      */
     protected function expectTypeErrorException()
     {
-        list($majorVersion, $minorVersion, $releaseVersion) = explode('.', PHP_VERSION, 4);
-        $releaseVersion = explode('-', $releaseVersion, 2)[0];
+        list($majorVersion, $minorVersion) = explode('.', PHP_VERSION, 3);
 
         if ($majorVersion >= 7) {
-            $this->setExpectedException('TypeError');
-        } elseif ($majorVersion == 5 && $minorVersion == 6 && $releaseVersion >= 40) {
-            $this->setExpectedException('PHPUnit_Framework_Error');
+            $this->setExpectedException(TypeError::class);
+        } elseif ($majorVersion == 5 && $minorVersion == 6) {
+            $this->setExpectedException(PHPUnit_Framework_Error::class);
         } else {
-            throw new Exception('This php version is not supported. PHP version must be >= 5.6.40');
+            throw new Exception('This php version is not supported. PHP version must be >= 5.6');
         }
     }
 
@@ -128,15 +127,26 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     /**
      * Test that a non-callable has value throws appropriate error.
      *
+     * @dataProvider nonCallableValuesProvider
+     *
+     * @param  mixed     $nonCallable Non-callable variable from data provider.
      * @throws Exception When a unsupported version of PHP is being used.
      */
-    public function testNonCallableHasValueThrowsAppropriateError()
+    public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
     {
-        foreach (['', 0, $this->getMockObject()] as $nonCallable) {
-            $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
-                $this->storeContext->injectStoredValues('', null, $nonCallable);
-            }, 'injectStoredValues() must be callable');
-        }
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
+            $this->injectStoredValues('', null, $nonCallable);
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Returns a list of non-callable values.
+     *
+     * @return array
+     */
+    public function nonCallableValuesProvider()
+    {
+        return [[''], [0],  [$this->getMockObject()]];
     }
 
     /**

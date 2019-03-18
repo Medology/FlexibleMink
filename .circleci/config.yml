@@ -1,7 +1,7 @@
 version: 2.1
 
 commands:
-  prep:
+  pull-merge:
     description: "Bring the repository up-to-date with master and handle setup"
     steps:
     - checkout
@@ -24,6 +24,7 @@ commands:
   build:
     description: "Build the project."
     steps:
+    - pull-merge
     - run:
         name: Initialize docker .env
         command: bin/init/init_docker_env.sh
@@ -53,6 +54,8 @@ commands:
   test:
     description: "Test the project."
     steps:
+    - attach_workspace:
+        at: .
     - run:
         name: Start containers
         command: |
@@ -79,7 +82,6 @@ jobs:
     - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - prep
     - build
 
   test:
@@ -91,9 +93,19 @@ jobs:
     - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - prep
-    - build
     - test
+
+  build-php5:
+    working_directory: /tmp/FlexibleMink
+    parallelism: 1
+    machine:
+      enabled: true
+    environment:
+    - USE_PHP5: 1
+    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+    steps:
+    - build
 
   test-php5:
     working_directory: /tmp/FlexibleMink
@@ -105,8 +117,6 @@ jobs:
     - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - prep
-    - build
     - test
 
 workflows:
@@ -117,6 +127,7 @@ workflows:
     - test:
         requires:
         - build
+    - build-php5
     - test-php5:
         requires:
-        - build
+        - build-php5

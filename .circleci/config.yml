@@ -123,11 +123,11 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - build-php5
-      - test-php5:
-          requires:
-            - build-php5
+    - build
+    - test:
+        requires:
+        - build
+    - build-php5
+    - test-php5:
+        requires:
+        - build-php5

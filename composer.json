@@ -30,6 +30,11 @@
       "features\\": ""
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "repositories": [
     {
       "type": "vcs",

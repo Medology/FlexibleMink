@@ -344,6 +344,47 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Checks that elements with specified selector exist.
+     *
+     * @param  string               $element      The element to search from.
+     * @param  string|array         $selectorType selector type locator.
+     * @throws ExpectationException When no element is found.
+     * @return NodeElement[]        All elements found with by the given selector.
+     */
+    public function assertElementsExist($element, $selectorType = 'css')
+    {
+        $session = $this->getSession();
+
+        /* @noinspection PhpUnhandledExceptionInspection */
+        return Spinner::waitFor(function () use ($session, $selectorType, $element) {
+            if (!$allElements = $session->getPage()->findAll($selectorType, $element)) {
+                throw new ExpectationException("No '$element' was not found", $session);
+            }
+
+            return $allElements;
+        });
+    }
+
+    /**
+     * Checks that the nth element exists and returns it.
+     *
+     * @param  string               $element      The elements to search from.
+     * @param  int                  $nth          This is the nth amount of the element.
+     * @param  string|array         $selectorType selector type locator.
+     * @throws ExpectationException When the nth element is not found.
+     * @return NodeElement          The nth element found.
+     */
+    public function assertNthElement($element, $nth, $selectorType = 'css')
+    {
+        $allElements = $this->assertElementsExist($element, $selectorType);
+        if (!isset($allElements[$nth - 1])) {
+            throw new ExpectationException("Element $element $nth was not found", $this->getSession());
+        }
+
+        return $allElements[$nth - 1];
+    }
+
+    /**
      * Clicks a visible link with specified id|title|alt|text.
      * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible
      * links are clicked.

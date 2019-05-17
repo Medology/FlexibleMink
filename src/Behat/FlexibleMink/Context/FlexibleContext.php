@@ -256,8 +256,9 @@ class FlexibleContext extends MinkContext
      */
     public function assertElementsExist($element, $selectorType = 'css')
     {
-        return $this->waitFor(function () use ($selectorType, $element) {
-            $session = $this->getSession();
+        $session = $this->getSession();
+
+        return $this->waitFor(function () use ($session, $selectorType, $element) {
             if (!$allElements = $session->getPage()->findAll($selectorType, $element)) {
                 throw new ExpectationException("No '$element' was not found", $session);
             }

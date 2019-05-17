@@ -254,13 +254,13 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
-    public function assertElementsExist($element, $selectorType = 'css')
+    public function assertElementsExist($elementsSelector, $selectorType = 'css')
     {
         $session = $this->getSession();
 
-        return $this->waitFor(function () use ($session, $selectorType, $element) {
-            if (!$allElements = $session->getPage()->findAll($selectorType, $element)) {
-                throw new ExpectationException("No '$element' was not found", $session);
+        return $this->waitFor(function () use ($session, $selectorType, $elementsSelector) {
+            if (!$allElements = $session->getPage()->findAll($selectorType, $elementsSelector)) {
+                throw new ExpectationException("No '$elementsSelector' was not found", $session);
             }
 
             return $allElements;
@@ -270,12 +270,12 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      */
-    public function assertNthElement($element, $nth, $selectorType = 'css')
+    public function assertNthElement($elementSelector, $nth, $selectorType = 'css')
     {
-        $allElements = $this->assertElementsExist($element, $selectorType);
+        $allElements = $this->assertElementsExist($elementSelector, $selectorType);
 
         if (!isset($allElements[$nth - 1])) {
-            throw new ExpectationException("Element $element $nth was not found", $this->getSession());
+            throw new ExpectationException("Element $elementSelector $nth was not found", $this->getSession());
         }
 
         return $allElements[$nth - 1];

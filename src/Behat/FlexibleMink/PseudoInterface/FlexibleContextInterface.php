@@ -105,22 +105,23 @@ trait FlexibleContextInterface
     /**
      * Checks that elements with specified selector exist.
      *
-     * @param  string        $element      The element to search from.
-     * @param  string|array  $selectorType selector type locator.
-     * @return NodeElement[] All elements found with by the given selector.
+     * @param  string               $elementsSelector The element to search from.
+     * @param  string|array         $selectorType     selector type locator.
+     * @throws ExpectationException When no element is found.
+     * @return NodeElement[]        All elements found with by the given selector.
      */
-    abstract public function assertElementsExist($element, $selectorType = 'css');
+    abstract public function assertElementsExist($elementsSelector, $selectorType = 'css');
 
     /**
      * Checks that the nth element exists and returns it.
      *
-     * @param  string               $element      The elements to search from.
-     * @param  int                  $nth          This is the nth amount of the element.
-     * @param  string|array         $selectorType selector type locator.
-     * @throws ExpectationException
+     * @param  string               $elementSelector The elements to search from.
+     * @param  int                  $nth             This is the nth amount of the element.
+     * @param  string|array         $selectorType    selector type locator.
+     * @throws ExpectationException When there is no Nth element found
      * @return NodeElement          The nth element found.
      */
-    abstract public function assertNthElement($element, $nth, $selectorType = 'css');
+    abstract public function assertNthElement($elementSelector, $nth, $selectorType = 'css');
 
     /**
      * Checks, that element with specified CSS doesn't contain specified text.

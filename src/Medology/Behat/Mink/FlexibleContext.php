@@ -358,7 +358,7 @@ class FlexibleContext extends MinkContext
         /* @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($session, $selectorType, $element) {
             if (!$allElements = $session->getPage()->findAll($selectorType, $element)) {
-                throw new ExpectationException("No '$element' was not found", $session);
+                throw new ExpectationException("No '$element' was found", $session);
             }
 
             return $allElements;

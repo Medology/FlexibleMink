@@ -11,6 +11,7 @@ class AssertNthElementTest extends FlexibleContextTest
     {
         $this->pageMock->method('findAll')->willReturn([]);
         $this->expectException(ExpectationException::class);
+        $this->expectExceptionMessage('No \'image\' was found');
         $this->flexible_context->assertNthElement('image', 1);
     }
 
@@ -18,6 +19,7 @@ class AssertNthElementTest extends FlexibleContextTest
     {
         $this->pageMock->method('findAll')->willReturn(['image1']);
         $this->expectException(ExpectationException::class);
+        $this->expectExceptionMessage('Element image 2 was not found');
         $this->flexible_context->assertNthElement('image', 2);
     }
 

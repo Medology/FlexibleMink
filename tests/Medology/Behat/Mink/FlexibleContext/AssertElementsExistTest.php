@@ -11,6 +11,7 @@ class AssertElementsExistTest extends FlexibleContextTest
     {
         $this->pageMock->method('findAll')->willReturn([]);
         $this->expectException(ExpectationException::class);
+        $this->expectExceptionMessage('No \'image\' was found');
         $this->flexible_context->assertElementsExist('image');
     }
 

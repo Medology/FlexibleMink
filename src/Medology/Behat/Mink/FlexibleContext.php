@@ -346,7 +346,7 @@ class FlexibleContext extends MinkContext
     /**
      * Checks that elements with specified selector exist.
      *
-     * @param  string               $element      The element to search from.
+     * @param  string               $element      The element to search for.
      * @param  string|array         $selectorType selector type locator.
      * @throws ExpectationException When no element is found.
      * @return NodeElement[]        All elements found with by the given selector.
@@ -368,7 +368,7 @@ class FlexibleContext extends MinkContext
     /**
      * Checks that the nth element exists and returns it.
      *
-     * @param  string               $element      The elements to search from.
+     * @param  string               $element      The elements to search for.
      * @param  int                  $nth          This is the nth amount of the element.
      * @param  string|array         $selectorType selector type locator.
      * @throws ExpectationException When the nth element is not found.

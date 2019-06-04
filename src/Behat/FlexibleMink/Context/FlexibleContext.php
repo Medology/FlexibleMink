@@ -940,9 +940,9 @@ class FlexibleContext extends MinkContext
             if ($button->getAttribute('disabled') === 'disabled') {
                 throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
             }
-        });
 
-        $button->press();
+            $button->press();
+        });
     }
 
     /**

@@ -1203,6 +1203,7 @@ class FlexibleContext extends MinkContext
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             If a visible button field is not found.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     * @throws ExpectationException             If Button is found but not visible in the viewport.
      */
     public function pressButton($locator)
     {
@@ -1213,9 +1214,10 @@ class FlexibleContext extends MinkContext
             if ($button->getAttribute('disabled') === 'disabled') {
                 throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
             }
-
-            $button->press();
         });
+
+        $this->assertNodeElementVisibleInViewport($button);
+        $button->press();
     }
 
     /**
@@ -1598,6 +1600,25 @@ class FlexibleContext extends MinkContext
         }
 
         return true;
+    }
+
+    /**
+     * Asserts that the node element is visible in the viewport.
+     *
+     * @param  NodeElement          $element Element expected to be visble in the viewport.
+     * @throws ExpectationException If the element was not found visible in the viewport.
+     */
+    public function assertNodeElementVisibleInViewport(NodeElement $element)
+    {
+        Spinner::waitFor(function () use ($element) {
+            if (!$this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    'The following element was expected to be visible in viewport, but was not: ' .
+                    $element->getHtml(),
+                    $this->getSession()
+                );
+            }
+        });
     }
 
     /**

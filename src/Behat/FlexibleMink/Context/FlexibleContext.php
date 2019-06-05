@@ -928,6 +928,8 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
+     * @throws ExpectationException If Button is found but not visible in the viewport.
      */
     public function pressButton($locator)
     {
@@ -940,9 +942,10 @@ class FlexibleContext extends MinkContext
             if ($button->getAttribute('disabled') === 'disabled') {
                 throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
             }
-
-            $button->press();
         });
+
+        $this->assertNodeElementVisibleInViewport($button);
+        $button->press();
     }
 
     /**
@@ -1239,6 +1242,25 @@ JS
                 throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
             }
         }, $timeout);
+    }
+
+    /**
+     * Asserts that the node element is visible in the viewport.
+     *
+     * @param  NodeElement          $element Element expected to be visble in the viewport.
+     * @throws ExpectationException If the element was not found visible in the viewport.
+     */
+    public function assertNodeElementVisibleInViewport(NodeElement $element)
+    {
+        $this->waitFor(function () use ($element) {
+            if (!$this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    'The following element was expected to be visible in viewport, but was not: ' .
+                        $element->getHtml(),
+                    $this->getSession()
+                );
+            }
+        });
     }
 
     /**

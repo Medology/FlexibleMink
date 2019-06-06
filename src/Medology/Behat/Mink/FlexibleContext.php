@@ -13,6 +13,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
+use Exception as GenericException;
 use InvalidArgumentException;
 use Medology\Behat\Mink\Models\Geometry\Rectangle;
 use Medology\Behat\StoreContext;
@@ -1607,6 +1608,7 @@ class FlexibleContext extends MinkContext
      *
      * @param  NodeElement          $element Element expected to be visble in the viewport.
      * @throws ExpectationException If the element was not found visible in the viewport.
+     * @throws GenericException     If the assertion did not pass before the timeout was exceeded.
      */
     public function assertNodeElementVisibleInViewport(NodeElement $element)
     {

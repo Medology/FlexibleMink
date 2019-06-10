@@ -1249,6 +1249,7 @@ JS
      *
      * @param  NodeElement          $element Element expected to be visble in the viewport.
      * @throws ExpectationException If the element was not found visible in the viewport.
+     * @throws Exception            If the assertion did not pass before the timeout was exceeded.
      */
     public function assertNodeElementVisibleInViewport(NodeElement $element)
     {

@@ -928,8 +928,6 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
-     *
-     * @throws ExpectationException If Button is found but not visible in the viewport.
      */
     public function pressButton($locator)
     {
@@ -1245,11 +1243,7 @@ JS
     }
 
     /**
-     * Asserts that the node element is visible in the viewport.
-     *
-     * @param  NodeElement          $element Element expected to be visble in the viewport.
-     * @throws ExpectationException If the element was not found visible in the viewport.
-     * @throws Exception            If the assertion did not pass before the timeout was exceeded.
+     * {@inheritdoc}
      */
     public function assertNodeElementVisibleInViewport(NodeElement $element)
     {

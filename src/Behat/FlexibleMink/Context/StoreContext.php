@@ -2,7 +2,9 @@
 
 namespace Behat\FlexibleMink\Context;
 
+use ArrayAccess;
 use Behat\FlexibleMink\PseudoInterface\StoreContextInterface;
+use Closure;
 use Exception;
 use ReflectionFunction;
 
@@ -65,6 +67,67 @@ trait StoreContext
         return $this->get($key, $nth);
     }
 
+
+    /**
+     * Retrieves a value from a nested array or object using array list.
+     * (Modified version of data_get() laravel > 5.6)
+     *
+     * @param  mixed    $target    The target element
+     * @param  string[] $key_parts Key string dot notation
+     * @param  mixed    $default   If value doesn't exists
+     * @return mixed
+     */
+    function data_get($target, array $key_parts, $default = null)
+    {
+        if (!count($key_parts)) {
+            return $target;
+        }
+        foreach ($key_parts as $segment) {
+            if (is_array($target)) {
+                if (!array_key_exists($segment, $target)) {
+                    return $this->value($default);
+                }
+                $target = $target[$segment];
+            } elseif ($target instanceof ArrayAccess) {
+                if (!isset($target[$segment])) {
+                    return $this->value($default);
+                }
+                $target = $target[$segment];
+            } elseif (is_object($target)) {
+                if (!isset($target->{$segment})) {
+                    return $this->value($default);
+                }
+                $target = $target->{$segment};
+            } else {
+                return $this->value($default);
+            }
+        }
+        return $target;
+    }
+
+    /**
+     * Returns value itself or Closure will be executed and return result.
+     *
+     * @param  string $value Closure
+     * @return mixed  Result of the Closure function or $value itself
+     */
+    function value($value)
+    {
+        return $value instanceof Closure ? $value() : $value;
+    }
+
+    /**
+     * Converts a key part of the form "foo's bar" into "foo" and "bar".
+     *
+     * @param  string $key The key name to parse
+     * @return array  [base key, nested_keys|null]
+     */
+    private function parseKeyNested($key)
+    {
+        $key_parts = explode('.', str_replace("'s ", ".", $key));
+        return [array_shift($key_parts), $key_parts];
+    }
+
     /**
      * Converts a key of the form "nth thing" into "n" and "thing".
      *
@@ -92,12 +155,16 @@ trait StoreContext
             list($key, $nth) = $this->parseKey($key);
         }
 
-        if (!$this->isStored($key, $nth)) {
+        list($target_key, $key_parts) = $this->parseKeyNested($key);
+
+        if (!$this->isStored($target_key, $nth)) {
             return;
         }
 
-        return $nth ? $this->registry[$key][$nth - 1] : end($this->registry[$key]);
+        return $nth ? $this->data_get($this->registry[$target_key][$nth - 1], $key_parts) :
+            $this->data_get(end($this->registry[$target_key]), $key_parts);
     }
+
 
     /**
      * {@inheritdoc}
@@ -199,6 +266,38 @@ trait StoreContext
         $actual = $this->getThingProperty($thing, $property);
         if (strpos($actual, $expected) === false) {
             throw new Exception("Expected the '$property' of the '$thing' to contain '$expected', but found '$actual' instead");
+        }
+    }
+
+    /**
+     * Assign the element of given key to the target object/array under given attribute/key.
+     *
+     * @Given /^"([^"]*)" is attached to "([^"]*)" with "([^"]*)" attribute$/
+     * @param  string    $relatedModel_key Key of the Element to be assigned
+     * @param  string    $target_key       Base array/object key
+     * @param  string    $attribute        Attribute or key of the base element
+     * @throws Exception If Target element is not object or array
+     */
+    public function assignToObjectAttribute($relatedModel_key, $target_key, $attribute)
+    {
+        $targetObj = $this->get($target_key);
+        $relatedObj = $this->get($relatedModel_key);
+
+        if($targetObj && $relatedObj){
+            if(is_object($targetObj)){
+                /** Any Object models */
+                $targetObj->$attribute = $relatedObj;
+                /** Eloquent models */
+                is_callable([$targetObj, 'save']);
+            } elseif(is_array($targetObj)) {
+                /** Associative array */
+                $targetObj[$attribute] = $relatedObj;
+            } else {
+                throw new Exception("The type of '$target_key' is ".gettype($targetObj).". 
+                But expected Array or Object");
+            }
+
+            $this->put($targetObj, $target_key);
         }
     }
 }

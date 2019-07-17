@@ -67,17 +67,16 @@ trait StoreContext
         return $this->get($key, $nth);
     }
 
-
     /**
      * Retrieves a value from a nested array or object using array list.
-     * (Modified version of data_get() laravel > 5.6)
+     * (Modified version of data_get() laravel > 5.6).
      *
      * @param  mixed    $target    The target element
      * @param  string[] $key_parts Key string dot notation
      * @param  mixed    $default   If value doesn't exists
      * @return mixed
      */
-    function data_get($target, array $key_parts, $default = null)
+    public function data_get($target, array $key_parts, $default = null)
     {
         if (!count($key_parts)) {
             return $target;
@@ -102,6 +101,7 @@ trait StoreContext
                 return $this->value($default);
             }
         }
+
         return $target;
     }
 
@@ -111,7 +111,7 @@ trait StoreContext
      * @param  string $value Closure
      * @return mixed  Result of the Closure function or $value itself
      */
-    function value($value)
+    public function value($value)
     {
         return $value instanceof Closure ? $value() : $value;
     }
@@ -124,7 +124,8 @@ trait StoreContext
      */
     private function parseKeyNested($key)
     {
-        $key_parts = explode('.', str_replace("'s ", ".", $key));
+        $key_parts = explode('.', str_replace("'s ", '.', $key));
+
         return [array_shift($key_parts), $key_parts];
     }
 
@@ -164,7 +165,6 @@ trait StoreContext
         return $nth ? $this->data_get($this->registry[$target_key][$nth - 1], $key_parts) :
             $this->data_get(end($this->registry[$target_key]), $key_parts);
     }
-
 
     /**
      * {@inheritdoc}
@@ -283,18 +283,18 @@ trait StoreContext
         $targetObj = $this->get($target_key);
         $relatedObj = $this->get($relatedModel_key);
 
-        if($targetObj && $relatedObj){
-            if(is_object($targetObj)){
-                /** Any Object models */
+        if ($targetObj && $relatedObj) {
+            if (is_object($targetObj)) {
+                /* Any Object models */
                 $targetObj->$attribute = $relatedObj;
-                /** Eloquent models */
+                /* Eloquent models */
                 is_callable([$targetObj, 'save']);
-            } elseif(is_array($targetObj)) {
-                /** Associative array */
+            } elseif (is_array($targetObj)) {
+                /* Associative array */
                 $targetObj[$attribute] = $relatedObj;
             } else {
-                throw new Exception("The type of '$target_key' is ".gettype($targetObj).". 
-                But expected Array or Object");
+                throw new Exception("The type of '$target_key' is ".gettype($targetObj).'. 
+                But expected Array or Object');
             }
 
             $this->put($targetObj, $target_key);

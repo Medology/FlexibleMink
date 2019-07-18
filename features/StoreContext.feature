@@ -75,3 +75,11 @@ Feature: Store Context
      When I assert that the "'orderId'" of the "Commission" should contain "order-1234"
      Then the assertion should throw an Exception
       And the assertion should fail with the message "Expected the 'orderId' of the 'Commission' to contain 'order-1234', but found 'order-4321' instead"
+
+  Scenario: Chained objects/arrays retrieved successful
+    Given the following is stored as "DataObject":
+      | childData  | bar |
+    And the following is stored as "ChildDataObject":
+      | attribute  | foo |
+    And "ChildDataObject" is attached to "DataObject" with "childData" attribute
+    Then the "DataObject's childData's attribute" should be "foo"

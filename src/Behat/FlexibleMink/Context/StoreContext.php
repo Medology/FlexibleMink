@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionProperty;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 /**
  * {@inheritdoc}
@@ -61,7 +62,8 @@ trait StoreContext
     {
         if (($actual = $this->get($key)) !== $expected) {
             throw new Exception(
-                "Expected $key to be " . var_export($expected, true) . ', but it was ' . var_export($actual, true)
+                "Expected $key to be " . var_export($expected, true) . ', but it was ' .
+                var_export($actual, true)
             );
         }
     }
@@ -103,21 +105,21 @@ trait StoreContext
         foreach ($key_parts as $segment) {
             if (is_array($target)) {
                 if (!array_key_exists($segment, $target)) {
-                    return $this->value($default);
+                    return $this->closureValue($default);
                 }
                 $target = $target[$segment];
             } elseif ($target instanceof ArrayAccess) {
                 if (!isset($target[$segment])) {
-                    return $this->value($default);
+                    return $this->closureValue($default);
                 }
                 $target = $target[$segment];
             } elseif (is_object($target)) {
                 if (!isset($target->{$segment})) {
-                    return $this->value($default);
+                    return $this->closureValue($default);
                 }
                 $target = $target->{$segment};
             } else {
-                return $this->value($default);
+                return $this->closureValue($default);
             }
         }
 
@@ -130,7 +132,7 @@ trait StoreContext
      * @param  string $value Closure
      * @return mixed  Result of the Closure function or $value itself
      */
-    public function value($value)
+    public function closureValue($value)
     {
         return $value instanceof Closure ? $value() : $value;
     }
@@ -452,10 +454,10 @@ trait StoreContext
      * Assign the element of given key to the target object/array under given attribute/key.
      *
      * @Given /^"([^"]*)" is attached to "([^"]*)" with "([^"]*)" attribute$/
-     * @param  string    $relatedModel_key Key of the Element to be assigned
-     * @param  string    $target_key       Base array/object key
-     * @param  string    $attribute        Attribute or key of the base element
-     * @throws Exception If Target element is not object or array
+     * @param  string               $relatedModel_key Key of the Element to be assigned
+     * @param  string               $target_key       Base array/object key
+     * @param  string               $attribute        Attribute or key of the base element
+     * @throws InvalidTypeException If Target element is not object or array
      */
     public function assignToObjectAttribute($relatedModel_key, $target_key, $attribute)
     {
@@ -467,13 +469,15 @@ trait StoreContext
                 /* Any Object models */
                 $targetObj->$attribute = $relatedObj;
                 /* Eloquent models */
-                is_callable([$targetObj, 'save']);
+                if(is_callable([$targetObj, 'save'])){
+                    $targetObj->save();
+                }
             } elseif (is_array($targetObj)) {
                 /* Associative array */
                 $targetObj[$attribute] = $relatedObj;
             } else {
-                throw new Exception("The type of '$target_key' is ".gettype($targetObj).'. 
-                But expected Array or Object');
+                throw new InvalidTypeException("Expected type for '$target_key' is array/object but '".
+                    gettype($targetObj)."' given");
             }
 
             $this->put($targetObj, $target_key);

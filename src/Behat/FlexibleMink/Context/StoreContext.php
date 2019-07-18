@@ -469,7 +469,7 @@ trait StoreContext
                 /* Any Object models */
                 $targetObj->$attribute = $relatedObj;
                 /* Eloquent models */
-                if(is_callable([$targetObj, 'save'])){
+                if (is_callable([$targetObj, 'save'])){
                     $targetObj->save();
                 }
             } elseif (is_array($targetObj)) {

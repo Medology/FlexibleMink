@@ -93,7 +93,7 @@ trait StoreContext
      * (Modified version of data_get() laravel > 5.6).
      *
      * @param  mixed    $target    The target element
-     * @param  string[] $key_parts Key string dot notation
+     * @param  string[] $key_parts List of nested values
      * @param  mixed    $default   If value doesn't exists
      * @return mixed
      */
@@ -102,25 +102,19 @@ trait StoreContext
         if (!count($key_parts)) {
             return $target;
         }
+        $target = null;
         foreach ($key_parts as $segment) {
-            if (is_array($target)) {
-                if (!array_key_exists($segment, $target)) {
-                    return $this->closureValue($default);
-                }
+            if ((is_array($target) && array_key_exists($segment, $target)) ||
+                $target instanceof ArrayAccess && isset($target[$segment])
+            ) {
                 $target = $target[$segment];
-            } elseif ($target instanceof ArrayAccess) {
-                if (!isset($target[$segment])) {
-                    return $this->closureValue($default);
-                }
-                $target = $target[$segment];
-            } elseif (is_object($target)) {
-                if (!isset($target->{$segment})) {
-                    return $this->closureValue($default);
-                }
+            } elseif (is_object($target) && isset($target->{$segment})) {
                 $target = $target->{$segment};
-            } else {
+            }
+            if (!$target) {
                 return $this->closureValue($default);
             }
+
         }
 
         return $target;

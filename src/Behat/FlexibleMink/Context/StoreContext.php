@@ -114,7 +114,6 @@ trait StoreContext
             if (!$target) {
                 return $this->closureValue($default);
             }
-
         }
 
         return $target;

@@ -102,16 +102,23 @@ trait StoreContext
         if (!count($key_parts)) {
             return $target;
         }
-        $target = null;
         foreach ($key_parts as $segment) {
-            if ((is_array($target) && array_key_exists($segment, $target)) ||
-                $target instanceof ArrayAccess && isset($target[$segment])
-            ) {
+            if (is_array($target)) {
+                if (!array_key_exists($segment, $target)) {
+                    return $this->closureValue($default);
+                }
                 $target = $target[$segment];
-            } elseif (is_object($target) && isset($target->{$segment})) {
+            } elseif ($target instanceof ArrayAccess) {
+                if (!isset($target[$segment])) {
+                    return $this->closureValue($default);
+                }
+                $target = $target[$segment];
+            } elseif (is_object($target)) {
+                if (!isset($target->{$segment})) {
+                    return $this->closureValue($default);
+                }
                 $target = $target->{$segment};
-            }
-            if (!$target) {
+            } else {
                 return $this->closureValue($default);
             }
         }

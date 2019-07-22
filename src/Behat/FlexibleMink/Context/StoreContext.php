@@ -100,12 +100,12 @@ trait StoreContext
     {
         foreach ((array) $key_parts as $segment) {
             if (is_array($target) || $target instanceof ArrayAccess) {
-                if(!array_key_exists($segment, $target) && !isset($target[$segment])) {
+                if (!array_key_exists($segment, $target) && !isset($target[$segment])) {
                     return $this->closureValue($default);
                 }
-                $target =  $target[$segment];
+                $target = $target[$segment];
             } elseif (is_object($target)) {
-                if(!isset($target->{$segment})) {
+                if (!isset($target->{$segment})) {
                     return $this->closureValue($default);
                 }
                 $target = $target->{$segment};

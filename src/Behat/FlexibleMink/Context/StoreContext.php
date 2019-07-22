@@ -62,8 +62,7 @@ trait StoreContext
     {
         if (($actual = $this->get($key)) !== $expected) {
             throw new Exception(
-                "Expected $key to be " . var_export($expected, true) . ', but it was ' .
-                var_export($actual, true)
+                "Expected $key to be " . var_export($expected, true) . ', but it was ' . var_export($actual, true)
             );
         }
     }
@@ -99,22 +98,14 @@ trait StoreContext
      */
     public function data_get($target, array $key_parts, $default = null)
     {
-        if (!count($key_parts)) {
-            return $target;
-        }
-        foreach ($key_parts as $segment) {
-            if (is_array($target)) {
-                if (!array_key_exists($segment, $target)) {
+        foreach ((array) $key_parts as $segment) {
+            if (is_array($target) || $target instanceof ArrayAccess) {
+                if(!array_key_exists($segment, $target) && !isset($target[$segment])) {
                     return $this->closureValue($default);
                 }
-                $target = $target[$segment];
-            } elseif ($target instanceof ArrayAccess) {
-                if (!isset($target[$segment])) {
-                    return $this->closureValue($default);
-                }
-                $target = $target[$segment];
+                $target =  $target[$segment];
             } elseif (is_object($target)) {
-                if (!isset($target->{$segment})) {
+                if(!isset($target->{$segment})) {
                     return $this->closureValue($default);
                 }
                 $target = $target->{$segment};
@@ -183,8 +174,9 @@ trait StoreContext
             return;
         }
 
-        return $nth ? $this->data_get($this->registry[$target_key][$nth - 1], $key_parts) :
-            $this->data_get(end($this->registry[$target_key]), $key_parts);
+        return $nth
+            ? $this->data_get($this->registry[$target_key][$nth - 1], $key_parts)
+            : $this->data_get(end($this->registry[$target_key]), $key_parts);
     }
 
     /**
@@ -453,27 +445,22 @@ trait StoreContext
     /**
      * Assign the element of given key to the target object/array under given attribute/key.
      *
-     * @Given /^"([^"]*)" is attached to "([^"]*)" with "([^"]*)" attribute$/
+     * @Given /^"([^"]*)" is stored as (key|property) "([^"]*)" of "([^"]*)"$/
      * @param  string               $relatedModel_key Key of the Element to be assigned
+     * @param  string               $keyword          Property of key
      * @param  string               $target_key       Base array/object key
      * @param  string               $attribute        Attribute or key of the base element
      * @throws InvalidTypeException If Target element is not object or array
      */
-    public function assignToObjectAttribute($relatedModel_key, $target_key, $attribute)
+    public function setThingProperty($relatedModel_key, $keyword, $attribute, $target_key)
     {
         $targetObj = $this->get($target_key);
         $relatedObj = $this->get($relatedModel_key);
 
         if ($targetObj && $relatedObj) {
             if (is_object($targetObj)) {
-                /* Any Object models */
                 $targetObj->$attribute = $relatedObj;
-                /* Eloquent models */
-                if (is_callable([$targetObj, 'save'])) {
-                    $targetObj->save();
-                }
             } elseif (is_array($targetObj)) {
-                /* Associative array */
                 $targetObj[$attribute] = $relatedObj;
             } else {
                 throw new InvalidTypeException("Expected type for '$target_key' is array/object but '".

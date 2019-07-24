@@ -119,11 +119,7 @@ trait StoreContext
      */
     private function getArrayValue($target, $segment)
     {
-        if (is_array($target) && array_key_exists($segment, $target)) {
-            return $target[$segment];
-        }
-
-        return false;
+        return is_array($target) && array_key_exists($segment, $target) ? $target[$segment] : false;
     }
 
     /**
@@ -135,11 +131,7 @@ trait StoreContext
      */
     private function getArrayAccessValue($target, $segment)
     {
-        if ($target instanceof ArrayAccess && isset($target[$segment])) {
-            return $target[$segment];
-        }
-
-        return false;
+        return $target instanceof ArrayAccess && isset($target[$segment]) ? $target[$segment] : false;
     }
 
     /**
@@ -151,11 +143,7 @@ trait StoreContext
      */
     private function getObjectValue($target, $segment)
     {
-        if (is_object($target) && isset($target->{$segment})) {
-            return $target->{$segment};
-        }
-
-        return false;
+        return is_object($target) && isset($target->{$segment}) ? $target->{$segment} : false;
     }
 
     /**

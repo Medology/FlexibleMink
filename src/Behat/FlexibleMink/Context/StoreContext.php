@@ -98,52 +98,28 @@ trait StoreContext
      */
     public function data_get($target, array $key_parts, $default = null)
     {
-        foreach ((array) $key_parts as $segment) {
-            if (!(($new_target = $this->getArrayValue($target, $segment)) ||
-                ($new_target = $this->getArrayAccessValue($target, $segment)) ||
-                ($new_target = $this->getObjectValue($target, $segment)))) {
+        foreach ((array)$key_parts as $segment) {
+            if (is_array($target)) {
+                if (!array_key_exists($segment, $target)) {
+                    return $this->closureValue($default);
+                }
+                $target = $target[$segment];
+            } elseif ($target instanceof ArrayAccess) {
+                if (!isset($target[$segment])) {
+                    return $this->closureValue($default);
+                }
+                $target = $target[$segment];
+            } elseif (is_object($target)) {
+                if (!isset($target->{$segment})) {
+                    return $this->closureValue($default);
+                }
+                $target = $target->{$segment};
+            } else {
                 return $this->closureValue($default);
             }
-            $target = $new_target;
         }
 
         return $target;
-    }
-
-    /**
-     * Checking if the target is Array and segment key exists.
-     *
-     * @param  mixed       $target  The target entity
-     * @param  string      $segment Array key
-     * @return false|mixed False of value of the given key
-     */
-    private function getArrayValue($target, $segment)
-    {
-        return is_array($target) && array_key_exists($segment, $target) ? $target[$segment] : false;
-    }
-
-    /**
-     * Checking if the target is ArrayAccess and $segment key exists.
-     *
-     * @param  mixed       $target  The target entity
-     * @param  string      $segment Array key
-     * @return false|mixed False or value of the given key
-     */
-    private function getArrayAccessValue($target, $segment)
-    {
-        return $target instanceof ArrayAccess && isset($target[$segment]) ? $target[$segment] : false;
-    }
-
-    /**
-     * Checking if the target is Object and $segment property exists.
-     *
-     * @param  mixed       $target  The target entity
-     * @param  string      $segment The property of the object
-     * @return false|mixed False or value of given property
-     */
-    private function getObjectValue($target, $segment)
-    {
-        return is_object($target) && isset($target->{$segment}) ? $target->{$segment} : false;
     }
 
     /**

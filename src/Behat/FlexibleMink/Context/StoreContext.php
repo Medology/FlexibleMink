@@ -98,7 +98,7 @@ trait StoreContext
      */
     public function data_get($target, array $key_parts, $default = null)
     {
-        foreach ((array)$key_parts as $segment) {
+        foreach ((array) $key_parts as $segment) {
             if (is_array($target)) {
                 if (!array_key_exists($segment, $target)) {
                     return $this->closureValue($default);

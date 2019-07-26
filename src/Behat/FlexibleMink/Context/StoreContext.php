@@ -98,7 +98,7 @@ trait StoreContext
      */
     public function data_get($target, array $key_parts, $default = null)
     {
-        foreach ($key_parts as $segment) {
+        foreach ((array) $key_parts as $segment) {
             if (is_array($target)) {
                 if (!array_key_exists($segment, $target)) {
                     return $this->closureValue($default);
@@ -125,7 +125,7 @@ trait StoreContext
     /**
      * Returns value itself or Closure will be executed and return result.
      *
-     * @param  string $value Closure that needs to be evaluated
+     * @param  string $value Closure
      * @return mixed  Result of the Closure function or $value itself
      */
     public function closureValue($value)
@@ -417,8 +417,6 @@ trait StoreContext
         if (!$nth) {
             list($key, $nth) = $this->parseKey($key);
         }
-
-        list($key, $unused) = $this->parseKeyNested($key);
 
         return $nth ? isset($this->registry[$key][$nth - 1]) : isset($this->registry[$key]);
     }

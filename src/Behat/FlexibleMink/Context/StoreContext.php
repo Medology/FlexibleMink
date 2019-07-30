@@ -417,7 +417,7 @@ trait StoreContext
         if (!$nth) {
             list($key, $nth) = $this->parseKey($key);
         }
-        
+
         list($key, $unused) = $this->parseKeyNested($key);
 
         return $nth ? isset($this->registry[$key][$nth - 1]) : isset($this->registry[$key]);

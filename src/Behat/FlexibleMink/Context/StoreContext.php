@@ -125,7 +125,7 @@ trait StoreContext
     /**
      * Returns value itself or Closure will be executed and return result.
      *
-     * @param  string $value Closure that needs to be evaluated
+     * @param  string $value Closure to be evaluated
      * @return mixed  Result of the Closure function or $value itself
      */
     public function closureValue($value)
@@ -417,6 +417,8 @@ trait StoreContext
         if (!$nth) {
             list($key, $nth) = $this->parseKey($key);
         }
+        
+        list($key, $unused) = $this->parseKeyNested($key);
 
         return $nth ? isset($this->registry[$key][$nth - 1]) : isset($this->registry[$key]);
     }

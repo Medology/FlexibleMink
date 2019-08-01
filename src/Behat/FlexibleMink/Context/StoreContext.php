@@ -145,7 +145,7 @@ trait StoreContext
      */
     private function parseKeyNested($key)
     {
-        $key_parts = explode("`s ", $key);
+        $key_parts = explode('`s ', $key);
 
         return [array_shift($key_parts), $key_parts];
     }

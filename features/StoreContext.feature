@@ -23,7 +23,7 @@ Feature: Store Context
      Then the "Person" should be "Bob"
       And the "Thing" should be "Bob"
 
-  Scenario: Assertion fails if the stored thing is not what's expected
+  Scenario: Assertion fails if the stored thing is not what`s expected
     Given the value "me, Dio!" is stored as "this"
      When I assert that the "this" should be "a normal adventure"
      Then the assertion should throw an Exception
@@ -82,7 +82,7 @@ Feature: Store Context
      And the following is stored as "ChildDataObject":
       | attribute  | foo |
      And "ChildDataObject" is attached to "DataObject" with "childData" attribute
-    Then the "DataObject's childData's attribute" should be "foo"
+    Then the "DataObject`s childData`s attribute" should be "foo"
 
   Scenario: Chained objects/arrays 3rd level retrieves successful
     Given the following is stored as "DataObject":
@@ -93,14 +93,14 @@ Feature: Store Context
       | attribute       | foo |
       And "GrandChildDataObject" is attached to "ChildDataObject" with "grandchildData" attribute
       And "ChildDataObject" is attached to "DataObject" with "childData" attribute
-     Then the "DataObject's childData's grandchildData's attribute" should be "foo"
+     Then the "DataObject`s childData`s grandchildData`s attribute" should be "foo"
 
   Scenario: Chained objects/arrays non-object retrieval should throw an Exception
     Given the following is stored as "DataObject":
       | childData  | bar |
-     When I assert that the "DataObject's childData's grandchildData's attribute" should be "foo"
+     When I assert that the "DataObject`s childData`s grandchildData`s attribute" should be "foo"
      Then the assertion should throw an Exception
-      And the assertion should fail with the message "Expected DataObject's childData's grandchildData's attribute to be 'foo', but it was NULL"
+      And the assertion should fail with the message "Expected DataObject`s childData`s grandchildData`s attribute to be 'foo', but it was NULL"
 
    Scenario: Data assigned to non-object/non-array property/key throw an Exception
      Given the value "dataValue" is stored as "data"

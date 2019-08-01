@@ -138,14 +138,14 @@ trait StoreContext
     }
 
     /**
-     * Converts a key part of the form "foo's bar" into "foo" and "bar".
+     * Converts a key part of the form "foo`s bar" into "foo" and "bar".
      *
      * @param  string $key The key name to parse
      * @return array  [base key, nested_keys|null]
      */
     private function parseKeyNested($key)
     {
-        $key_parts = explode('.', str_replace("'s ", '.', $key));
+        $key_parts = explode("`s ", $key);
 
         return [array_shift($key_parts), $key_parts];
     }

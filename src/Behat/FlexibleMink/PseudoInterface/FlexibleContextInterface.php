@@ -188,10 +188,11 @@ trait FlexibleContextInterface
      * Warning: Will return the first button if the driver does not support visibility checks.
      *
      * @param  string               $locator The button name.
+     * @param  TraversableElement   $context Element on the page to which button belongs.
      * @throws ExpectationException If a visible button was not found.
      * @return NodeElement          The button.
      */
-    abstract public function scrollToButton($locator);
+    abstract public function scrollToButton($locator, TraversableElement $context = null);
 
     /**
      * Finds the first matching visible button on the page.
@@ -378,10 +379,11 @@ trait FlexibleContextInterface
      * buttons are pressed and that it waits for the button to be available with a max time limit.
      *
      * @see MinkContext::pressButton
-     * @param  string               $button button id, inner text, value or alt
+     * @param  string               $button  button id, inner text, value or alt
+     * @param  TraversableElement   $context Element on the page to which button belongs.
      * @throws ExpectationException If a visible button field is not found.
      */
-    abstract public function pressButton($button);
+    abstract public function pressButton($button, TraversableElement $context = null);
 
     /**
      * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.

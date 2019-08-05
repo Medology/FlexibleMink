@@ -5,7 +5,7 @@ use Behat\Mink\Exception\ExpectationException;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * This Class tests the pressButton function in FlexibleContext
+ * This Class tests the pressButton function in FlexibleContext.
  */
 class AssertPressButtonTest extends FlexibleContextTest
 {
@@ -25,7 +25,7 @@ class AssertPressButtonTest extends FlexibleContextTest
 
     public function testThrowsExceptionWhenButtonIsDisabled()
     {
-        /** @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
+        /* @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
         $this->button = $this->getMock(NodeElement::class, ['getAttribute'], ['', $this->sessionMock]);
         $this->flexible_context->method('scrollToButton')->willReturn($this->button);
         $this->button->method('getAttribute')->willReturn('disabled');
@@ -35,12 +35,11 @@ class AssertPressButtonTest extends FlexibleContextTest
 
     public function testSuccessfulButtonPress()
     {
-        /** @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
-        $this->button = $this->getMock(NodeElement::class, ['getAttribute','press'], ['', $this->sessionMock]);
+        /* @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
+        $this->button = $this->getMock(NodeElement::class, ['getAttribute', 'press'], ['', $this->sessionMock]);
         $this->flexible_context->method('scrollToButton')->willReturn($this->button);
         $this->button->method('getAttribute')->willReturn('enabled');
         $this->button->method('press');
         $this->flexible_context->pressButton($this->locator);
     }
-
 }

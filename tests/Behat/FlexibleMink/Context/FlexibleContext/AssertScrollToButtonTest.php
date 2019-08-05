@@ -6,11 +6,11 @@ use Behat\Mink\Exception\ExpectationException;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * This Class tests the scrollToButton function in FlexibleContext
+ * This Class tests the scrollToButton function in FlexibleContext.
  */
 class AssertScrollToButtonTest extends FlexibleContextTest
 {
-    /** @var TraversableElement|PHPUnit_Framework_MockObject_MockObject*/
+    /** @var TraversableElement|PHPUnit_Framework_MockObject_MockObject */
     protected $context;
 
     /** @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
@@ -24,7 +24,7 @@ class AssertScrollToButtonTest extends FlexibleContextTest
 
     public function setUp()
     {
-        if(in_array('scrollToButton',$this->flexible_context_mocked_methods)) {
+        if (in_array('scrollToButton', $this->flexible_context_mocked_methods)) {
             unset(
                 $this->flexible_context_mocked_methods[
                     array_search(

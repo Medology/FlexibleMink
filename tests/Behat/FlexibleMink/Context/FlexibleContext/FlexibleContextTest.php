@@ -20,7 +20,13 @@ abstract class FlexibleContextTest extends PHPUnit_Framework_TestCase
     /** @var FlexibleContext|PHPUnit_Framework_MockObject_MockObject */
     protected $flexible_context;
 
-    protected $flexible_context_mocked_methods = ['getSession', 'fixStepArgument', 'scrollWindowToFirstVisibleElement', 'scrollToButton'];
+    protected $flexible_context_mocked_methods = [
+        'getSession',
+        'fixStepArgument',
+        'scrollWindowToFirstVisibleElement',
+        'assertNodeElementVisibleInViewport',
+        'scrollToButton'
+    ];
 
     /**
      * {@inheritdoc}

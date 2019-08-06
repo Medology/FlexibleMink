@@ -5,9 +5,7 @@ use Behat\Mink\Element\TraversableElement;
 use Behat\Mink\Exception\ExpectationException;
 use PHPUnit_Framework_MockObject_MockObject;
 
-/**
- * This Class tests the scrollToButton function in FlexibleContext.
- */
+/** This Class tests the scrollToButton function in FlexibleContext. */
 class AssertScrollToButtonTest extends FlexibleContextTest
 {
     /** @var TraversableElement|PHPUnit_Framework_MockObject_MockObject */
@@ -21,6 +19,8 @@ class AssertScrollToButtonTest extends FlexibleContextTest
 
     /** @var NodeElement[] */
     protected $expectedElements;
+
+    protected $locator = 'button';
 
     public function setUp()
     {
@@ -38,44 +38,43 @@ class AssertScrollToButtonTest extends FlexibleContextTest
 
     public function testThrowsExceptionWhenButtonIsNotVisibleInPage()
     {
-        $locator = 'button';
-        $this->flexible_context->method('fixStepArgument')->willReturn($locator);
+        $this->flexible_context->method('fixStepArgument')->willReturn($this->locator);
         $this->pageMock->method('findAll')->willReturn([]);
-        $this->setExpectedException(ExpectationException::class, "No visible button found for '$locator'");
-        $this->flexible_context->scrollToButton('button');
+        $this->setExpectedException(ExpectationException::class, "No visible button found for '$this->locator'");
+        $this->flexible_context->scrollToButton($this->locator);
     }
 
     public function testThrowsExceptionWhenButtonIsNotVisibleInContext()
     {
-        $locator = 'button';
-        $this->flexible_context->method('fixStepArgument')->willReturn($locator);
-        $this->initContext();
+        $this->flexible_context->method('fixStepArgument')->willReturn($this->locator);
+        $this->mockContext();
         $this->context->method('findAll')->willReturn([]);
-        $this->setExpectedException(ExpectationException::class, "No visible button found for '$locator'");
-        $this->flexible_context->scrollToButton('button', $this->context);
+        $this->setExpectedException(ExpectationException::class, "No visible button found for '$this->locator'");
+        $this->flexible_context->scrollToButton('$this->locator', $this->context);
     }
 
     public function testReturnsFoundButtonInPage()
     {
         $this->initElements();
-        $this->flexible_context->method('fixStepArgument')->willReturn('button');
+        $this->flexible_context->method('fixStepArgument')->willReturn($this->locator);
         $this->pageMock->method('findAll')->willReturn($this->expectedElements);
         $this->flexible_context->method('scrollWindowToFirstVisibleElement')->willReturn($this->element1);
-        $elements = $this->flexible_context->scrollToButton('button');
+        $elements = $this->flexible_context->scrollToButton($this->locator);
         $this->assertEquals($elements, $this->element1);
     }
 
     public function testReturnsFoundButtonInContext()
     {
         $this->initElements();
-        $this->flexible_context->method('fixStepArgument')->willReturn('button');
-        $this->initContext();
+        $this->flexible_context->method('fixStepArgument')->willReturn($this->locator);
+        $this->mockContext();
         $this->context->method('findAll')->willReturn($this->expectedElements);
         $this->flexible_context->method('scrollWindowToFirstVisibleElement')->willReturn($this->element1);
-        $elements = $this->flexible_context->scrollToButton('button', $this->context);
+        $elements = $this->flexible_context->scrollToButton($this->locator, $this->context);
         $this->assertEquals($elements, $this->element1);
     }
 
+    /** This method Initializes the elements to be used as return values. */
     protected function initElements()
     {
         $this->element1 = $this->getMock(NodeElement::class, [], ['', $this->sessionMock]);
@@ -83,7 +82,8 @@ class AssertScrollToButtonTest extends FlexibleContextTest
         $this->expectedElements = [$this->element1, $this->element2];
     }
 
-    protected function initContext()
+    /** This method mocks the Context to be passed as an parameter to scrollToButton function. */
+    protected function mockContext()
     {
         $this->context = $this->getMockForAbstractClass(
             TraversableElement::class, [$this->sessionMock],

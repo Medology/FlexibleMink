@@ -61,8 +61,8 @@ class AssertPressButtonTest extends FlexibleContextTest
     /**
      * This method initializes the common steps to run the tests in this class.
      *
-     * @param array  $nodeElementMockMethods   The methods to be mocked
-     * @param string $getAttributeReturnValue  The value that need to be returned when getAttribute method is mocked
+     * @param array  $nodeElementMockMethods  The methods to be mocked
+     * @param string $getAttributeReturnValue The value that need to be returned when getAttribute method is mocked
      */
     protected function initCommonSteps(array $nodeElementMockMethods, $getAttributeReturnValue)
     {

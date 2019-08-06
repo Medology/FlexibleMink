@@ -25,7 +25,7 @@ abstract class FlexibleContextTest extends PHPUnit_Framework_TestCase
         'fixStepArgument',
         'scrollWindowToFirstVisibleElement',
         'assertNodeElementVisibleInViewport',
-        'scrollToButton'
+        'scrollToButton',
     ];
 
     /**

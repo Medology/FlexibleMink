@@ -25,15 +25,15 @@ class AssertPressButtonTest extends FlexibleContextTest
 
     public function testThrowsExceptionWhenButtonIsDisabled()
     {
-        $this->initCommonSteps(['getAttribute'],'disabled');
+        $this->initCommonSteps(['getAttribute'], 'disabled');
         $this->setExpectedException(ExpectationException::class, "Unable to press disabled button '$this->locator'.");
         $this->flexible_context->pressButton($this->locator);
     }
 
     public function testThrowsExceptionWhenButtonIsNotVisibleInViewPort()
     {
-        $this->initCommonSteps(['getAttribute'],null);
-        $exceptionMessage = "The following element was expected to be visible in viewport, but was not:";
+        $this->initCommonSteps(['getAttribute'], null);
+        $exceptionMessage = 'The following element was expected to be visible in viewport, but was not:';
         $this->mockAndSetExpectationException($exceptionMessage);
         $this->flexible_context->method('assertNodeElementVisibleInViewport')->willThrowException($this->expectation_exception);
         $this->flexible_context->pressButton($this->locator);
@@ -41,7 +41,7 @@ class AssertPressButtonTest extends FlexibleContextTest
 
     public function testSuccessfulButtonPress()
     {
-        $this->initCommonSteps(['getAttribute', 'press'],null);
+        $this->initCommonSteps(['getAttribute', 'press'], null);
         $this->flexible_context->method('assertNodeElementVisibleInViewport');
         $this->button->method('press');
         $this->flexible_context->pressButton($this->locator);
@@ -61,8 +61,8 @@ class AssertPressButtonTest extends FlexibleContextTest
     /**
      * This method initializes the common steps to run the tests in this class.
      *
-     * @param array $nodeElementMockMethods
-     * @param $getAttributeReturnValue
+     * @param array  $nodeElementMockMethods   The methods to be mocked
+     * @param string $getAttributeReturnValue  The value that need to be returned when getAttribute method is mocked
      */
     protected function initCommonSteps(array $nodeElementMockMethods, $getAttributeReturnValue)
     {

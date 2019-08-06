@@ -944,7 +944,24 @@ class FlexibleContext extends MinkContext
             }
         });
 
+        $this->assertNodeElementVisibleInViewport($button);
         $button->press();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function assertNodeElementVisibleInViewport(NodeElement $element)
+    {
+        $this->waitFor(function () use ($element) {
+            if (!$this->nodeIsVisibleInViewport($element)) {
+                throw new ExpectationException(
+                    'The following element was expected to be visible in viewport, but was not: ' .
+                        $element->getHtml(),
+                    $this->getSession()
+                );
+            }
+        });
     }
 
     /**
@@ -1345,11 +1362,12 @@ JS
     private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)
     {
         $nodeElements = [];
-        while ($nodeElement->getParent() instanceof NodeElement) {
-            $nodeElements[] = ($nodeElement = $nodeElement->getParent());
+        while (($nodeElement = $nodeElement->getParent()) instanceof NodeElement) {
             if (strtolower($nodeElement->getTagName()) === strtolower($stopAt)) {
                 break;
             }
+
+            $nodeElements[] = $nodeElement;
         }
 
         return $nodeElements;

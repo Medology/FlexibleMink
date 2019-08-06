@@ -11,6 +11,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\Mink\Session;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -382,6 +383,7 @@ trait FlexibleContextInterface
      * @param  string               $button  button id, inner text, value or alt
      * @param  TraversableElement   $context Element on the page to which button belongs.
      * @throws ExpectationException If a visible button field is not found.
+     * @throws ExpectationException If Button is found but not visible in the viewport.
      */
     abstract public function pressButton($button, TraversableElement $context = null);
 
@@ -454,4 +456,13 @@ trait FlexibleContextInterface
      * @throws ExpectationException When the radio button is checked.
      */
     abstract public function assertRadioButtonNotChecked($label);
+
+    /**
+     * Asserts that the node element is visible in the viewport.
+     *
+     * @param  NodeElement          $element Element expected to be visble in the viewport.
+     * @throws ExpectationException If the element was not found visible in the viewport.
+     * @throws Exception            If the assertion did not pass before the timeout was exceeded.
+     */
+    abstract public function assertNodeElementVisibleInViewport(NodeElement $element);
 }

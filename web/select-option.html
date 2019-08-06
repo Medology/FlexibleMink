@@ -5,19 +5,22 @@
     <title>Assert Option in Select</title>
 </head>
 <body>
-<h1>Select</h1>
-    <form>
-        <label for="country">Country</label>
-        <select id="country">
-            <option>US</option>
-            <option>China</option>
-            <option>Canada</option>
-        </select>
-        <label for="state">State</label>
-        <select id="state">
-        </select>
-    </form>
-    <button onclick="updateSelectWithDelay()">Update select with delay</button>
+    <div>
+        <h1>Select</h1>
+        <form>
+            <label for="country">Country</label>
+            <select id="country">
+                <option>US</option>
+                <option>China</option>
+                <option>Canada</option>
+            </select>
+            <label for="state">State</label>
+            <select id="state">
+            </select>
+        </form>
+
+        <button onclick="updateSelectWithDelay()">Update select with delay</button>
+    </div>
 <script>
     function updateSelectWithDelay() {
         setTimeout(function() {

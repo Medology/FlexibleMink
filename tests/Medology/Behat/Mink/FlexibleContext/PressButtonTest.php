@@ -88,7 +88,7 @@ class PressButtonTest extends FlexibleContextTest
     }
 
     /**
-     * Asserts that an exception called from FlexibleContext methods bubble up.
+     * Asserts that an exception called from the FlexibleContext methods bubble up.
      *
      * @dataProvider dataFlexibleContextExceptions
      * @param string    $method    Name of method called on mock being tested.

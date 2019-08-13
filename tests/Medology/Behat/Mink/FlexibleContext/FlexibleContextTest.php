@@ -20,12 +20,14 @@ abstract class FlexibleContextTest extends PHPUnit_Framework_TestCase
     /** @var FlexibleContext|PHPUnit_Framework_MockObject_MockObject */
     protected $flexible_context;
 
+    protected $flexible_context_mocked_methods = ['getSession'];
+
     /**
      * {@inheritdoc}
      */
     public function setUp()
     {
-        $this->flexible_context = $this->createPartialMock(FlexibleContext::class, ['getSession']);
+        $this->flexible_context = $this->createPartialMock(FlexibleContext::class, $this->flexible_context_mocked_methods);
         $this->sessionMock = $this->createMock(Session::class);
         $this->pageMock = $this->createMock(DocumentElement::class);
         $this->flexible_context->method('getSession')->willReturn($this->sessionMock);

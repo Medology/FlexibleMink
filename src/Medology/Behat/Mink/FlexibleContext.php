@@ -581,16 +581,18 @@ class FlexibleContext extends MinkContext
      * Finds the first matching visible button on the page, scrolling to it if necessary.
      *
      * @param  string                           $locator The button name.
+     * @param  TraversableElement               $context Element on the page to which button belongs.
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             If a visible button was not found.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      * @return NodeElement                      The button.
      */
-    public function scrollToButton($locator)
+    public function scrollToButton($locator, TraversableElement $context = null)
     {
         $locator = $this->fixStepArgument($locator);
 
-        $buttons = $this->getSession()->getPage()->findAll('named', ['button', $locator]);
+        $context = $context ? $context : $this->getSession()->getPage();
+        $buttons = $context->findAll('named', ['button', $locator]);
 
         if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
             throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
@@ -1201,14 +1203,15 @@ class FlexibleContext extends MinkContext
      * This method overrides the base method to ensure that only visible & enabled buttons are pressed.
      *
      * @param  string                           $locator button id, inner text, value or alt
+     * @param  TraversableElement               $context Element on the page to which button belongs.
      * @throws DriverException                  When the operation cannot be performed.
      * @throws ExpectationException             If a visible button field is not found.
      * @throws UnsupportedDriverActionException When operation not supported by the driver.
      * @throws ExpectationException             If Button is found but not visible in the viewport.
      */
-    public function pressButton($locator)
+    public function pressButton($locator, TraversableElement $context = null)
     {
-        $button = $this->wait->scrollToButton($locator);
+        $button = $this->wait->scrollToButton($locator, $context);
 
         /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($button, $locator) {

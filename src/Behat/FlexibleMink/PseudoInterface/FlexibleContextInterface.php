@@ -337,6 +337,16 @@ trait FlexibleContextInterface
     abstract public function assertSelectContainsExactOptions($select, TableNode $tableNode);
 
     /**
+     * Asserts that the specified option is selected.
+     *
+     * @param  string                   $field  the select field
+     * @param  string                   $option the option that should be selected in the select field
+     * @throws ElementNotFoundException If the option was not found.
+     * @throws ExpectationException     If the option was not selected.
+     */
+    abstract public function assertSelectOptionSelected($field, $option);
+
+    /**
      * Attaches a local file to field with specified id|name|label|value. This is used when running behat and
      * browser session in different containers.
      *

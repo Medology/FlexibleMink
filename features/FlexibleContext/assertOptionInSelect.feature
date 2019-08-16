@@ -74,3 +74,21 @@ Feature:  Assert Option in Select
       | Australia   |
       | New Zealand |
       | Japan       |
+
+  Scenario: Assertion fails when expected select dropdown is not present
+    When I assert that the "Not Present" drop down should have the "US" selected
+    Then the assertion should throw an ExpectationException
+     And the assertion should fail with the message "No visible input found for 'Not Present'"
+
+  Scenario: Assertion fails when expected option is not present in the dropdown
+    When I assert that the "Country" drop down should have the "Not Present" selected
+    Then the assertion should throw an ElementNotFoundException
+     And the assertion should fail with the message 'Select option field with id|name|label|value "Not Present" not found.'
+
+  Scenario: Assertion fails when expected option is not present in the dropdown
+    When I assert that the "Country" drop down should have the "Canada" selected
+    Then the assertion should throw an ExpectationException
+     And the assertion should fail with the message 'Select option field with value|text "Canada" is not selected in the select "Country"'
+
+  Scenario: Assertion passes when expected option is selected in the dropdown
+    Then the "Country" drop down should have the "US" selected

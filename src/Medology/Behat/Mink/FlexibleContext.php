@@ -992,6 +992,46 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that the specified option is selected.
+     *
+     * @Then   the :field drop down should have the :option selected
+     * @param  string                   $field  the select field
+     * @param  string                   $option the option that should be selected in the select field
+     * @throws ElementNotFoundException If the option was not found.
+     * @throws ExpectationException     If the option was not selected.
+     * @throws GenericException
+     */
+    public function assertSelectOptionSelected($field, $option)
+    {
+        /** @var NodeElement $selectField */
+        $selectField = Spinner::waitFor(function () use ($field) {
+            return $this->assertFieldExists($field);
+        });
+
+        $option = $this->storeContext->injectStoredValues($option);
+
+        Spinner::waitFor(function () use ($selectField, $option, $field) {
+            $optionField = $selectField->find('named', ['option', $option]);
+
+            if (null === $optionField) {
+                throw new ElementNotFoundException(
+                    $this->getSession(),
+                    'select option field',
+                    'id|name|label|value',
+                    $option
+                );
+            }
+
+            if (!$optionField->isSelected()) {
+                throw new ExpectationException(
+                    'Select option field with value|text "' . $option . '" is not selected in the select "' . $field . '"',
+                    $this->getSession()
+                );
+            }
+        });
+    }
+
+    /**
      * Sets a cookie.
      *
      * Note: you must request a page before trying to set a cookie, in order to set the domain.

@@ -998,12 +998,12 @@ class FlexibleContext extends MinkContext
      * Asserts that the specified option is selected.
      *
      * @Then   the :field drop down should have the :option selected
-     * @param string $field the select field
-     * @param string $option the option that should be selected in the select field
+     * @param  string                   $field  the select field
+     * @param  string                   $option the option that should be selected in the select field
      * @throws ExpectationException     If the select dropdown doesn't exist in the view even after waiting.
      * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were
-     *                                  passed. This should never happen. If it does, there is a
-     *                                  problem with the injectStoredValues method.
+     *                                         passed. This should never happen. If it does, there is a
+     *                                         problem with the injectStoredValues method.
      * @throws ElementNotFoundException If the option is not found in the dropdown even after waiting.
      * @throws ExpectationException     If the option is not selected from the dropdown even after waiting.
      */
@@ -1017,7 +1017,7 @@ class FlexibleContext extends MinkContext
 
         $option = $this->storeContext->injectStoredValues($option);
 
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($selectField, $option, $field) {
             $optionField = $selectField->find('named', ['option', $option]);
 

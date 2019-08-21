@@ -85,7 +85,7 @@ Feature:  Assert Option in Select
     Then the assertion should throw an ElementNotFoundException
      And the assertion should fail with the message 'Select option field with id|name|label|value "Not Present" not found.'
 
-  Scenario: Assertion fails when expected option is not present in the dropdown
+  Scenario: Assertion fails when expected option is not selected in the dropdown
     When I assert that the "Country" drop down should have the "Canada" selected
     Then the assertion should throw an ExpectationException
      And the assertion should fail with the message 'Select option field with value|text "Canada" is not selected in the select "Country"'

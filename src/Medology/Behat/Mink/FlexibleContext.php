@@ -21,6 +21,7 @@ use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
 use Medology\Spinner;
 use OutOfBoundsException;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use ReflectionException;
 use WebDriver\Exception;
 use ZipArchive;
@@ -992,24 +993,31 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * @noinspection PhpDocRedundantThrowsInspection exceptions are bubbling up from the waitFor's closure
+     *
      * Asserts that the specified option is selected.
      *
      * @Then   the :field drop down should have the :option selected
-     * @param  string                   $field  the select field
-     * @param  string                   $option the option that should be selected in the select field
-     * @throws ElementNotFoundException If the option was not found.
-     * @throws ExpectationException     If the option was not selected.
-     * @throws GenericException
+     * @param string $field the select field
+     * @param string $option the option that should be selected in the select field
+     * @throws ExpectationException     If the select dropdown doesn't exist in the view even after waiting.
+     * @throws ReflectionException      If injectStoredValues incorrectly believes one or more closures were
+     *                                  passed. This should never happen. If it does, there is a
+     *                                  problem with the injectStoredValues method.
+     * @throws ElementNotFoundException If the option is not found in the dropdown even after waiting.
+     * @throws ExpectationException     If the option is not selected from the dropdown even after waiting.
      */
     public function assertSelectOptionSelected($field, $option)
     {
         /** @var NodeElement $selectField */
+        /** @noinspection PhpUnhandledExceptionInspection */
         $selectField = Spinner::waitFor(function () use ($field) {
             return $this->assertFieldExists($field);
         });
 
         $option = $this->storeContext->injectStoredValues($option);
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($selectField, $option, $field) {
             $optionField = $selectField->find('named', ['option', $option]);
 

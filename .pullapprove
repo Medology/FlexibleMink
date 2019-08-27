@@ -1,2 +1,9 @@
 version: 3
 extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/base.pullapprove.yml?ref=master"
+pullapprove_conditions:
+  - "base.ref == '2.0'"
+  - "'ci/circleci: build' in statuses.succeeded or 'Force Review' in labels"
+  - "'ci/circleci: build-php5' in statuses.succeeded or 'Force Review' in labels"
+  - "'ci/circleci: test' in statuses.succeeded or 'Force Review' in labels"
+  - "'ci/circleci: test-php5' in statuses.succeeded or 'Force Review' in labels"
+  - "'continuous-integration/styleci/pr' in statuses.succeeded or 'Force Review' in labels"

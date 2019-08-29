@@ -134,6 +134,20 @@ trait FlexibleContextInterface
     abstract public function assertElementNotContainsText($element, $text);
 
     /**
+     * Asserts that all nodes have the specified attribute value.
+     *
+     * @param  string                           $locator     The attribute locator of the node element.
+     * @param  array                            $attributes  A key value paid of the attribute and value the nodes
+     *                                                       should contain
+     * @param  string                           $selector    The selector to use to find the node.
+     * @param  null                             $occurrences The number of time the node element should be found.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             If the nodes attributes do not match
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     */
+    abstract public function assertNodesHaveAttributeValues($locator, array $attributes, $selector = 'named', $occurrences = null);
+
+    /**
      * Clicks a visible link with specified id|title|alt|text.
      *
      * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible

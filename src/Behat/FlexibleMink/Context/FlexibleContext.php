@@ -30,6 +30,7 @@ class FlexibleContext extends MinkContext
     use AlertContext;
     use ContainerContext;
     use JavaScriptContext;
+    use LinkContext;
     use SpinnerContext;
     use StoreContext;
     use TableContext;
@@ -1211,6 +1212,25 @@ JS
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function assertNodesHaveAttributeValues($locator, array $attributes, $selector = 'named', $occurrences = null)
+    {
+        /** @var NodeElement[] $links */
+        $nodes = $this->getSession()->getPage()->findAll($selector, $locator);
+
+        if (!count($nodes)) {
+            throw new ExpectationException("No node elements were found on the page using '$locator'", $this->getSession());
+        } elseif ($occurrences && count($nodes) != $occurrences) {
+            throw new ExpectationException("Expected $occurrences nodes with '$locator' but found " . count($nodes), $this->getSession());
+        }
+
+        foreach ($nodes as $node) {
+            $this->elementHasAttributeValues($node, $attributes);
+        }
     }
 
     /**

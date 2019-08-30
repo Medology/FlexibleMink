@@ -3,7 +3,7 @@ extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/
 pullapprove_conditions:
   - "state == 'open'"
   - "'[DO NOT REVIEW]' not in title"
-  - "base.ref == '2.0'"
+  - "base.ref == '1.0'"
   - "'ci/circleci: build' in statuses.succeeded or 'Force Review' in labels"
   - "'ci/circleci: build-php5' in statuses.succeeded or 'Force Review' in labels"
   - "'ci/circleci: test' in statuses.succeeded or 'Force Review' in labels"

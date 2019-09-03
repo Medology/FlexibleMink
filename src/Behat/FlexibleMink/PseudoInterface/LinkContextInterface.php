@@ -5,7 +5,7 @@ namespace Behat\FlexibleMink\PseudoInterface;
 use Behat\Mink\Exception\ExpectationException;
 
 /**
- * Pseudo interface for tracking the methods of the ContainerContext.
+ * Pseudo interface for tracking the methods of the LinkContext.
  */
 trait LinkContextInterface
 {

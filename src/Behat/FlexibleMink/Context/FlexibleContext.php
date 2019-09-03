@@ -1229,7 +1229,12 @@ JS
         }
 
         foreach ($nodes as $node) {
-            $this->elementHasAttributeValues($node, $attributes);
+            if (!$this->elementHasAttributeValues($node, $attributes)) {
+                throw new ExpectationException(
+                    "Expected  node with '$locator' but found " . print_r($node, true),
+                    $this->getSession()
+                );
+            }
         }
     }
 

@@ -1,8 +1,7 @@
-@clearAlertsWhenFinished
-Feature: Alert context
-  In order to ensure that JavaScript alerts work as expected
+Feature: Link Contect
+  In order to ensure that Canonical Links are present
   As a developer
-  I need to be able to assert various states of alerts
+  I need to be able to assert that the canonical tag contains the proper url
 
   Scenario: Link Location
      When I am on "/assert-link-location.html"

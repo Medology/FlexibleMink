@@ -5,6 +5,9 @@ namespace Behat\FlexibleMink\Context;
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\FlexibleMink\PseudoInterface\LinkContextInterface;
 
+/**
+ * {@inheritdoc}
+ */
 trait LinkContext
 {
     // Implements.

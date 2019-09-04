@@ -1,36 +1,28 @@
 version: 3
 extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/base.pullapprove.yml?ref=master"
 pullapprove_conditions:
-  - 
-    condition: "base.ref == '1.0'"
+  - condition: "base.ref == '1.0'"
     unmet_status: failure
     explanation: "PullApprove is not configured for this branch"
-  - 
-    condition: "'[DO NOT REVIEW]' not in title"
+  - condition: "'[DO NOT REVIEW]' not in title"
     unmet_status: pending
     explanation: "Not ready for review"
-  - 
-    condition: "state == 'open'"
+  - condition: "state == 'open'"
     explanation: "PR must be open to be reviewed"
     unmet_status: failure
-  - 
-    condition: "'ci/circleci: build' in statuses.succeeded or 'Force Review' in labels"
+  - condition: "'ci/circleci: build' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
-    explanation: "Tests and builds must pass before requesting review"
-  - 
-    condition: "'ci/circleci: build-php5' in statuses.succeeded or 'Force Review' in labels"
+    explanation: "ci/circleci: build must pass before requesting review"
+  - condition: "'ci/circleci: build-php5' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
-    explanation: "Tests and builds must pass before requesting review"
-  - 
-    condition: "'ci/circleci: test' in statuses.succeeded or 'Force Review' in labels"
+    explanation: "ci/circleci: build-php5 must pass before requesting review"
+  - condition: "'ci/circleci: test' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
-    explanation: "Tests and builds must pass before requesting review"
-  - 
-    condition: "'ci/circleci: test-php5' in statuses.succeeded or 'Force Review' in labels"
+    explanation: "ci/circleci: test must pass before requesting review"
+  - condition: "'ci/circleci: test-php5' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
-    explanation: "Tests and builds must pass before requesting review"
-  - 
-    condition: "'continuous-integration/styleci/pr' in statuses.succeeded or 'Force Review' in labels"
+    explanation: "ci/circleci: test-php5 must pass before requesting review"
+  - condition: "'continuous-integration/styleci/pr' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
     explanation: "StyleCI must pass before requesting review"
 

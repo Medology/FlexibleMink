@@ -1273,6 +1273,37 @@ class FlexibleContext extends MinkContext
     }
 
     /**
+     * Asserts that all nodes have the specified attribute value.
+     *
+     * @param  string                           $locator     The attribute locator of the node element.
+     * @param  array                            $attributes  A key value paid of the attribute and value the nodes
+     *                                                       should contain
+     * @param  string                           $selector    The selector to use to find the node.
+     * @param  null                             $occurrences The number of time the node element should be found.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             If the nodes attributes do not match
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     */
+    public function assertNodesHaveAttributeValues($locator, array $attributes, $selector = 'named', $occurrences = null)
+    {
+        /** @var NodeElement[] $links */
+        $nodes = $this->getSession()->getPage()->findAll($selector, $locator);
+        if (!count($nodes)) {
+            throw new ExpectationException("No node elements were found on the page using '$locator'", $this->getSession());
+        } elseif ($occurrences && count($nodes) != $occurrences) {
+            throw new ExpectationException("Expected $occurrences nodes with '$locator' but found " . count($nodes), $this->getSession());
+        }
+        foreach ($nodes as $node) {
+            if (!$this->elementHasAttributeValues($node, $attributes)) {
+                throw new ExpectationException(
+                    "Expected  node with '$locator' but found " . print_r($node, true),
+                    $this->getSession()
+                );
+            }
+        }
+    }
+
+    /**
      * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor.
      *
      * {@inheritdoc}

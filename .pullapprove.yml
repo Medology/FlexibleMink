@@ -8,8 +8,8 @@ pullapprove_conditions:
     unmet_status: pending
     explanation: "Not ready for review"
   - condition: "state == 'open'"
-    explanation: "PR must be open to be reviewed"
     unmet_status: failure
+    explanation: "PR must be open to be reviewed"
   - condition: "'ci/circleci: build' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
     explanation: "ci/circleci: build must pass before requesting review"

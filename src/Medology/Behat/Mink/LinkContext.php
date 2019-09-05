@@ -1,6 +1,4 @@
-<?php
-
-namespace Medology\Behat\Mink;
+<?php namespace Medology\Behat\Mink;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Exception\ExpectationException;

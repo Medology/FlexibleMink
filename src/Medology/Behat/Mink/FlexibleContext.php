@@ -1290,9 +1290,12 @@ class FlexibleContext extends MinkContext
         $nodes = $this->getSession()->getPage()->findAll($selector, $locator);
         if (!count($nodes)) {
             throw new ExpectationException("No node elements were found on the page using '$locator'", $this->getSession());
-        } elseif ($occurrences && count($nodes) != $occurrences) {
+        }
+
+        if ($occurrences && count($nodes) !== $occurrences) {
             throw new ExpectationException("Expected $occurrences nodes with '$locator' but found " . count($nodes), $this->getSession());
         }
+
         foreach ($nodes as $node) {
             if (!$this->elementHasAttributeValues($node, $attributes)) {
                 throw new ExpectationException(

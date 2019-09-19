@@ -16,6 +16,7 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use Exception;
 use InvalidArgumentException;
+use Medology\Spinner;
 use ZipArchive;
 
 /**
@@ -1534,5 +1535,32 @@ JS
         }
 
         return $driver;
+    }
+
+    /**
+     * Asserts a javascript variable's value matches its expected value. This method is necessitated by
+     * the fact that assertJavascriptVariable() doesn't use a waitFor().
+     *
+     * @param string $variableName The name of the JS variable
+     * @param string $expectedValue The expected value of the JS variable
+     * @throws ExpectationException If the JS variable value doesn't match the expected value
+     * @throws Exception
+     *
+     * @Then the javascript variable :variableName should be set to :expectedValue
+     */
+    public function assertJavascriptVariableEquals($variableName, $expectedValue)
+    {
+        $this->waitFor(function () use ($variableName, $expectedValue) {
+            $returnedValue = $this->getSession()->evaluateScript(
+                'return ' . $variableName . ';'
+            );
+
+            if ($returnedValue != $expectedValue) {
+                throw new ExpectationException(
+                    "Expected \"$expectedValue\" but got \"$returnedValue\"",
+                    $this->getSession()
+                );
+            }
+        });
     }
 }

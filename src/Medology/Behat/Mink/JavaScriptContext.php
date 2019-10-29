@@ -5,7 +5,9 @@ namespace Medology\Behat\Mink;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
+use Exception;
 use Medology\Behat\UsesStoreContext;
+use Medology\Spinner;
 
 /**
  * Provides functionality modifying and checking the Javascript environment in the browser.
@@ -147,5 +149,32 @@ class JavaScriptContext implements Context
         foreach ($attributes as $key => $value) {
             $this->assertJavascriptVariable($key, $value);
         }
+    }
+
+    /**
+     * Asserts a javascript variable's value matches its expected value. This method is necessitated by
+     * the fact that assertJavascriptVariable() doesn't use a waitFor().
+     *
+     * @param  string               $variableName  The name of the JS variable
+     * @param  string               $expectedValue The expected value of the JS variable
+     * @throws ExpectationException If the JS variable value doesn't match the expected value
+     * @throws Exception            if the assertion did not pass before the timeout was exceeded.
+     *
+     * @Then the javascript variable :variableName should be set to :expectedValue
+     */
+    public function assertJavascriptVariableEquals($variableName, $expectedValue)
+    {
+        /* @noinspection PhpUnhandledExceptionInspection */
+        Spinner::waitFor(function () use ($variableName, $expectedValue) {
+            $returnedValue = $this->flexibleContext->getSession()->evaluateScript(
+                'return ' . $variableName . ';'
+            );
+            if ($returnedValue != $expectedValue) {
+                throw new ExpectationException(
+                    "Expected \"$expectedValue\" but got \"$returnedValue\"",
+                    $this->flexibleContext->getSession()
+                );
+            }
+        });
     }
 }

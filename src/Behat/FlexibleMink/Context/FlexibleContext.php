@@ -1095,8 +1095,7 @@ class FlexibleContext extends MinkContext
 
         if ($supportsSmoothScroll) {
             $this->getSession()->executeScript("window.scrollTo({top: $y, left: $x, behavior: 'smooth'})");
-        }
-        else {
+        } else {
             $this->getSession()->executeScript("window.scrollTo($x, $y)");
         }
     }

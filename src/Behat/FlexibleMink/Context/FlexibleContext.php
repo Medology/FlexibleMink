@@ -1074,21 +1074,21 @@ class FlexibleContext extends MinkContext
     public function scrollWindowToBody($where)
     {
         // horizontal scroll
+        $x = 'window.scrollX';
+
         if (strpos($where, 'left') !== false) {
             $x = 0;
         } elseif (strpos($where, 'right') !== false) {
             $x = 'document.body.scrollWidth';
-        } else {
-            $x = 'window.scrollX';
         }
 
         // vertical scroll
+        $y = 'window.scrollY';
+
         if (strpos($where, 'top') !== false) {
             $y = 0;
         } elseif (strpos($where, 'bottom') !== false) {
             $y = 'document.body.scrollHeight';
-        } else {
-            $y = 'window.scrollY';
         }
 
         $this->getSession()->executeScript("window.scrollTo({top: $y, left: $x, behavior: 'smooth'})");

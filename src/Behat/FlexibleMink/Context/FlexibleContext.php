@@ -1068,10 +1068,10 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      *
-     * @When /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page$/
-     * @Given /^the page is scrolled to the (?P<where>top|bottom)$/
+     * @When /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page(?:(?P<smooth> smoothly)|)$/
+     * @Given /^the page is scrolled to the (?P<where>top|bottom)(?:(?P<smooth> smoothly)|)$/
      */
-    public function scrollWindowToBody($where)
+    public function scrollWindowToBody($where, $smooth = false)
     {
         // horizontal scroll
         $x = 'window.scrollX';
@@ -1093,7 +1093,7 @@ class FlexibleContext extends MinkContext
 
         $supportsSmoothScroll = $this->getSession()->evaluateScript("'scrollBehavior' in document.documentElement.style");
 
-        if ($supportsSmoothScroll) {
+        if ($smooth && $supportsSmoothScroll) {
             $this->getSession()->executeScript("window.scrollTo({top: $y, left: $x, behavior: 'smooth'})");
         } else {
             $this->getSession()->executeScript("window.scrollTo($x, $y)");

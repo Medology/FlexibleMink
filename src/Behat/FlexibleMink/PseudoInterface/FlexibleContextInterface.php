@@ -417,11 +417,11 @@ trait FlexibleContextInterface
     /**
      * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.
      *
-     * @param string $where  to scroll to. Can be any valid combination of "top", "bottom",
-     *                       "left" and "right". e.g. "top", "top right", but not "top bottom"
-     * @param bool   $smooth scrolling flag.
+     * @param string $whereToScroll   The direction to scroll the page. Can be any valid combination of "top", "bottom",
+     *                                "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
      */
-    abstract public function scrollWindowToBody($where, $smooth = false);
+    abstract public function scrollWindowToBody(string $whereToScroll, bool $useSmoothScroll = false): void;
 
     /**
      * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if

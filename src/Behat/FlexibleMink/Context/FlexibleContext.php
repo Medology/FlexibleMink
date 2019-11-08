@@ -1068,32 +1068,37 @@ class FlexibleContext extends MinkContext
     /**
      * {@inheritdoc}
      *
-     * @When /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page(?:(?P<smooth> smoothly)|)$/
-     * @Given /^the page is scrolled to the (?P<where>top|bottom)(?:(?P<smooth> smoothly)|)$/
+     * @When /^(?:I |)scroll to the (?P<whereToScroll>[ a-z]+) of the page(?:(?P<useSmoothScroll> smoothly)|)$/
+     * @Given /^the page is scrolled to the (?P<whereToScroll>top|bottom)(?:(?P<useSmoothScroll> smoothly)|)$/
+     *
+     * @param string $whereToScroll   The direction to scroll the page. Can be any valid combination of
+     *                                "top", "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
+     *
      */
-    public function scrollWindowToBody($where, $smooth = false)
+    public function scrollWindowToBody(string $whereToScroll, bool $useSmoothScroll = false): void
     {
         // horizontal scroll
         $x = 'window.scrollX';
 
-        if (strpos($where, 'left') !== false) {
+        if (strpos($whereToScroll, 'left') !== false) {
             $x = 0;
-        } elseif (strpos($where, 'right') !== false) {
+        } elseif (strpos($whereToScroll, 'right') !== false) {
             $x = 'document.body.scrollWidth';
         }
 
         // vertical scroll
         $y = 'window.scrollY';
 
-        if (strpos($where, 'top') !== false) {
+        if (strpos($whereToScroll, 'top') !== false) {
             $y = 0;
-        } elseif (strpos($where, 'bottom') !== false) {
+        } elseif (strpos($whereToScroll, 'bottom') !== false) {
             $y = 'document.body.scrollHeight';
         }
 
         $supportsSmoothScroll = $this->getSession()->evaluateScript("'scrollBehavior' in document.documentElement.style");
 
-        if ($smooth && $supportsSmoothScroll) {
+        if ($useSmoothScroll && $supportsSmoothScroll) {
             $this->getSession()->executeScript("window.scrollTo({top: $y, left: $x, behavior: 'smooth'})");
         } else {
             $this->getSession()->executeScript("window.scrollTo($x, $y)");

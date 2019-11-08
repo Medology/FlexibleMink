@@ -101,6 +101,7 @@ trait TableContext
 
             if (!$splitCell) {
                 $colRow = $row;
+
                 break;
             }
         }

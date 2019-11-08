@@ -1078,29 +1078,29 @@ class FlexibleContext extends MinkContext
     public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false)
     {
         // horizontal scroll
-        $x = 'window.scrollX';
+        $scrollHorizontal = 'window.scrollX';
 
         if (strpos($whereToScroll, 'left') !== false) {
-            $x = 0;
+            $scrollHorizontal = 0;
         } elseif (strpos($whereToScroll, 'right') !== false) {
-            $x = 'document.body.scrollWidth';
+            $scrollHorizontal = 'document.body.scrollWidth';
         }
 
         // vertical scroll
-        $y = 'window.scrollY';
+        $scrollVertical = 'window.scrollY';
 
         if (strpos($whereToScroll, 'top') !== false) {
-            $y = 0;
+            $scrollVertical = 0;
         } elseif (strpos($whereToScroll, 'bottom') !== false) {
-            $y = 'document.body.scrollHeight';
+            $scrollVertical = 'document.body.scrollHeight';
         }
 
         $supportsSmoothScroll = $this->getSession()->evaluateScript("'scrollBehavior' in document.documentElement.style");
 
         if ($useSmoothScroll && $supportsSmoothScroll) {
-            $this->getSession()->executeScript("window.scrollTo({top: $y, left: $x, behavior: 'smooth'})");
+            $this->getSession()->executeScript("window.scrollTo({top: $scrollVertical, left: $$scrollHorizontal, behavior: 'smooth'})");
         } else {
-            $this->getSession()->executeScript("window.scrollTo($x, $y)");
+            $this->getSession()->executeScript("window.scrollTo($scrollHorizontal, $scrollVertical)");
         }
     }
 

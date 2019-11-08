@@ -1075,7 +1075,7 @@ class FlexibleContext extends MinkContext
      *                                "top", "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
      * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
      */
-    public function scrollWindowToBody(string $whereToScroll, bool $useSmoothScroll = false): void
+    public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false)
     {
         // horizontal scroll
         $x = 'window.scrollX';

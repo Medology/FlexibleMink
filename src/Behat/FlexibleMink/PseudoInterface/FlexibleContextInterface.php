@@ -421,7 +421,7 @@ trait FlexibleContextInterface
      *                                "left" and "right". e.g. "top", "top right", but not "top bottom"
      * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
      */
-    abstract public function scrollWindowToBody(string $whereToScroll, bool $useSmoothScroll = false): void;
+    abstract public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false);
 
     /**
      * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if

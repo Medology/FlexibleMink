@@ -1098,7 +1098,7 @@ class FlexibleContext extends MinkContext
         $supportsSmoothScroll = $this->getSession()->evaluateScript("'scrollBehavior' in document.documentElement.style");
 
         if ($useSmoothScroll && $supportsSmoothScroll) {
-            $this->getSession()->executeScript("window.scrollTo({top: $scrollVertical, left: $$scrollHorizontal, behavior: 'smooth'})");
+            $this->getSession()->executeScript("window.scrollTo({top: $scrollVertical, left: $scrollHorizontal, behavior: 'smooth'})");
         } else {
             $this->getSession()->executeScript("window.scrollTo($scrollHorizontal, $scrollVertical)");
         }

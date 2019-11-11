@@ -34,6 +34,12 @@ Feature: Assert an element is displayed or not displayed
      Then "the almost-last div" should be fully visible in the viewport
      Then "the last div" should be partially visible in the viewport
 
+  Scenario: Visibility works on smoothly scrolled pages
+    Given I am on "/big-page.html"
+    When I scroll to the bottom of the page smoothly
+    Then "the almost-last div" should be fully visible in the viewport
+    Then "the last div" should be partially visible in the viewport
+
   Scenario Outline: Throw a ExpectationException when visibility test fails
     When I assert that <Step Text to Assert>
     Then the assertion should throw a ExpectationException

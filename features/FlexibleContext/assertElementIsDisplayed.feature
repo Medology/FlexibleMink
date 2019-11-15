@@ -12,6 +12,7 @@ Feature: Assert an element is displayed or not displayed
      And "All Centered 2" should be fully visible in the viewport
      And "All Centered 3" should be fully visible in the viewport
      And "All Centered 4" should be fully visible in the viewport
+     And I wait 1 second
 
      And "Partial Left" should be partially visible in the viewport
      And "Partial Right" should be partially visible in the viewport

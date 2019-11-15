@@ -71,6 +71,11 @@ commands:
         path: /tmp/artifacts
     - store_artifacts:
         path: /tmp/artifacts
+    - run:
+        name: Check for 'wait for n seconds' in feature files
+        command: |
+          FILES=$(git diff origin/master...$CIRCLE_SHA1 --diff-filter=ACMR --name-only)
+          bin/reject-wait-seconds.sh "$FILES"
 
 jobs:
   build:

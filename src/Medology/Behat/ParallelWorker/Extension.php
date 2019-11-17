@@ -26,7 +26,7 @@ class Extension implements ExtensionInterface
     public function load(ContainerBuilder $container, array $config)
     {
         $definition = new Definition(Controller::class, [new Reference(GherkinExtension::MANAGER_ID)]);
-        $definition->addTag(CliExtension::CONTROLLER_TAG);
+        $definition->addTag(CliExtension::CONTROLLER_TAG, ['priority' => 150]);
         $container->setDefinition(CliExtension::CONTROLLER_TAG . '.parallel_worker', $definition);
     }
 

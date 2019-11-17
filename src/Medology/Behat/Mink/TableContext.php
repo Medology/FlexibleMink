@@ -101,6 +101,7 @@ class TableContext implements Context
 
             if (!$splitCell) {
                 $colRow = $row;
+
                 break;
             }
         }

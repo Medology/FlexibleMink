@@ -33,17 +33,4 @@ trait SpinnerContext
 
         throw $lastException;
     }
-
-    /**
-     * Waits the indicated number of seconds before proceeding to the next step.
-     *
-     * @When /^(?:I |)wait (?P<seconds>\d+) seconds?$/
-     *
-     * @param  string $seconds The number of seconds to wait.
-     * @return void
-     */
-    public function waitSeconds($seconds)
-    {
-        sleep($seconds);
-    }
 }

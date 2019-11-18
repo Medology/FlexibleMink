@@ -31,7 +31,6 @@ Feature: Assert an element is displayed or not displayed
   Scenario: Visibility works on scrolled pages
     Given I am on "/big-page.html"
      When I scroll to the bottom of the page
-      And I wait 5 seconds
      Then "the almost-last div" should be fully visible in the viewport
       And "the last div" should be partially visible in the viewport
 

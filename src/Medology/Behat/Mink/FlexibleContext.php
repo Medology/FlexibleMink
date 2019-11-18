@@ -1381,34 +1381,41 @@ class FlexibleContext extends MinkContext
     /**
      * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.
      *
-     * @Given  /^the page is scrolled to the (?P<where>top|bottom)$/
-     * @When   /^(?:I |)scroll to the (?P<where>[ a-z]+) of the page$/
-     * @param  string                           $where to scroll to. Can be any valid combination of "top", "bottom",
-     *                                                 "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @Given /^the page is scrolled to the (?P<whereToScroll>top|bottom)(?:(?P<useSmoothScroll> smoothly)|)$/
+     * @When /^(?:I |)scroll to the (?P<whereToScroll>[ a-z]+) of the page(?:(?P<useSmoothScroll> smoothly)|)$/
+     * @param  string $whereToScroll            The direction to scroll the page. Can be any valid combination of "top",
+     *                                          "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @param  bool   $useSmoothScroll          Use the smooth scrolling behavior if the browser supports it.
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
-    public function scrollWindowToBody($where)
+    public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false)
     {
         // horizontal scroll
-        if (strpos($where, 'left') !== false) {
-            $x = 0;
-        } elseif (strpos($where, 'right') !== false) {
-            $x = 'document.body.scrollWidth';
-        } else {
-            $x = 'window.scrollX';
+        $scrollHorizontal = 'window.scrollX';
+
+        if (strpos($whereToScroll, 'left') !== false) {
+            $scrollHorizontal = 0;
+        } elseif (strpos($whereToScroll, 'right') !== false) {
+            $scrollHorizontal = 'document.body.scrollWidth';
         }
 
         // vertical scroll
-        if (strpos($where, 'top') !== false) {
-            $y = 0;
-        } elseif (strpos($where, 'bottom') !== false) {
-            $y = 'document.body.scrollHeight';
-        } else {
-            $y = 'window.scrollY';
+        $scrollVertical = 'window.scrollY';
+
+        if (strpos($whereToScroll, 'top') !== false) {
+            $scrollVertical = 0;
+        } elseif (strpos($whereToScroll, 'bottom') !== false) {
+            $scrollVertical = 'document.body.scrollHeight';
         }
 
-        $this->getSession()->executeScript("window.scrollTo($x, $y)");
+        $supportsSmoothScroll = $this->getSession()->evaluateScript("'scrollBehavior' in document.documentElement.style");
+
+        if ($useSmoothScroll && $supportsSmoothScroll) {
+            $this->getSession()->executeScript("window.scrollTo({top: $scrollVertical, left: $scrollHorizontal, behavior: 'smooth'})");
+        } else {
+            $this->getSession()->executeScript("window.scrollTo($scrollHorizontal, $scrollVertical)");
+        }
     }
 
     /**

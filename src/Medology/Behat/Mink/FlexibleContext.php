@@ -53,19 +53,6 @@ class FlexibleContext extends MinkContext
     }
 
     /**
-     * Waits the indicated number of seconds before proceeding to the next step.
-     *
-     * @When /^(?:I |)wait (?P<seconds>\d+) seconds?$/
-     *
-     * @param  string $seconds The number of seconds to wait.
-     * @return void
-     */
-    public function waitSeconds($seconds)
-    {
-        sleep($seconds);
-    }
-
-    /**
      * {@inheritdoc}
      *
      * Overrides the base method to support injecting stored values and matching URLs that include hostname.

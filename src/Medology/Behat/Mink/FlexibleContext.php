@@ -1383,9 +1383,9 @@ class FlexibleContext extends MinkContext
      *
      * @Given /^the page is scrolled to the (?P<whereToScroll>top|bottom)(?:(?P<useSmoothScroll> smoothly)|)$/
      * @When /^(?:I |)scroll to the (?P<whereToScroll>[ a-z]+) of the page(?:(?P<useSmoothScroll> smoothly)|)$/
-     * @param  string $whereToScroll            The direction to scroll the page. Can be any valid combination of "top",
-     *                                          "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
-     * @param  bool   $useSmoothScroll          Use the smooth scrolling behavior if the browser supports it.
+     * @param  string                           $whereToScroll   The direction to scroll the page. Can be any valid combination of "top",
+     *                                                           "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @param  bool                             $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      */

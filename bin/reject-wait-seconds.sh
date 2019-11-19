@@ -3,9 +3,8 @@
 set -eu
 
 # colors
-export RED='\033[0;31m'
-export GREEN='\033[0;32m'
-export NC='\033[0m'
+RED='\033[0;31m'
+NC='\033[0m'
 
 # grep flavor
 GREP='grep -cE' # FreeBSD (osx)

@@ -26,7 +26,7 @@ class ParallelWorkerExtension implements ExtensionInterface
         $definition = new Definition('Behat\ParallelWorker\Controller\ParallelWorkerController', [
             new Reference(GherkinExtension::MANAGER_ID),
         ]);
-        $definition->addTag(CliExtension::CONTROLLER_TAG);
+        $definition->addTag(CliExtension::CONTROLLER_TAG, ['priority' => 100]);
         $container->setDefinition(CliExtension::CONTROLLER_TAG . '.parallel_worker', $definition);
     }
 

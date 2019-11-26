@@ -1,6 +1,7 @@
 <?php namespace Tests\Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\Context\StoreContext;
+use DateTime;
 use Exception;
 use PHPUnit_Framework_Error;
 use PHPUnit_Framework_TestCase;
@@ -27,9 +28,113 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             'test_property_1' => 'test_value_1',
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
+            'date_prop'       => new DateTime('2028-10-28 15:30:10'),
         ];
 
         return $obj;
+    }
+
+    /**
+     * Expects the correct type error exception depending on the php version.
+     *
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    protected function expectTypeErrorException()
+    {
+        list($majorVersion, $minorVersion) = explode('.', PHP_VERSION, 3);
+
+        if ($majorVersion >= 7) {
+            $this->setExpectedException(TypeError::class);
+        } elseif ($majorVersion == 5 && $minorVersion == 6) {
+            $this->setExpectedException(PHPUnit_Framework_Error::class);
+        } else {
+            throw new Exception('This php version is not supported. PHP version must be >= 5.6');
+        }
+    }
+
+    /**
+     * Asserts that a function throws a type error that contains a string.
+     *
+     * @param  callable  $fn              A closure expected to throw the exception.
+     * @param  string    $expectedMessage The message expected to be found in the exception message.
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    protected function assertFunctionThrowsTypeErrorThatContainsMessage(callable $fn, $expectedMessage)
+    {
+        $this->expectTypeErrorException();
+
+        try {
+            $fn();
+        } catch (TypeError $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        } catch (PHPUnit_Framework_Error $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnEmptyString()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', '');
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnInteger()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', 0);
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
+     *
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnObject()
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
+            $this->injectStoredValues('', $this->getMockObject());
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Test that a non-callable has value throws appropriate error.
+     *
+     * @dataProvider nonCallableValuesProvider
+     *
+     * @param  mixed     $nonCallable Non-callable variable from data provider.
+     * @throws Exception When a unsupported version of PHP is being used.
+     */
+    public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
+    {
+        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
+            $this->injectStoredValues('', null, $nonCallable);
+        }, 'injectStoredValues() must be callable');
+    }
+
+    /**
+     * Returns a list of non-callable values.
+     *
+     * @return array
+     */
+    public function nonCallableValuesProvider()
+    {
+        return [[''], [0],  [$this->getMockObject()]];
     }
 
     /**
@@ -115,28 +220,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test null values
         $this->assertEmpty($this->injectStoredValues('', null));
-
-        // test invalid values
-        try {
-            $this->injectStoredValues('', '');
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
-
-        try {
-            $this->injectStoredValues('', 0);
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
-
-        try {
-            $this->injectStoredValues('', $testObj);
-            $this->setExpectedException('TypeError');
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-        }
 
         // test function with bad arguments
         $badFn = function () {
@@ -253,16 +336,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // Null $hasValue should default to using isset
         $this->assertEmpty($this->injectStoredValues('', null, null));
 
-        // Non-callable $hasValue throws appropriate error
-        foreach (['', 0, $testObj] as $nonCallable) {
-            try {
-                $this->injectStoredValues('', null, $nonCallable);
-                $this->setExpectedException('TypeError');
-            } catch (PHPUnit_Framework_Error $e) {
-                $this->assertNotEquals(-1, strpos($e->getMessage(), 'injectStoredValues() must be callable'));
-            }
-        }
-
         // Lambda without two args throws appropriate error
         $wrongArgCounts = [
             function () {
@@ -330,6 +403,32 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
                 }
             )
         );
+
+        /******************************
+         * Formatted as
+         *****************************/
+
+        // DateTime is formatted with default format when no format is specified
+        $this->assertEquals('2028-10-28T15:30:10+0000', $this->injectStoredValues('(the date_prop of the testObj)'));
+
+        // DateTime is formatted with specified format
+        $this->assertEquals(
+            '10/28/2028',
+            $this->injectStoredValues('(the date_prop of the testObj formatted as a US date)')
+        );
+
+        // DateTime is formatted as per host object format
+        $testObj->dateFormat = 'm/d/Y H:i';
+        $this->assertEquals(
+            '10/28/2028 15:30',
+            $this->injectStoredValues('(the date_prop of the testObj)')
+        );
+
+        // DateTime is formatted as specified format, even if host object has format
+        $this->assertEquals(
+            '10/28/2028 at 3:30 PM',
+            $this->injectStoredValues('(the date_prop of the testObj formatted as a US date and 12hr time)')
+        );
     }
 
     /**
@@ -394,5 +493,15 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          ***********************/
         $this->assertEquals(['1 University', null], $this->parseKey('1 University'));
         $this->assertEquals(['2 University', null], $this->parseKey('2 University'));
+    }
+
+    /**
+     * Tests the parseKeyNested function.
+     */
+    public function testParseKeyNested()
+    {
+        $this->assertEquals(['Object', ['property']], $this->parseKeyNested('Object\'s property'));
+        $this->assertEquals(['Object', ['ChildObject', 'property']],
+            $this->parseKeyNested('Object\'s ChildObject\'s property'));
     }
 }

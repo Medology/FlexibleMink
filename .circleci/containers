@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+. "${ROOT}"/bin/lib/env.sh
+
+"${ROOT}"/bin/init/init_docker_env.sh
+
+docker-compose -p $PROJECT_NAME \
+    -f "$ROOT"/docker/docker-compose.yml \
+    "$@"

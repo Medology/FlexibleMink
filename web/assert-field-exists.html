@@ -33,20 +33,48 @@
         <input type="checkbox" name="favoriteFood" value="Hot Dog" id="Hot Dog"> <label for="Hot Dog">Hot Dog</label>
         <input type="checkbox" name="favoriteFood" value="Chocolate" id="Chocolate">
             <label for="Chocolate">Chocolate</label>
+
+        <label class="hidden shows-eventually">
+            <input type="checkbox" name="favoriteFood" value="Ice Cream" id="icecream">
+            Ice Cream
+        </label>
+
         <label class="hidden"><input type="checkbox" name="favoriteFood" value="Kale Salad"> Kale Salad</label>
+        <label for="invisibleInput">Text Input:</label><input class="hidden" name="invisibleInput" type="text">
+        <label for="visibleInput">Text Input:</label><input name="visibleInput" type="text">
         <button type="submit">Submit Favorites</button>
         <div id="foodSelected"></div>
+        <div id="textEntered"></div>
     </form>
 </section>
 <script>
     function foodSubmit() {
         var checkedElements = document.querySelectorAll('input[name="favoriteFood"]:checked');
+        var textElements = document.querySelectorAll('input[type="text"]');
+
         var foods = [];
+        var text = [];
+
         for (var i = 0; i < checkedElements.length; i++) {
             foods.push(checkedElements[i].value);
         }
+
+        for (var i = 0; i < textElements.length; i++) {
+            console.log();
+            text.push(textElements[i].getAttribute('name') + ': ' + textElements[i].value);
+        }
+
         document.getElementById('foodSelected').innerText = 'Selected: ' + foods.join(', ');
+        document.getElementById('textEntered').innerText = text.join(', ');
     }
+
+    window.setTimeout(function() {
+        var show = document.getElementsByClassName('shows-eventually');
+
+        for (var i = 0; i < show.length; i++) {
+            show[i].style.display = 'block';
+        }
+    }, 4000);
 </script>
 </body>
 </html>

@@ -1,5 +1,9 @@
-#!/bin/bash +x
+#!/usr/bin/env bash
 
-# install composer dependancies
-echo "Installing composer dependancies..."
-bin/composer install
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+
+. "${DIR}"/bin/lib/exitCheck.sh
+
+echo "Installing Composer dependencies..."
+composer install
+exitCheck $?

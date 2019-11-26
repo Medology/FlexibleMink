@@ -34,10 +34,15 @@ Feature:  Assert Checkbox
      When I check "Not Checked"
      Then the "Not Checked" checkbox should be checked
 
-  Scenario: Assert the checkbox can be unchecked
-    Given the "Checked" checkbox should be checked
-     When I uncheck "Checked"
-     Then the "Checked" checkbox should not be checked
+  Scenario: Assert the checkbox within QA element can be checked
+    Then the "QA Not Checked" checkbox should not be checked
+    When I check the checkbox "QA Not Checked" in the "Checkboxes in QA"
+    Then the "QA Not Checked" checkbox should be checked
+
+  Scenario: Assert the checkbox within QA element can be unchecked
+     Then the "QA Checked" checkbox should be checked
+     When I uncheck the checkbox "QA Checked" in the "Checkboxes in QA"
+     Then the "QA Checked" checkbox should not be checked
 
   Scenario: Assert the checkbox can be checked by injected values
     Given the following is stored as "Page":

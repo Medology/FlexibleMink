@@ -1,7 +1,8 @@
 #!/bin/bash +x
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
-PROJECT_NAME=flexiblemink
+
+. "${ROOT}"/bin/lib/env.sh
 
 echo "Checking .env file..."
 if [ ! -e "$ROOT"/docker/.env ]; then

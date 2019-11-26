@@ -43,16 +43,20 @@ trait JavaScriptContext
      */
     public function assertJavascriptVariableType($variable, $not, $type)
     {
-        // Get the type of our variable from javascript.
-        $result = $this->getSession()->evaluateScript('return typeof(' . $variable . ');');
+        $session = $this->getSession();
 
-        // If it doesn't match - we failed.
-        if ($result != $type xor $not) {
-            throw new ExpectationException(
-                "The variable \"$variable\" should$not be type $type, but is $result",
-                $this->getSession()
-            );
-        }
+        $this->waitFor(static function () use ($type, $not, $variable, $session) {
+            $result = $session->evaluateScript('return typeof(' . $variable . ');');
+
+            if ($result !== $type xor $not) {
+                throw new ExpectationException(
+                    "The variable \"$variable\" should$not be type $type, but is $result",
+                    $session
+                );
+            }
+
+            return true;
+        });
     }
 
     /**

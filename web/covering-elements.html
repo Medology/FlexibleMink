@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assert Element is not Covered</title>
+    <style>
+        .element {
+            width: 75px;
+            height: 75px;
+            position: fixed;
+        }
+
+        .samePositionElements {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .testingDiv {
+            background-color: aquamarine;
+            z-index: 1;
+        }
+
+        .coveringDiv{
+            background-color: firebrick;
+            z-index: 999;
+        }
+
+        .left {
+            left: 0px;
+        }
+
+        .right {
+            left: 32px;
+        }
+
+        /* Covering Top Left Elements */
+        #testedDiv_tl {
+            top: 135px;
+        }
+
+        #coveringDiv_tl {
+            top: 100px;
+        }
+
+        /* Covering Top Right Element */
+        #testedDiv_tr {
+            top: 300px;
+        }
+
+        #coveringDiv_tr {
+            top: 250px;
+        }
+
+        /* Covering Bottom Left */
+        #testedDiv_bl {
+            top: 400px;
+        }
+
+        #coveringDiv_bl {
+            top: 440px;
+        }
+
+        /* Covering Bottom Right */
+        #testedDiv_br {
+            top: 545px;
+        }
+
+        #coveringDiv_br {
+            top: 585px;
+        }
+
+        /* Covering Center */
+        #testedDiv_c {
+            top: 50px;
+            left: 200px;
+        }
+
+        #coveringDiv_c {
+            top: 70px;
+            left: 222px;
+
+            width: 32px;
+            height: 32px;
+        }
+
+        #testedDiv_sbs {
+            top: 70px;
+            left: 350px;
+        }
+
+        #adjacentDiv_sbs {
+            top: 70px;
+            left: 425px;
+        }
+    </style>
+</head>
+<body>
+        <div class="element samePositionElements testingDiv" id="testedDiv"></div>
+        <div class="element samePositionElements coveringDiv" id="coveringDiv"></div>
+
+        <div class="element testingDiv right" id="testedDiv_tl"></div>
+        <div class="element coveringDiv left" id="coveringDiv_tl"></div>
+
+        <div class="element testingDiv left" id="testedDiv_tr"></div>
+        <div class="element coveringDiv right" id="coveringDiv_tr"></div>
+
+        <div class="element testingDiv right" id="testedDiv_bl"></div>
+        <div class="element coveringDiv left" id="coveringDiv_bl"></div>
+
+        <div class="element testingDiv left" id="testedDiv_br"></div>
+        <div class="element coveringDiv right" id="coveringDiv_br"></div>
+
+        <div class="element testingDiv" id="testedDiv_c"></div>
+        <div class="element coveringDiv" id="coveringDiv_c"></div>
+
+        <div class="element testingDiv" id="testedDiv_sbs"><h1>Testing</h1></div>
+        <div class="element coveringDiv" id="adjacentDiv_sbs"></div>
+</body>
+</html>
+

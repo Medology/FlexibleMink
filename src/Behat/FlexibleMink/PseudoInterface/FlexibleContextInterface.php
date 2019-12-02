@@ -11,6 +11,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\ResponseTextException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\Mink\Session;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -103,6 +104,27 @@ trait FlexibleContextInterface
     abstract public function assertElementContainsText($element, $text);
 
     /**
+     * Checks that elements with specified selector exist.
+     *
+     * @param  string               $elementsSelector The element to search from.
+     * @param  string|array         $selectorType     selector type locator.
+     * @throws ExpectationException When no element is found.
+     * @return NodeElement[]        All elements found with by the given selector.
+     */
+    abstract public function assertElementsExist($elementsSelector, $selectorType = 'css');
+
+    /**
+     * Checks that the nth element exists and returns it.
+     *
+     * @param  string               $elementSelector The elements to search from.
+     * @param  int                  $nth             This is the nth amount of the element.
+     * @param  string|array         $selectorType    selector type locator.
+     * @throws ExpectationException When there is no Nth element found
+     * @return NodeElement          The nth element found.
+     */
+    abstract public function assertNthElement($elementSelector, $nth, $selectorType = 'css');
+
+    /**
      * Checks, that element with specified CSS doesn't contain specified text.
      *
      * @see MinkContext::assertElementNotContainsText
@@ -110,6 +132,20 @@ trait FlexibleContextInterface
      * @param string       $text    expected text that should not being found.
      */
     abstract public function assertElementNotContainsText($element, $text);
+
+    /**
+     * Asserts that all nodes have the specified attribute value.
+     *
+     * @param  string                           $locator     The attribute locator of the node element.
+     * @param  array                            $attributes  A key value paid of the attribute and value the nodes
+     *                                                       should contain
+     * @param  string                           $selector    The selector to use to find the node.
+     * @param  null                             $occurrences The number of time the node element should be found.
+     * @throws DriverException                  When the operation cannot be done
+     * @throws ExpectationException             If the nodes attributes do not match
+     * @throws UnsupportedDriverActionException When operation not supported by the driver
+     */
+    abstract public function assertNodesHaveAttributeValues($locator, array $attributes, $selector = 'named', $occurrences = null);
 
     /**
      * Clicks a visible link with specified id|title|alt|text.
@@ -162,6 +198,18 @@ trait FlexibleContextInterface
     abstract public function assertButtonDisabled($locator, $disabled = true);
 
     /**
+     * Finds the first matching visible button on the page, scrolling to one if necessary.
+     *
+     * Warning: Will return the first button if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The button name.
+     * @param  TraversableElement   $context Element on the page to which button belongs.
+     * @throws ExpectationException If a visible button was not found.
+     * @return NodeElement          The button.
+     */
+    abstract public function scrollToButton($locator, TraversableElement $context = null);
+
+    /**
      * Finds the first matching visible button on the page.
      *
      * Warning: Will return the first button if the driver does not support visibility checks.
@@ -171,6 +219,17 @@ trait FlexibleContextInterface
      * @return NodeElement          The button.
      */
     abstract public function assertVisibleButton($locator);
+
+    /**
+     * Finds the first matching visible link on the page, scrolling to it if necessary.
+     *
+     * Warning: Will return the first link if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The link name.
+     * @throws ExpectationException If a visible link was not found.
+     * @return NodeElement          The link.
+     */
+    abstract public function scrollToLink($locator);
 
     /**
      * Finds the first matching visible link on the page.
@@ -184,6 +243,17 @@ trait FlexibleContextInterface
     abstract public function assertVisibleLink($locator);
 
     /**
+     * Finds the first matching visible option on the page, scrolling to it if necessary.
+     *
+     * Warning: Will return the first option if the driver does not support visibility checks.
+     *
+     * @param  string               $locator The option name.
+     * @throws ExpectationException If a visible option was not found.
+     * @return NodeElement          The option.
+     */
+    abstract public function scrollToOption($locator);
+
+    /**
      * Finds the first matching visible option on the page.
      *
      * Warning: Will return the first option if the driver does not support visibility checks.
@@ -195,6 +265,16 @@ trait FlexibleContextInterface
     abstract public function assertVisibleOption($locator);
 
     /**
+     * Checks that the page contains a visible input field, scrolls to it if it's not in the viewport, then returns it.
+     *
+     * @param  string                  $fieldName The input name.
+     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
+     * @throws ExpectationException    If a visible input field is not found.
+     * @return NodeElement             The found input field.
+     */
+    abstract public function scrollToField($fieldName, TraversableElement $context = null);
+
+    /**
      * Checks that the page contains a visible input field and then returns it.
      *
      * @param  string                  $fieldName The input name.
@@ -203,6 +283,16 @@ trait FlexibleContextInterface
      * @return NodeElement             The found input field.
      */
     abstract public function assertFieldExists($fieldName, TraversableElement $context = null);
+
+    /**
+     * Gets all the inputs that have the label name specified within the context specified.
+     *
+     * @param string             $labelName The label text used to find the inputs for.
+     * @param TraversableElement $context   The context to search in.
+     *
+     * @return NodeElement[]
+     */
+    abstract public function getInputsByLabel($labelName, TraversableElement $context);
 
     /**
      * Checks that the page not contain a visible input field.
@@ -261,6 +351,19 @@ trait FlexibleContextInterface
     abstract public function assertSelectContainsExactOptions($select, TableNode $tableNode);
 
     /**
+     * Asserts that the specified option is selected.
+     *
+     * @Then   the :field drop down should have the :option selected
+     * @param  string                   $field  the select field
+     * @param  string                   $option the option that should be selected in the select field
+     * @throws ExpectationException     If the select dropdown doesn't exist in the view.
+     * @throws ElementNotFoundException If the option is not found in the dropdown.
+     * @throws ExpectationException     If the option is not selected from the dropdown.
+     * @throws Exception                If the string references something that does not exist in the store.
+     */
+    abstract public function assertSelectOptionSelected($field, $option);
+
+    /**
      * Attaches a local file to field with specified id|name|label|value. This is used when running behat and
      * browser session in different containers.
      *
@@ -304,19 +407,37 @@ trait FlexibleContextInterface
      * buttons are pressed and that it waits for the button to be available with a max time limit.
      *
      * @see MinkContext::pressButton
-     * @param  string               $button button id, inner text, value or alt
+     * @param  string               $button  button id, inner text, value or alt
+     * @param  TraversableElement   $context Element on the page to which button belongs.
      * @throws ExpectationException If a visible button field is not found.
+     * @throws ExpectationException If Button is found but not visible in the viewport.
      */
-    abstract public function pressButton($button);
+    abstract public function pressButton($button, TraversableElement $context = null);
 
     /**
-     * Scrolls the window to the top or bottom of the page body.
+     * Scrolls the window to the top, bottom, left, right (or any valid combination thereof) of the page body.
      *
-     * @param  string                           $where to scroll to. Must be either "top" or "bottom".
-     * @throws UnsupportedDriverActionException When operation not supported by the driver
-     * @throws DriverException                  When the operation cannot be done
+     * @param string $whereToScroll   The direction to scroll the page. Can be any valid combination of "top", "bottom",
+     *                                "left" and "right". e.g. "top", "top right", but not "top bottom"
+     * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
      */
-    abstract public function scrollWindowToBody($where);
+    abstract public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false);
+
+    /**
+     * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if
+     * necessary.
+     *
+     * @param  NodeElement[] $elements The elements to look for.
+     * @return NodeElement   The first visible element.
+     */
+    abstract public function scrollWindowToFirstVisibleElement(array $elements);
+
+    /**
+     * Scrolls the window to the given element.
+     *
+     * @param NodeElement $element The element to scroll to.
+     */
+    abstract public function scrollWindowToElement(NodeElement $element);
 
     /**
      * This overrides MinkContext::visit() to inject stored values into the URL.
@@ -361,4 +482,13 @@ trait FlexibleContextInterface
      * @throws ExpectationException When the radio button is checked.
      */
     abstract public function assertRadioButtonNotChecked($label);
+
+    /**
+     * Asserts that the node element is visible in the viewport.
+     *
+     * @param  NodeElement          $element Element expected to be visble in the viewport.
+     * @throws ExpectationException If the element was not found visible in the viewport.
+     * @throws Exception            If the assertion did not pass before the timeout was exceeded.
+     */
+    abstract public function assertNodeElementVisibleInViewport(NodeElement $element);
 }

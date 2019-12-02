@@ -46,6 +46,13 @@ class ParallelWorkerController implements Controller
                 InputOption::VALUE_REQUIRED,
                 'The number of the current test node (0-indexed).',
                 0
+            )->addOption(
+                '--line-mode',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'If behat is testing against a .scenarios file, which include the scenario line number' .
+                    ' suffixed to each feature file name.',
+                0
             );
     }
 
@@ -56,6 +63,7 @@ class ParallelWorkerController implements Controller
     {
         $total = $input->getOption('total-workers');
         $curr = $input->getOption('current-worker');
+        $lineMode = $input->getOption('line-mode');
 
         if ($total < 0 || $curr < 0) {
             throw new InvalidArgumentException("--current-worker ($curr) and --total-workers($total) must be greater than 0. ");
@@ -65,6 +73,6 @@ class ParallelWorkerController implements Controller
             throw new InvalidArgumentException("--current-worker ($curr) must be less than --total-workers($total). ");
         }
 
-        $this->gherkin->addFilter(new ParallelWorkerFilter($curr, $total));
+        $this->gherkin->addFilter(new ParallelWorkerFilter($curr, $total, $lineMode));
     }
 }

@@ -50,15 +50,9 @@ trait TableContext
     }
 
     /**
-     * This method will retrieve a table by its name. If the table is stored in the key store, that will be used,
-     * otherwise a fresh parse will be done against the table's HTML. Setting {@param $forceFresh} to true will
-     * ignore the key store and build the table from HTML.
-     *
-     * @param  string $name       The name of the table to be used in an xpath query
-     * @param  bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
-     * @return array  An array containing parsed rows and cells as returned form $this->buildTableFromHtml
+     * {@inheritdoc}
      */
-    protected function getTableFromName($name, $forceFresh = false)
+    public function getTableFromName($name, $forceFresh = false)
     {
         // retrieve table from the store if it exists there
         if ($this->isStored($name) && !$forceFresh) {
@@ -107,6 +101,7 @@ trait TableContext
 
             if (!$splitCell) {
                 $colRow = $row;
+
                 break;
             }
         }
@@ -488,5 +483,71 @@ trait TableContext
                 $this->getSession()
             );
         });
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @Then the table :name should contain the following values:
+     */
+    public function assertTableShouldContainTheFollowingValues($name, TableNode $tableNode)
+    {
+        $expected = $tableNode->getColumnsHash();
+
+        $this->waitFor(function () use ($name, $expected) {
+            $table = $this->getTableFromName($name, true);
+
+            $actual = array_map(function (array $row) use ($table) {
+                return array_combine($table['colHeaders'], $row);
+            }, $table['body']);
+
+            foreach ($expected as $row) {
+                if (($key = $this->getTableRow($row, $actual)) === -1) {
+                    throw new ExpectationException(
+                        'Row not found...',
+                        $this->getSession());
+                }
+
+                unset($actual[$key]);
+            }
+        });
+    }
+
+    /**
+     * Checks if the expected row exists in the table provided and returns the row key where it was found.
+     *
+     * @param array $expectedRow The that is expected in the table.
+     * @param array $table       The table to find row
+     *
+     * @return int False when the row was not found or the key where the row was found
+     **/
+    protected function getTableRow($expectedRow, $table)
+    {
+        foreach ($table as $key => $actualRow) {
+            if ($this->rowContains($expectedRow, $actualRow)) {
+                return $key;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Checks if the columns are found on the row.
+     *
+     * @param array $cols The columns to be found on the row
+     * @param array $row  The the row to inspect.
+     *
+     * @return bool whether the row has the values and all columns expected.
+     **/
+    protected function rowContains($cols, $row)
+    {
+        foreach ($cols as $key => $val) {
+            if (!array_key_exists($key, $row) || $row[$key] != $val) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

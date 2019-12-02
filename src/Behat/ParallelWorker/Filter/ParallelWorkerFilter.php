@@ -21,6 +21,7 @@ class ParallelWorkerFilter extends SimpleFilter
     private $totalNodes;
     private $curNode;
     private $curScenario;
+    private $lineMode;
 
     /**
      * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
@@ -53,7 +54,7 @@ class ParallelWorkerFilter extends SimpleFilter
     /**
      * {@inheritdoc}
      */
-    public function __construct($curNode = 0, $totalNodes = 1)
+    public function __construct($curNode = 0, $totalNodes = 1, $lineMode = 0)
     {
         if ($totalNodes <= 0 || $curNode < 0 || $curNode >= $totalNodes) {
             throw new InvalidArgumentException("Received bad arguments for (\$curNode, \$totalNodes): ($curNode, $totalNodes).");
@@ -62,6 +63,7 @@ class ParallelWorkerFilter extends SimpleFilter
         $this->totalNodes = $totalNodes;
         $this->curNode = $curNode;
         $this->curScenario = $this->totalNodes - $this->curNode;
+        $this->lineMode = $lineMode;
     }
 
     /**
@@ -69,6 +71,10 @@ class ParallelWorkerFilter extends SimpleFilter
      */
     public function filterFeature(FeatureNode $feature)
     {
+        if ($this->lineMode) {
+            return $this->handelScenarioAsList($feature);
+        }
+
         $scenarios = [];
 
         // loop through each scenario in this feature file
@@ -110,6 +116,42 @@ class ParallelWorkerFilter extends SimpleFilter
             $feature->getTags(),
             $feature->getBackground(),
             $scenarios,
+            $feature->getKeyword(),
+            $feature->getLanguage(),
+            $feature->getFile(),
+            $feature->getLine()
+        );
+    }
+
+    /**
+     * When the scenarios is imported by a file like the following:
+     * --Start of the file---
+     * features/api/v1/coupon.feature:9
+     * features/api/v1/coupon.feature:9
+     * features/api/v1/coupon.feature:9
+     * features/api/v1/coupon.feature:9
+     * features/api/v1/coupon.feature:9
+     * features/api/v1/coupon.feature:9
+     * --End of the file- ----.
+     *
+     * The scenarios will be executed by behat one by one from exactly the number on the feature file it suffixed to.
+     * In this case, we don't have to dig into the feature file and loop thru the scenarios.
+     *
+     * @param  FeatureNode $feature The feature node that currently filtering.
+     * @return FeatureNode
+     */
+    protected function handelScenarioAsList(FeatureNode $feature)
+    {
+        if ($this->curScenario++ % $this->totalNodes === 0) {
+            return $feature;
+        }
+
+        return new FeatureNode(
+            $feature->getTitle(),
+            $feature->getDescription(),
+            $feature->getTags(),
+            $feature->getBackground(),
+            [],
             $feature->getKeyword(),
             $feature->getLanguage(),
             $feature->getFile(),

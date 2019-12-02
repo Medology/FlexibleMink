@@ -1,6 +1,7 @@
 <?php namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Element\TraversableElement;
 use Behat\Mink\Session;
 use Behat\MinkExtension\Context\MinkContext;
 
@@ -61,9 +62,10 @@ trait MinkContextInterface
     /**
      * Presses the button with specified id|name|title|alt|value.
      *
-     * @param string $button button id, value or alt
+     * @param string             $button  button id, value or alt
+     * @param TraversableElement $context Element on the page to which button belongs.
      */
-    abstract public function pressButton($button);
+    abstract public function pressButton($button, TraversableElement $context = null);
 
     /**
      * Opens specified page.

@@ -6,6 +6,7 @@ use Exception;
 use PHPUnit_Framework_Error;
 use PHPUnit_Framework_TestCase;
 use stdClass;
+use TypeError;
 
 class StoreContextTest extends PHPUnit_Framework_TestCase
 {

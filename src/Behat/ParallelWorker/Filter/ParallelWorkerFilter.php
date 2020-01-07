@@ -1,4 +1,6 @@
-<?php namespace Behat\ParallelWorker\Filter;
+<?php
+
+namespace Behat\ParallelWorker\Filter;
 
 use Behat\Gherkin\Filter\SimpleFilter;
 use Behat\Gherkin\Node\ExampleTableNode;
@@ -26,8 +28,10 @@ class ParallelWorkerFilter extends SimpleFilter
      * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
      * example is treated like it's own scenario as far as counting goes for the workers.
      *
-     * @param  ExampleTableNode $examples The examples of the Scenario Outline
+     * @param ExampleTableNode $examples The examples of the Scenario Outline
+     *
      * @throws RuntimeException If there are no examples in this outline which will run on this node
+     *
      * @return ExampleTableNode A filtered table leaving only examples that should run on this node
      */
     private function filterExampleNode(ExampleTableNode $examples)

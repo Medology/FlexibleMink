@@ -1,4 +1,6 @@
-<?php namespace Behat\FlexibleMink\Context;
+<?php
+
+namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\FlexibleMink\PseudoInterface\TableContextInterface;
@@ -23,10 +25,12 @@ trait TableContext
      * Finds a table with a given data-qa-id, name, or id. data-qa-id is given preference and matched exactly, while
      * name and id are matched partially.
      *
-     * @param  string                   $name The name of the table. Will be matched against id or name properties.
+     * @param string $name The name of the table. Will be matched against id or name properties.
+     *
      * @throws ElementNotFoundException If not table is found with id or name {@paramref $name}
      * @throws RuntimeException         If a table is found, but is not visible
-     * @return NodeElement              The matched table
+     *
+     * @return NodeElement The matched table
      */
     private function findNamedTable($name)
     {
@@ -54,9 +58,10 @@ trait TableContext
      * otherwise a fresh parse will be done against the table's HTML. Setting {@param $forceFresh} to true will
      * ignore the key store and build the table from HTML.
      *
-     * @param  string $name       The name of the table to be used in an xpath query
-     * @param  bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
-     * @return array  An array containing parsed rows and cells as returned form $this->buildTableFromHtml
+     * @param string $name       The name of the table to be used in an xpath query
+     * @param bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
+     *
+     * @return array An array containing parsed rows and cells as returned form $this->buildTableFromHtml
      */
     protected function getTableFromName($name, $forceFresh = false)
     {
@@ -78,12 +83,14 @@ trait TableContext
      * Retrieves a row from the table HEAD (thead) that has no cells with a colspan property that has a value of greater
      * than 1. This row is assumed to be the column "titles".
      *
-     * @param  NodeElement              $table The table to find the columns for
+     * @param NodeElement $table The table to find the columns for
+     *
      * @throws InvalidArgumentException If {@paramref $table} is not an instance of NodeElement
      * @throws ElementNotFoundException If no HEAD (thead) rows are found in {@paramref $table}
      * @throws ElementNotFoundException If all head rows have a td/th with colspan property with a value greater than 1
      * @throws ElementNotFoundException If the row has no td/th at all
-     * @return NodeElement[]            The columns for {@paramref $table}
+     *
+     * @return NodeElement[] The columns for {@paramref $table}
      */
     private function findHeadColumns($table)
     {
@@ -135,13 +142,14 @@ trait TableContext
     /**
      * This method parses an HTML table to build a two-dimensional array indexed by [row][column] for each cell.
      *
-     * @param  NodeElement $table   The HTML table to parse
-     * @param  string      $keyName The name of the table, for storing in the key store
-     * @return array       Returns an array with the following form:
-     *                             colHeaders => the best "guess" for column titles
-     *                             head => [row][column] Cells parsed from the thead section of the table
-     *                             body => [row][column] Cells parsed from the tbody section of the table
-     *                             foot => [row][column] Cells parsed from the tfoot section of the table
+     * @param NodeElement $table   The HTML table to parse
+     * @param string      $keyName The name of the table, for storing in the key store
+     *
+     * @return array Returns an array with the following form:
+     *               colHeaders => the best "guess" for column titles
+     *               head => [row][column] Cells parsed from the thead section of the table
+     *               body => [row][column] Cells parsed from the tbody section of the table
+     *               foot => [row][column] Cells parsed from the tfoot section of the table
      */
     private function buildTableFromHtml($table, $keyName = '')
     {
@@ -215,17 +223,19 @@ trait TableContext
     /**
      * This method returns the value of a particular cell from a parsed table.
      *
-     * @param  array                    $table A table array as returned by $this->buildTableFromHtml
-     * @param  int                      $rIdx  The row index of the cell to retrieve
-     * @param  int                      $cIdx  The col index of the cell to retrieve
-     * @param  string                   $piece Must be one of (head, body, foot). Specifies which section of the table
-     *                                         to look in
+     * @param array  $table A table array as returned by $this->buildTableFromHtml
+     * @param int    $rIdx  The row index of the cell to retrieve
+     * @param int    $cIdx  The col index of the cell to retrieve
+     * @param string $piece Must be one of (head, body, foot). Specifies which section of the table
+     *                      to look in
+     *
      * @throws InvalidArgumentException If $piece is not one of head/body/foot
      * @throws InvalidArgumentException If $rIdx is less than 1
      * @throws InvalidArgumentException If $cIdx is less than 1
      * @throws ExpectationException     If $rIdx is out of bounds
      * @throws ExpectationException     If $cIdx is out of bounds
-     * @return string                   The value of the cell
+     *
+     * @return string The value of the cell
      */
     protected function getCellFromTable($table, $rIdx, $cIdx, $piece = 'body')
     {
@@ -242,14 +252,14 @@ trait TableContext
         }
 
         if (count($table[$piece]) < $rIdx) {
-            throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has " .
-                count($table[$piece]) . ' rows.',
+            throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has ".
+                count($table[$piece]).' rows.',
                 $this->getSession());
         }
 
         if (count($table[$piece][$rIdx - 1]) < $cIdx) {
-            throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has " .
-                count($table[$piece][$rIdx - 1]) . ' cols.',
+            throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has ".
+                count($table[$piece][$rIdx - 1]).' cols.',
                 $this->getSession());
         }
 
@@ -361,7 +371,7 @@ trait TableContext
         }
 
         if ($remainingCols) {
-            throw new ExpectationException("Did not find matches for '" . explode($remainingCols, ',') . "'.", $this->getSession());
+            throw new ExpectationException("Did not find matches for '".explode($remainingCols, ',')."'.", $this->getSession());
         }
 
         return true;
@@ -402,6 +412,7 @@ trait TableContext
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
      * @Then  there should be a table on the page with the following information:
+     *
      * @param TableNode $tableNode The table to compare.
      */
     public function assertTableWithStructureExists(TableNode $tableNode)

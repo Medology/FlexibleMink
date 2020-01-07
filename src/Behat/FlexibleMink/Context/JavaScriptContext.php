@@ -25,12 +25,12 @@ trait JavaScriptContext
     public function assertJavascriptVariableHasAValue($variable)
     {
         // Get the value of our variable from javascript
-        $result = $this->getSession()->evaluateScript('return ' . $variable . ';');
+        $result = $this->getSession()->evaluateScript('return '.$variable.';');
 
         // If it's null - we failed
         if ($result === null) {
             throw new ExpectationException(
-                'The custom variable "' . $variable . '" is null or does not exist.',
+                'The custom variable "'.$variable.'" is null or does not exist.',
                 $this->getSession()
             );
         }
@@ -44,7 +44,7 @@ trait JavaScriptContext
     public function assertJavascriptVariableType($variable, $not, $type)
     {
         // Get the type of our variable from javascript.
-        $result = $this->getSession()->evaluateScript('return typeof(' . $variable . ');');
+        $result = $this->getSession()->evaluateScript('return typeof('.$variable.');');
 
         // If it doesn't match - we failed.
         if ($result != $type xor $not) {
@@ -63,14 +63,14 @@ trait JavaScriptContext
     public function assertJsonContentsOneByOne($variableName, TableNode $values)
     {
         $returnedJsonData = $this->getSession()->evaluateScript(
-            'return JSON.stringify(' . $variableName . ');'
+            'return JSON.stringify('.$variableName.');'
         );
         $response = json_decode($returnedJsonData, true);
 
         foreach ($values->getHash() as $row) {
             if (!isset($response[$row['key']])) {
                 throw new ExpectationException(
-                    "Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n" .
+                    "Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n".
                         "Actual: $returnedJsonData",
                     $this->getSession()
                 );
@@ -91,7 +91,8 @@ trait JavaScriptContext
      * Returns as-is literal inputs (string, int, float), otherwise
      * returns the JSON encoded output.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return string JSON encoded string
      */
     protected function getRawOrJson($value)
@@ -111,7 +112,7 @@ trait JavaScriptContext
     public function assertJavascriptVariable($variableName, $expectedValue)
     {
         $returnedValue = $this->getSession()->evaluateScript(
-            'return ' . $variableName . ';'
+            'return '.$variableName.';'
         );
 
         if ($returnedValue != $expectedValue) {

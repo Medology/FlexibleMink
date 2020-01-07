@@ -1,4 +1,6 @@
-<?php namespace Behat\FlexibleMink\PseudoInterface;
+<?php
+
+namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Session;
@@ -53,7 +55,8 @@ trait MinkContextInterface
     /**
      * Returns the Mink session.
      *
-     * @param  string|null $name name of the session OR active session will be used
+     * @param string|null $name name of the session OR active session will be used
+     *
      * @return Session
      */
     abstract public function getSession($name = null);

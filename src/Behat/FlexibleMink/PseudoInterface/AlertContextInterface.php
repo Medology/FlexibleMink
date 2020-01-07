@@ -24,7 +24,8 @@ trait AlertContextInterface
     /**
      * Asserts that the current JavaScript alert contains the given text.
      *
-     * @param  string               $expected The expected text.
+     * @param string $expected The expected text.
+     *
      * @throws ExpectationException if the given text is not present in the current alert.
      */
     abstract public function assertAlertMessage($expected);

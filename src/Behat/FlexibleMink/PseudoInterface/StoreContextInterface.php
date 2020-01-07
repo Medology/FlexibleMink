@@ -23,30 +23,34 @@ trait StoreContextInterface
     /**
      * Asserts that the specified thing exists in the registry.
      *
-     * @param  string $key The key to check.
-     * @param  int    $nth The nth value of the key.
-     * @return mixed  The thing from the store.
+     * @param string $key The key to check.
+     * @param int    $nth The nth value of the key.
+     *
+     * @return mixed The thing from the store.
      */
     abstract public function assertIsStored($key, $nth = null);
 
     /**
      * Retrieves the thing stored under the specified key on the nth position in the registry.
      *
-     * @param  string $key The key to retrieve the thing for.
-     * @param  int    $nth The nth value for the thing to retrieve.
-     * @return mixed  The thing that was retrieved.
+     * @param string $key The key to retrieve the thing for.
+     * @param int    $nth The nth value for the thing to retrieve.
+     *
+     * @return mixed The thing that was retrieved.
      */
     abstract public function get($key, $nth = null);
 
     /**
      * Gets the value of a property from an object of the store.
      *
-     * @param  string    $key      The key to retrieve the object for.
-     * @param  string    $property The name of the property to retrieve from the object.
-     * @param  int       $nth      The nth value for the object to retrieve.
+     * @param string $key      The key to retrieve the object for.
+     * @param string $property The name of the property to retrieve from the object.
+     * @param int    $nth      The nth value for the object to retrieve.
+     *
      * @throws Exception If an object was not found under the specified key.
      * @throws Exception If the object does not have the specified property.
-     * @return mixed     The value of the property.
+     *
+     * @return mixed The value of the property.
      */
     abstract public function getThingProperty($key, $property, $nth = null);
 
@@ -66,16 +70,18 @@ trait StoreContextInterface
      *                             $property - string - The name of the property (or key, etc) to check for.
      *
      * @throws Exception If the string references something that does not exist in the store.
-     * @return string    The parsed string.
+     *
+     * @return string The parsed string.
      */
     abstract public function injectStoredValues($string, callable $onGetFn = null, callable $hasValue = null);
 
     /**
      * Checks that the specified thing exists in the registry.
      *
-     * @param  string $key The key to check.
-     * @param  int    $nth The nth value of the key.
-     * @return bool   True if the thing exists, false if not.
+     * @param string $key The key to check.
+     * @param int    $nth The nth value of the key.
+     *
+     * @return bool True if the thing exists, false if not.
      */
     abstract public function isStored($key, $nth = null);
 
@@ -98,9 +104,10 @@ trait StoreContextInterface
     /**
      * Assert if the property of thing contains value.
      *
-     * @param  string    $thing    The thing to be inspected.
-     * @param  string    $property The property to be inspected.
-     * @param  string    $expected The string keyword to be searched.
+     * @param string $thing    The thing to be inspected.
+     * @param string $property The property to be inspected.
+     * @param string $expected The string keyword to be searched.
+     *
      * @throws Exception When the value is not found in the property
      */
     abstract public function assertThingPropertyContains($thing, $property, $expected);

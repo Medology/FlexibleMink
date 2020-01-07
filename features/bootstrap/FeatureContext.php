@@ -21,6 +21,7 @@ class FeatureContext extends FlexibleContext
      * Places an object with the given structure into the store.
      *
      * @Given the following is stored as :key:
+     *
      * @param string    $key        The key to put the object into the store under.
      * @param TableNode $attributes The attributes of the object to create.
      */
@@ -34,6 +35,7 @@ class FeatureContext extends FlexibleContext
      *
      * @Given /^the value (?P<value>.+) is stored as (?P<key>".+")$/
      * @Given the following string is stored as :key:
+     *
      * @param mixed  $value The value to put into the store.
      * @param string $key   The key to put the value into the store under.
      */
@@ -60,6 +62,7 @@ class FeatureContext extends FlexibleContext
      * Waits a specific amount of time, and then visits the specified path.
      *
      * @Given I will be on :path in :timeout seconds
+     *
      * @param string $path    The path to visit.
      * @param int    $timeout The time to wait before visiting the path.
      */
@@ -81,6 +84,7 @@ JS
      * Causes a prompt/alert to pop up in the browser, and stores its return value in the store.
      *
      * @Given /^there is an? (?P<type>alert|confirm|prompt) containing (?P<text>".+")$/
+     *
      * @param string $type Whether to create an alert, confirmation dialog, or prompt.
      * @param string $text The text to show in the popup.
      */
@@ -95,8 +99,10 @@ JS
      * Asserts that the prompt from ensureAlertExists returns the correct value.
      *
      * @Then /^the (?P<type>alert|confirm|prompt) should return (?P<value>.+)$/
-     * @param  string               $type   The type of popup to check results for.
-     * @param  mixed                $result The expected result.
+     *
+     * @param string $type   The type of popup to check results for.
+     * @param mixed  $result The expected result.
+     *
      * @throws ExpectationException if the actual result does not match the expected results.
      */
     public function assertAlertResult($type, $result)
@@ -116,10 +122,12 @@ JS
      *
      * @Then I should see :imgSrc image in :locator
      *
-     * @param  string               $imgSrc  The source of the image
-     * @param  string               $locator The id of the image tag
+     * @param string $imgSrc  The source of the image
+     * @param string $locator The id of the image tag
+     *
      * @throws ExpectationException If the <img> tag is not found
      * @throws ExpectationException If the image is not loaded
+     *
      * @return true
      */
     public function assertImageLoaded($imgSrc, $locator)
@@ -132,7 +140,7 @@ JS
         }
 
         if ($image->getAttribute('src') != $imgSrc) {
-            throw new ExpectationException("Expected src '$imgSrc'. Instead got '" . $image->getAttribute('src') . "'.", $session);
+            throw new ExpectationException("Expected src '$imgSrc'. Instead got '".$image->getAttribute('src')."'.", $session);
         }
 
         if (!$this->checkImageLoaded($image->getXpath())) {
@@ -147,9 +155,11 @@ JS
      *
      * @Then I should not see an image in :locator
      *
-     * @param  string               $locator The id of the image tag
+     * @param string $locator The id of the image tag
+     *
      * @throws ExpectationException If the <img> tag is not found
      * @throws ExpectationException If the image is loaded
+     *
      * @return true
      */
     public function assertImageNotLoaded($locator)

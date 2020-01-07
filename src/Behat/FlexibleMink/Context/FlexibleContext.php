@@ -129,6 +129,7 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
      * @Then /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/
      */
     public function assertFieldVisibility($field, $not)
@@ -146,7 +147,7 @@ class FlexibleContext extends MinkContext
 
         $shouldBeVisible = !$not;
         if (($shouldBeVisible && !$fields[0]->isVisible()) || (!$shouldBeVisible && $fields[0]->isVisible())) {
-            throw new ExpectationException("The field '$locator' was " . (!$not ? 'not ' : '') . 'visible or not found', $this->getSession());
+            throw new ExpectationException("The field '$locator' was ".(!$not ? 'not ' : '').'visible or not found', $this->getSession());
         }
     }
 
@@ -230,6 +231,7 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
      * @Given the :locator button is :disabled
      * @Then the :locator button should be :disabled
      */
@@ -476,10 +478,10 @@ class FlexibleContext extends MinkContext
         $selectField = $this->assertFieldExists($select);
         $opt = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
-            throw new ExpectationException("The option '" . $option . "' exist in the select", $this->getSession());
+            throw new ExpectationException("The option '".$option."' exist in the select", $this->getSession());
         }
         if (!$existence && !$opt) {
-            throw new ExpectationException("The option '" . $option . "' does not exist in the select", $this->getSession());
+            throw new ExpectationException("The option '".$option."' does not exist in the select", $this->getSession());
         }
     }
 
@@ -523,7 +525,7 @@ class FlexibleContext extends MinkContext
 
             if (count($intersect) < count($expectedOptTexts)) {
                 throw new ExpectationException(
-                    'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
+                    'Expecting '.count($expectedOptTexts).' matching option(s), found '.count($intersect),
                     $this->getSession()
                 );
             }
@@ -569,7 +571,7 @@ class FlexibleContext extends MinkContext
 
         if ($this->getMinkParameter('files_path')) {
             $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
+                    DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -633,7 +635,7 @@ class FlexibleContext extends MinkContext
             throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
         }
 
-        $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
+        $script = "jQuery.event.trigger({ type : 'keypress', which : '".self::$keyCodes[$key]."' });";
         $this->getSession()->evaluateScript($script);
     }
 
@@ -725,7 +727,8 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param  string      $label The Label of the radio button.
+     * @param string $label The Label of the radio button.
+     *
      * @return NodeElement
      */
     protected function findRadioButton($label)
@@ -764,9 +767,11 @@ class FlexibleContext extends MinkContext
      * NodeElements by their coordinates. The typical use case is to determine
      * the order of elements on a page as a viewer would perceive them.
      *
-     * @param  NodeElement                      $a one of the two NodeElements to compare.
-     * @param  NodeElement                      $b the other NodeElement to compare.
+     * @param NodeElement $a one of the two NodeElements to compare.
+     * @param NodeElement $b the other NodeElement to compare.
+     *
      * @throws UnsupportedDriverActionException If the current driver does not support getXpathBoundingClientRect.
+     *
      * @return int
      */
     protected function compareElementsByCoords(NodeElement $a, NodeElement $b)

@@ -19,6 +19,7 @@ trait ContainerContext
 
     /**
      * {@inheritdoc}
+     *
      * @Then /^I should see "([^"]*)" in the "([^"]*)" container$/
      */
     public function assertTextInContainer($text, $containerLabel)

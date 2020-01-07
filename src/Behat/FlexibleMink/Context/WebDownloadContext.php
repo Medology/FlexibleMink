@@ -39,16 +39,16 @@ trait WebDownloadContext
             $currentUrl = $this->getSession()->getCurrentUrl();
 
             if (!preg_match(self::$baseUrlRegExp, $currentUrl, $linkParts)) {
-                throw new ExpectationException('Could not generate base url from "' . $currentUrl . '"', $this->getSession());
+                throw new ExpectationException('Could not generate base url from "'.$currentUrl.'"', $this->getSession());
             }
 
             // Checks if URL is relative.
             if (strpos($link, '/') === 0) {
                 // Append to base URL
-                $link = $linkParts[0] . $link;
+                $link = $linkParts[0].$link;
             } else {
                 // Resolve the relative URL to a fully qualified URL
-                $link = substr($currentUrl, 0, strpos($currentUrl, '/')) . $link;
+                $link = substr($currentUrl, 0, strpos($currentUrl, '/')).$link;
             }
         }
 

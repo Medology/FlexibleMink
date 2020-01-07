@@ -16,8 +16,10 @@ trait CsvContextInterface
      * must contain all of the columns in the expected rows.
      *
      * @Then /^the "(?P<key>[^"]+)" should be CSV data as follows:$/
-     * @param  string               $key   The key the CSV is stored under.
-     * @param  TableNode            $table The rows expected in the CSV.
+     *
+     * @param string    $key   The key the CSV is stored under.
+     * @param TableNode $table The rows expected in the CSV.
+     *
      * @throws ExpectationException if the given rows are not present in the CSV.
      */
     abstract public function assertThingIsCSVWithData($key, TableNode $table);
@@ -26,8 +28,9 @@ trait CsvContextInterface
      * Ensures that the given variable in the store is a CSV with the given column headers.
      * The CSV must contain exactly the rows given, and no more.
      *
-     * @param  string               $key   The key the CSV is stored under.
-     * @param  TableNode            $table A list of headers that the CSV must match.
+     * @param string    $key   The key the CSV is stored under.
+     * @param TableNode $table A list of headers that the CSV must match.
+     *
      * @throws ExpectationException if the given headers are not an exact match with the CSV headers.
      */
     abstract public function assertThingIsCSVWithRows($key, TableNode $table);

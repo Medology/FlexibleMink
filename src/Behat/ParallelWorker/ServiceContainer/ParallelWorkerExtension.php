@@ -1,4 +1,6 @@
-<?php namespace Behat\ParallelWorker\ServiceContainer;
+<?php
+
+namespace Behat\ParallelWorker\ServiceContainer;
 
 use Behat\Behat\Gherkin\ServiceContainer\GherkinExtension;
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;
@@ -27,7 +29,7 @@ class ParallelWorkerExtension implements ExtensionInterface
             new Reference(GherkinExtension::MANAGER_ID),
         ]);
         $definition->addTag(CliExtension::CONTROLLER_TAG);
-        $container->setDefinition(CliExtension::CONTROLLER_TAG . '.parallel_worker', $definition);
+        $container->setDefinition(CliExtension::CONTROLLER_TAG.'.parallel_worker', $definition);
     }
 
     /**

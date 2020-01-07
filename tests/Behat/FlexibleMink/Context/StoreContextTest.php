@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\FlexibleMink\Context;
+<?php
+
+namespace Tests\Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\Context\StoreContext;
 use Exception;

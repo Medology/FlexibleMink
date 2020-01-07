@@ -40,7 +40,7 @@ trait StoreContext
     {
         if (($actual = $this->get($key)) !== $expected) {
             throw new Exception(
-                "Expected $key to be " . var_export($expected, true) . ', but it was ' . var_export($actual, true)
+                "Expected $key to be ".var_export($expected, true).', but it was '.var_export($actual, true)
             );
         }
     }
@@ -68,8 +68,9 @@ trait StoreContext
     /**
      * Converts a key of the form "nth thing" into "n" and "thing".
      *
-     * @param  string $key The key to parse
-     * @return array  For a key "nth thing", returns [thing, n], else [thing, null]
+     * @param string $key The key to parse
+     *
+     * @return array For a key "nth thing", returns [thing, n], else [thing, null]
      */
     private function parseKey($key)
     {

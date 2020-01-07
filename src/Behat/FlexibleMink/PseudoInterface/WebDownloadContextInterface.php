@@ -31,8 +31,10 @@ trait WebDownloadContextInterface
     /**
      * Generates a url with a full url.  If none is specified, current url is used.
      *
-     * @param  string               $link url string to determine full url for.
+     * @param string $link url string to determine full url for.
+     *
      * @throws ExpectationException If Base url could not be generated.
+     *
      * @return string
      */
     abstract public function getFullUrl($link);
@@ -40,9 +42,11 @@ trait WebDownloadContextInterface
     /**
      * This method checks if the image for an <img> tag actually loaded.
      *
-     * @param  string                   $xpath The xpath of the <img> tag to check
+     * @param string $xpath The xpath of the <img> tag to check
+     *
      * @throws ElementNotFoundException If an <img> tag was not found at {@paramref $xpath}
-     * @return bool                     True if image loaded, false otherwise
+     *
+     * @return bool True if image loaded, false otherwise
      */
     abstract public function checkImageLoaded($xpath);
 }

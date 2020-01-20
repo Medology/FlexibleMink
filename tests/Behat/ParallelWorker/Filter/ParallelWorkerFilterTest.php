@@ -95,8 +95,8 @@ class ParallelWorkerFilterTest extends FilterTest
      */
     public function testFeatureFilterDefaults()
     {
-        $filter    = new ParallelWorkerFilter();
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter();
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 4);
@@ -123,8 +123,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter    = new ParallelWorkerFilter(0, 2);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(0, 2);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -141,8 +141,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2    *
          ****************/
-        $filter    = new ParallelWorkerFilter(1, 2);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(1, 2);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 3);
@@ -166,8 +166,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter    = new ParallelWorkerFilter(0, 3);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(0, 3);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -183,8 +183,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2    *
          ****************/
-        $filter    = new ParallelWorkerFilter(1, 3);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(1, 3);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -200,8 +200,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 3    *
          ****************/
-        $filter    = new ParallelWorkerFilter(2, 3);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(2, 3);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -224,8 +224,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 1    *
          ****************/
-        $filter    = new ParallelWorkerFilter(0, 4);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(0, 4);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -241,8 +241,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 2   *
          ****************/
-        $filter    = new ParallelWorkerFilter(1, 4);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(1, 4);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 2);
@@ -252,8 +252,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 3    *
          ****************/
-        $filter    = new ParallelWorkerFilter(2, 4);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(2, 4);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 1);
@@ -268,8 +268,8 @@ class ParallelWorkerFilterTest extends FilterTest
         /*****************
          *    Node 4    *
          ****************/
-        $filter    = new ParallelWorkerFilter(3, 4);
-        $feature   = $filter->filterFeature($this->getParsedFeature());
+        $filter = new ParallelWorkerFilter(3, 4);
+        $feature = $filter->filterFeature($this->getParsedFeature());
         $scenarios = $feature->getScenarios();
 
         $this->assertEquals(count($scenarios), 1);

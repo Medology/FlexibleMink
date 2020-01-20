@@ -91,7 +91,7 @@ trait TableContext
             throw new InvalidArgumentException('Number of rows must be an integer greater than 0.');
         }
 
-        $table    = $this->getTableFromName($name);
+        $table = $this->getTableFromName($name);
         $colCount = count($table['body'][0]);
 
         if ($colCount != $num) {
@@ -150,7 +150,7 @@ trait TableContext
             throw new InvalidArgumentException("\$piece must be on of header/footer/body. Got '$piece'!");
         }
 
-        $table   = $this->getTableFromName($name);
+        $table = $this->getTableFromName($name);
         $cellVal = $this->getCellFromTable($table, $rIdx, $cIdx, $section);
 
         if ($cellVal != $val) {
@@ -265,7 +265,7 @@ trait TableContext
         }
 
         // find the table node and parse it's contents
-        $table     = $this->findNamedTable($name);
+        $table = $this->findNamedTable($name);
         $tableData = $this->buildTableFromHtml($table);
 
         $this->put($tableData, $name);
@@ -328,7 +328,7 @@ trait TableContext
      */
     private function findNamedTable($name)
     {
-        $idPiece   = "contains(normalize-space(@id), '$name')";
+        $idPiece = "contains(normalize-space(@id), '$name')";
         $namePiece = "contains(normalize-space(@name), '$name')";
 
         /** @var NodeElement $table */

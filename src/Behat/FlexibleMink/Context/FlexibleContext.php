@@ -155,7 +155,7 @@ class FlexibleContext extends MinkContext
     public function assertElementContainsText($element, $text)
     {
         $element = $this->injectStoredValues($element);
-        $text    = $this->injectStoredValues($text);
+        $text = $this->injectStoredValues($text);
 
         $this->waitFor(function () use ($element, $text) {
             parent::assertElementContainsText($element, $text);
@@ -168,7 +168,7 @@ class FlexibleContext extends MinkContext
     public function assertElementNotContainsText($element, $text)
     {
         $element = $this->injectStoredValues($element);
-        $text    = $this->injectStoredValues($text);
+        $text = $this->injectStoredValues($text);
 
         $this->waitFor(function () use ($element, $text) {
             parent::assertElementNotContainsText($element, $text);
@@ -206,7 +206,7 @@ class FlexibleContext extends MinkContext
      */
     public function fillField($field, $value)
     {
-        $field   = $this->injectStoredValues($field);
+        $field = $this->injectStoredValues($field);
         $element = $this->waitFor(function () use ($field) {
             return $this->assertVisibleOption($field);
         });
@@ -412,9 +412,9 @@ class FlexibleContext extends MinkContext
         }
 
         $session = $this->getSession();
-        $page    = $session->getPage()->getText();
+        $page = $session->getPage()->getText();
 
-        $lines        = $table->getColumn(0);
+        $lines = $table->getColumn(0);
         $lastPosition = -1;
 
         foreach ($lines as $line) {
@@ -465,10 +465,10 @@ class FlexibleContext extends MinkContext
      */
     public function assertSelectContainsOption($select, $existence, $option)
     {
-        $select      = $this->fixStepArgument($select);
-        $option      = $this->fixStepArgument($option);
+        $select = $this->fixStepArgument($select);
+        $option = $this->fixStepArgument($option);
         $selectField = $this->assertFieldExists($select);
-        $opt         = $selectField->find('named', ['option', $option]);
+        $opt = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
             throw new ExpectationException("The option '".$option."' exist in the select", $this->getSession());
         }
@@ -490,10 +490,10 @@ class FlexibleContext extends MinkContext
 
         $expectedOptTexts = array_map([$this, 'injectStoredValues'], $tableNode->getColumn(0));
 
-        $select      = $this->fixStepArgument($select);
-        $select      = $this->injectStoredValues($select);
+        $select = $this->fixStepArgument($select);
+        $select = $this->injectStoredValues($select);
         $selectField = $this->assertFieldExists($select);
-        $actualOpts  = $selectField->findAll('xpath', '//option');
+        $actualOpts = $selectField->findAll('xpath', '//option');
 
         if (count($actualOpts) == 0) {
             throw new ExpectationException('No option found in the select', $this->getSession());
@@ -564,7 +564,7 @@ class FlexibleContext extends MinkContext
         }
 
         $tempZip = tempnam('', 'WebDriverZip');
-        $zip     = new ZipArchive();
+        $zip = new ZipArchive();
         $zip->open($tempZip, ZipArchive::CREATE);
         $zip->addFile($path, basename($path));
         $zip->close();

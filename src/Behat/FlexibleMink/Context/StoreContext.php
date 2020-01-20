@@ -115,7 +115,7 @@ trait StoreContext
 
         preg_match_all('/\(the ([^\)]+) of the ([^\)]+)\)/', $string, $matches);
         foreach ($matches[0] as $i => $match) {
-            $thingName     = $matches[2][$i];
+            $thingName = $matches[2][$i];
             $thingProperty = str_replace(' ', '_', strtolower($matches[1][$i]));
 
             if (!$this->isStored($thingName)) {

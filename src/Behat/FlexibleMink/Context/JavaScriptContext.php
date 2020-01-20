@@ -66,7 +66,7 @@ trait JavaScriptContext
                 throw new ExpectationException("Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n"."Actual: $returnedJsonData", $this->getSession());
             }
             $expected = $this->getRawOrJson($row['value']);
-            $actual   = $this->getRawOrJson($response[$row['key']]);
+            $actual = $this->getRawOrJson($response[$row['key']]);
 
             if ($actual != $expected) {
                 throw new ExpectationException("Expected \"$expected\" in {$row['key']} position but got \"$actual\"", $this->getSession());

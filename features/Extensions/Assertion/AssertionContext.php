@@ -38,7 +38,7 @@ trait AssertionContext
      */
     public function prepareToRunAssertion(BeforeScenarioScope $scope)
     {
-        $this->env     = $scope->getEnvironment();
+        $this->env = $scope->getEnvironment();
         $this->feature = $scope->getFeature();
     }
 
@@ -104,7 +104,7 @@ trait AssertionContext
         }
 
         $exception = $this->result->getException();
-        $actual    = end(explode('\\', get_class($exception)));
+        $actual = end(explode('\\', get_class($exception)));
 
         if ($actual != $exceptionType) {
             throw new Exception("Assertion threw $actual but $exceptionType was expected");

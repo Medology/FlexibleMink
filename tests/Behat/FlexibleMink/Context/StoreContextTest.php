@@ -22,7 +22,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          ***********************/
 
         $testObj = $this->getMockObject();
-        $name    = 'testObj';
+        $name = 'testObj';
         $this->put($testObj, $name);
 
         /***********************

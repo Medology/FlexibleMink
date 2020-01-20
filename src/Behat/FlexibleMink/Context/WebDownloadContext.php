@@ -63,7 +63,7 @@ trait WebDownloadContext
      */
     public function download($file, $key = 'Download', $headersString = '')
     {
-        $ch        = curl_init($file);
+        $ch = curl_init($file);
         $headers[] = $headersString;
 
         curl_setopt_array($ch, [
@@ -89,7 +89,7 @@ trait WebDownloadContext
     public function checkImageLoaded($xpath)
     {
         $driver = $this->getSession()->getDriver();
-        $xpath  = str_replace('"', "'", $xpath);
+        $xpath = str_replace('"', "'", $xpath);
 
         $result = $this->waitFor(function () use ($driver, $xpath) {
             if (!$driver->find($xpath)) {

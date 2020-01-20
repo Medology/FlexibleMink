@@ -57,7 +57,7 @@ class ParallelWorkerController implements Controller
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $total = $input->getOption('total-workers');
-        $curr  = $input->getOption('current-worker');
+        $curr = $input->getOption('current-worker');
 
         if ($total < 0 || $curr < 0) {
             throw new InvalidArgumentException("--current-worker ($curr) and --total-workers($total) must be greater than 0. ");

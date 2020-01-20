@@ -35,8 +35,8 @@ class ParallelWorkerFilter extends SimpleFilter
             throw new InvalidArgumentException("Received bad arguments for (\$curNode, \$totalNodes): ($curNode, $totalNodes).");
         }
 
-        $this->totalNodes  = $totalNodes;
-        $this->curNode     = $curNode;
+        $this->totalNodes = $totalNodes;
+        $this->curNode = $curNode;
         $this->curScenario = $this->totalNodes - $this->curNode;
     }
 
@@ -123,7 +123,7 @@ class ParallelWorkerFilter extends SimpleFilter
      */
     private function filterExampleNode(ExampleTableNode $examples)
     {
-        $table       = $examples->getTable();
+        $table = $examples->getTable();
         $newExamples = [];
 
         foreach ($table as $lineNum => $example) {

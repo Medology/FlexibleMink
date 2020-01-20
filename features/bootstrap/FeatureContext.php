@@ -111,7 +111,7 @@ JS
 
         if ($actual !== $result) {
             $expected = json_encode($result);
-            $actual   = json_encode($actual);
+            $actual = json_encode($actual);
 
             throw new ExpectationException("Expected $expected, got $actual", $this->getSession());
         }
@@ -133,7 +133,7 @@ JS
     public function assertImageLoaded($imgSrc, $locator)
     {
         $session = $this->getSession();
-        $image   = $session->getPage()->find('css', "img#$locator");
+        $image = $session->getPage()->find('css', "img#$locator");
 
         if (!$image) {
             throw new ExpectationException("Expected an img tag with id '$locator'. Found none!", $session);

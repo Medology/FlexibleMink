@@ -90,8 +90,6 @@ trait TableContextInterface
 
     /**
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
-     *
-     * @return mixed
      */
     abstract public function assertTableWithStructureExists(TableNode $tableNode);
 

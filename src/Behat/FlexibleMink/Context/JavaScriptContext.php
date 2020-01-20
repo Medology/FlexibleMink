@@ -94,8 +94,6 @@ trait JavaScriptContext
      * Returns as-is literal inputs (string, int, float), otherwise
      * returns the JSON encoded output.
      *
-     * @param mixed $value
-     *
      * @return string JSON encoded string
      */
     protected function getRawOrJson($value)

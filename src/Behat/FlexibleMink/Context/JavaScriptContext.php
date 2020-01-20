@@ -29,10 +29,7 @@ trait JavaScriptContext
 
         // If it's null - we failed
         if ($result === null) {
-            throw new ExpectationException(
-                'The custom variable "'.$variable.'" is null or does not exist.',
-                $this->getSession()
-            );
+            throw new ExpectationException('The custom variable "'.$variable.'" is null or does not exist.', $this->getSession());
         }
     }
 
@@ -48,10 +45,7 @@ trait JavaScriptContext
 
         // If it doesn't match - we failed.
         if ($result != $type xor $not) {
-            throw new ExpectationException(
-                "The variable \"$variable\" should$not be type $type, but is $result",
-                $this->getSession()
-            );
+            throw new ExpectationException("The variable \"$variable\" should$not be type $type, but is $result", $this->getSession());
         }
     }
 
@@ -69,21 +63,30 @@ trait JavaScriptContext
 
         foreach ($values->getHash() as $row) {
             if (!isset($response[$row['key']])) {
-                throw new ExpectationException(
-                    "Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n".
-                        "Actual: $returnedJsonData",
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n"."Actual: $returnedJsonData", $this->getSession());
             }
             $expected = $this->getRawOrJson($row['value']);
-            $actual = $this->getRawOrJson($response[$row['key']]);
+            $actual   = $this->getRawOrJson($response[$row['key']]);
 
             if ($actual != $expected) {
-                throw new ExpectationException(
-                    "Expected \"$expected\" in {$row['key']} position but got \"$actual\"",
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected \"$expected\" in {$row['key']} position but got \"$actual\"", $this->getSession());
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @Then the javascript variable :variableName should have the value of :expectedValue
+     */
+    public function assertJavascriptVariable($variableName, $expectedValue)
+    {
+        $returnedValue = $this->getSession()->evaluateScript(
+            'return '.$variableName.';'
+        );
+
+        if ($returnedValue != $expectedValue) {
+            throw new ExpectationException("Expected \"$expectedValue\" but got \"$returnedValue\"", $this->getSession());
         }
     }
 
@@ -102,24 +105,5 @@ trait JavaScriptContext
         }
 
         return $value;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @Then the javascript variable :variableName should have the value of :expectedValue
-     */
-    public function assertJavascriptVariable($variableName, $expectedValue)
-    {
-        $returnedValue = $this->getSession()->evaluateScript(
-            'return '.$variableName.';'
-        );
-
-        if ($returnedValue != $expectedValue) {
-            throw new ExpectationException(
-                "Expected \"$expectedValue\" but got \"$returnedValue\"",
-                $this->getSession()
-            );
-        }
     }
 }

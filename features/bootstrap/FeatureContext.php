@@ -22,8 +22,8 @@ class FeatureContext extends FlexibleContext
      *
      * @Given the following is stored as :key:
      *
-     * @param string    $key        The key to put the object into the store under.
-     * @param TableNode $attributes The attributes of the object to create.
+     * @param string    $key        the key to put the object into the store under
+     * @param TableNode $attributes the attributes of the object to create
      */
     public function putStoreStep($key, TableNode $attributes)
     {
@@ -36,8 +36,8 @@ class FeatureContext extends FlexibleContext
      * @Given /^the value (?P<value>.+) is stored as (?P<key>".+")$/
      * @Given the following string is stored as :key:
      *
-     * @param mixed  $value The value to put into the store.
-     * @param string $key   The key to put the value into the store under.
+     * @param mixed  $value the value to put into the store
+     * @param string $key   the key to put the value into the store under
      */
     public function putSingleStoreStep($value, $key)
     {
@@ -63,8 +63,8 @@ class FeatureContext extends FlexibleContext
      *
      * @Given I will be on :path in :timeout seconds
      *
-     * @param string $path    The path to visit.
-     * @param int    $timeout The time to wait before visiting the path.
+     * @param string $path    the path to visit
+     * @param int    $timeout the time to wait before visiting the path
      */
     public function visitPathDelayed($path, $timeout)
     {
@@ -85,8 +85,8 @@ JS
      *
      * @Given /^there is an? (?P<type>alert|confirm|prompt) containing (?P<text>".+")$/
      *
-     * @param string $type Whether to create an alert, confirmation dialog, or prompt.
-     * @param string $text The text to show in the popup.
+     * @param string $type whether to create an alert, confirmation dialog, or prompt
+     * @param string $text the text to show in the popup
      */
     public function ensureAlertExists($type, $text)
     {
@@ -100,10 +100,10 @@ JS
      *
      * @Then /^the (?P<type>alert|confirm|prompt) should return (?P<value>.+)$/
      *
-     * @param string $type   The type of popup to check results for.
-     * @param mixed  $result The expected result.
+     * @param string $type   the type of popup to check results for
+     * @param mixed  $result the expected result
      *
-     * @throws ExpectationException if the actual result does not match the expected results.
+     * @throws ExpectationException if the actual result does not match the expected results
      */
     public function assertAlertResult($type, $result)
     {
@@ -111,7 +111,7 @@ JS
 
         if ($actual !== $result) {
             $expected = json_encode($result);
-            $actual = json_encode($actual);
+            $actual   = json_encode($actual);
 
             throw new ExpectationException("Expected $expected, got $actual", $this->getSession());
         }
@@ -133,7 +133,7 @@ JS
     public function assertImageLoaded($imgSrc, $locator)
     {
         $session = $this->getSession();
-        $image = $session->getPage()->find('css', "img#$locator");
+        $image   = $session->getPage()->find('css', "img#$locator");
 
         if (!$image) {
             throw new ExpectationException("Expected an img tag with id '$locator'. Found none!", $session);

@@ -38,7 +38,7 @@ trait CsvContext
         // record the column numbers for the expected and actual headers so we can
         // compare similarly named columns even if they are not in the same order.
         $expectedHeaders = array_flip($expectedData[0]);
-        $actualHeaders = array_flip($actualData[0]);
+        $actualHeaders   = array_flip($actualData[0]);
         unset($expectedData[0]);
         unset($actualData[0]);
 
@@ -53,13 +53,11 @@ trait CsvContext
                 }
 
                 $expectedValue = isset($expectedRow[$colNum]) ? $expectedRow[$colNum] : null;
-                $actualValue = isset($actualRow[$actualHeaders[$name]]) ? $actualRow[$actualHeaders[$name]] : null;
+                $actualValue   = isset($actualRow[$actualHeaders[$name]]) ? $actualRow[$actualHeaders[$name]] : null;
 
                 // check values match
                 if ($expectedValue != $actualValue) {
-                    throw new Exception(
-                        "Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'"
-                    );
+                    throw new Exception("Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'");
                 }
             }
         }

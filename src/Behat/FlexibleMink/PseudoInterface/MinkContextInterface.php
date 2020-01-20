@@ -16,7 +16,7 @@ trait MinkContextInterface
     /**
      * Checks that page contains the specified text.
      *
-     * @param string $text The text that should be found on the page.
+     * @param string $text the text that should be found on the page
      */
     abstract public function assertPageContainsText($text);
 
@@ -71,14 +71,14 @@ trait MinkContextInterface
     /**
      * Opens specified page.
      *
-     * @param string $page The URL to visit.
+     * @param string $page the URL to visit
      */
     abstract public function visit($page);
 
     /**
      * Checks, that current page PATH is equal to specified.
      *
-     * @param string $page The path of the path to get asserted.
+     * @param string $page the path of the path to get asserted
      */
     abstract public function assertPageAddress($page);
 }

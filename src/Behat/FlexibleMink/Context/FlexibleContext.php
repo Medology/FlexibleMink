@@ -121,9 +121,7 @@ class FlexibleContext extends MinkContext
                 parent::assertPageNotContainsText($text);
             }, 15);
         } catch (ExpectationException $e) {
-            throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
-            );
+            throw new ResponseTextException("Timed out waiting for '$text' to no longer appear.", $this->getSession());
         }
     }
 
@@ -157,7 +155,7 @@ class FlexibleContext extends MinkContext
     public function assertElementContainsText($element, $text)
     {
         $element = $this->injectStoredValues($element);
-        $text = $this->injectStoredValues($text);
+        $text    = $this->injectStoredValues($text);
 
         $this->waitFor(function () use ($element, $text) {
             parent::assertElementContainsText($element, $text);
@@ -170,7 +168,7 @@ class FlexibleContext extends MinkContext
     public function assertElementNotContainsText($element, $text)
     {
         $element = $this->injectStoredValues($element);
-        $text = $this->injectStoredValues($text);
+        $text    = $this->injectStoredValues($text);
 
         $this->waitFor(function () use ($element, $text) {
             parent::assertElementNotContainsText($element, $text);
@@ -208,7 +206,7 @@ class FlexibleContext extends MinkContext
      */
     public function fillField($field, $value)
     {
-        $field = $this->injectStoredValues($field);
+        $field   = $this->injectStoredValues($field);
         $element = $this->waitFor(function () use ($field) {
             return $this->assertVisibleOption($field);
         });
@@ -250,16 +248,10 @@ class FlexibleContext extends MinkContext
 
             if ($button->hasAttribute('disabled')) {
                 if (!$disabled) {
-                    throw new ExpectationException(
-                        "The button, $locator, was disabled, but it should not have been disabled.",
-                        $this->getSession()
-                    );
+                    throw new ExpectationException("The button, $locator, was disabled, but it should not have been disabled.", $this->getSession());
                 }
             } elseif ($disabled) {
-                throw new ExpectationException(
-                    "The button, $locator, was not disabled, but it should have been disabled.",
-                    $this->getSession()
-                );
+                throw new ExpectationException("The button, $locator, was not disabled, but it should have been disabled.", $this->getSession());
             }
         });
     }
@@ -420,9 +412,9 @@ class FlexibleContext extends MinkContext
         }
 
         $session = $this->getSession();
-        $page = $session->getPage()->getText();
+        $page    = $session->getPage()->getText();
 
-        $lines = $table->getColumn(0);
+        $lines        = $table->getColumn(0);
         $lastPosition = -1;
 
         foreach ($lines as $line) {
@@ -473,10 +465,10 @@ class FlexibleContext extends MinkContext
      */
     public function assertSelectContainsOption($select, $existence, $option)
     {
-        $select = $this->fixStepArgument($select);
-        $option = $this->fixStepArgument($option);
+        $select      = $this->fixStepArgument($select);
+        $option      = $this->fixStepArgument($option);
         $selectField = $this->assertFieldExists($select);
-        $opt = $selectField->find('named', ['option', $option]);
+        $opt         = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
             throw new ExpectationException("The option '".$option."' exist in the select", $this->getSession());
         }
@@ -498,10 +490,10 @@ class FlexibleContext extends MinkContext
 
         $expectedOptTexts = array_map([$this, 'injectStoredValues'], $tableNode->getColumn(0));
 
-        $select = $this->fixStepArgument($select);
-        $select = $this->injectStoredValues($select);
+        $select      = $this->fixStepArgument($select);
+        $select      = $this->injectStoredValues($select);
         $selectField = $this->assertFieldExists($select);
-        $actualOpts = $selectField->findAll('xpath', '//option');
+        $actualOpts  = $selectField->findAll('xpath', '//option');
 
         if (count($actualOpts) == 0) {
             throw new ExpectationException('No option found in the select', $this->getSession());
@@ -524,16 +516,10 @@ class FlexibleContext extends MinkContext
             $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
 
             if (count($intersect) < count($expectedOptTexts)) {
-                throw new ExpectationException(
-                    'Expecting '.count($expectedOptTexts).' matching option(s), found '.count($intersect),
-                    $this->getSession()
-                );
+                throw new ExpectationException('Expecting '.count($expectedOptTexts).' matching option(s), found '.count($intersect), $this->getSession());
             }
 
-            throw new ExpectationException(
-                'Options in select match expected but not in expected order',
-                $this->getSession()
-            );
+            throw new ExpectationException('Options in select match expected but not in expected order', $this->getSession());
         }
     }
 
@@ -578,7 +564,7 @@ class FlexibleContext extends MinkContext
         }
 
         $tempZip = tempnam('', 'WebDriverZip');
-        $zip = new ZipArchive();
+        $zip     = new ZipArchive();
         $zip->open($tempZip, ZipArchive::CREATE);
         $zip->addFile($path, basename($path));
         $zip->close();
@@ -727,7 +713,7 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param string $label The Label of the radio button.
+     * @param string $label the Label of the radio button
      *
      * @return NodeElement
      */
@@ -767,10 +753,10 @@ class FlexibleContext extends MinkContext
      * NodeElements by their coordinates. The typical use case is to determine
      * the order of elements on a page as a viewer would perceive them.
      *
-     * @param NodeElement $a one of the two NodeElements to compare.
-     * @param NodeElement $b the other NodeElement to compare.
+     * @param NodeElement $a one of the two NodeElements to compare
+     * @param NodeElement $b the other NodeElement to compare
      *
-     * @throws UnsupportedDriverActionException If the current driver does not support getXpathBoundingClientRect.
+     * @throws UnsupportedDriverActionException if the current driver does not support getXpathBoundingClientRect
      *
      * @return int
      */

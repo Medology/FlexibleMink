@@ -145,7 +145,7 @@ class FlexibleContext extends MinkContext
 
         $shouldBeVisible = !$not;
         if (($shouldBeVisible && !$fields[0]->isVisible()) || (!$shouldBeVisible && $fields[0]->isVisible())) {
-            throw new ExpectationException("The field '$locator' was ".(!$not ? 'not ' : '').'visible or not found', $this->getSession());
+            throw new ExpectationException("The field '$locator' was " . (!$not ? 'not ' : '') . 'visible or not found', $this->getSession());
         }
     }
 
@@ -470,10 +470,10 @@ class FlexibleContext extends MinkContext
         $selectField = $this->assertFieldExists($select);
         $opt = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
-            throw new ExpectationException("The option '".$option."' exist in the select", $this->getSession());
+            throw new ExpectationException("The option '" . $option . "' exist in the select", $this->getSession());
         }
         if (!$existence && !$opt) {
-            throw new ExpectationException("The option '".$option."' does not exist in the select", $this->getSession());
+            throw new ExpectationException("The option '" . $option . "' does not exist in the select", $this->getSession());
         }
     }
 
@@ -516,7 +516,7 @@ class FlexibleContext extends MinkContext
             $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
 
             if (count($intersect) < count($expectedOptTexts)) {
-                throw new ExpectationException('Expecting '.count($expectedOptTexts).' matching option(s), found '.count($intersect), $this->getSession());
+                throw new ExpectationException('Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect), $this->getSession());
             }
 
             throw new ExpectationException('Options in select match expected but not in expected order', $this->getSession());
@@ -557,7 +557,7 @@ class FlexibleContext extends MinkContext
 
         if ($this->getMinkParameter('files_path')) {
             $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
+                    DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -621,7 +621,7 @@ class FlexibleContext extends MinkContext
             throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
         }
 
-        $script = "jQuery.event.trigger({ type : 'keypress', which : '".self::$keyCodes[$key]."' });";
+        $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
         $this->getSession()->evaluateScript($script);
     }
 

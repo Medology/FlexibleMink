@@ -140,7 +140,7 @@ JS
         }
 
         if ($image->getAttribute('src') != $imgSrc) {
-            throw new ExpectationException("Expected src '$imgSrc'. Instead got '".$image->getAttribute('src')."'.", $session);
+            throw new ExpectationException("Expected src '$imgSrc'. Instead got '" . $image->getAttribute('src') . "'.", $session);
         }
 
         if (!$this->checkImageLoaded($image->getXpath())) {

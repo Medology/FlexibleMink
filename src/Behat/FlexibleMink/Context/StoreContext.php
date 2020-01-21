@@ -39,7 +39,7 @@ trait StoreContext
     public function assertThingIs($key, $expected = null)
     {
         if (($actual = $this->get($key)) !== $expected) {
-            throw new Exception("Expected $key to be ".var_export($expected, true).', but it was '.var_export($actual, true));
+            throw new Exception("Expected $key to be " . var_export($expected, true) . ', but it was ' . var_export($actual, true));
         }
     }
 

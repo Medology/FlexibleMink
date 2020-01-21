@@ -29,7 +29,7 @@ class ParallelWorkerExtension implements ExtensionInterface
             new Reference(GherkinExtension::MANAGER_ID),
         ]);
         $definition->addTag(CliExtension::CONTROLLER_TAG);
-        $container->setDefinition(CliExtension::CONTROLLER_TAG.'.parallel_worker', $definition);
+        $container->setDefinition(CliExtension::CONTROLLER_TAG . '.parallel_worker', $definition);
     }
 
     /**

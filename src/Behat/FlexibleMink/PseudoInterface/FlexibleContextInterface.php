@@ -24,17 +24,17 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::assertPageContainsText
      *
-     * @param string $text Text to be searched in the page.
+     * @param string $text text to be searched in the page
      */
     abstract public function assertPageContainsText($text);
 
     /**
      * Asserts that the page contains a list of strings.
      *
-     * @param TableNode $table The list of strings to find.
-     * @param string    $not   A flag to assert not containing text.
+     * @param TableNode $table the list of strings to find
+     * @param string    $not   a flag to assert not containing text
      *
-     * @throws ResponseTextException If the text is not found.
+     * @throws ResponseTextException if the text is not found
      */
     abstract public function assertPageContainsTexts(TableNode $table, $not = null);
 
@@ -50,7 +50,7 @@ trait FlexibleContextInterface
      * Asserts that a field is visible or not.
      *
      * @param string $field The field to be checked
-     * @param bool   $not   check if field should be visible or not.
+     * @param bool   $not   check if field should be visible or not
      *
      * @throws ExpectationException
      */
@@ -82,7 +82,7 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::assertPageNotContainsText
      *
-     * @param string $text The text that should not be found on the page.
+     * @param string $text the text that should not be found on the page
      */
     abstract public function assertPageNotContainsText($text);
 
@@ -93,10 +93,10 @@ trait FlexibleContextInterface
      * @see assertPageContainsText()
      * @see assertPageNotContainsText()
      *
-     * @param string $text The text to wait on to not show up on the page anymore.
+     * @param string $text the text to wait on to not show up on the page anymore
      *
-     * @throws ResponseTextException If the text is not found initially or if the text was still visible after seeing
-     *                               it and waiting for 15 seconds.
+     * @throws ResponseTextException if the text is not found initially or if the text was still visible after seeing
+     *                               it and waiting for 15 seconds
      */
     abstract public function assertPageContainsTextTemporarily($text);
 
@@ -116,8 +116,8 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::assertElementNotContainsText
      *
-     * @param string|array $element css element selector.
-     * @param string       $text    expected text that should not being found.
+     * @param string|array $element css element selector
+     * @param string       $text    expected text that should not being found
      */
     abstract public function assertElementNotContainsText($element, $text);
 
@@ -129,7 +129,7 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::clickLink
      *
-     * @param string $locator The id|title|alt|text of the link to be clicked.
+     * @param string $locator the id|title|alt|text of the link to be clicked
      */
     abstract public function clickLink($locator);
 
@@ -141,7 +141,7 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::checkOption
      *
-     * @param string $locator The id|title|alt|text of the option to be clicked.
+     * @param string $locator the id|title|alt|text of the option to be clicked
      */
     abstract public function checkOption($locator);
 
@@ -153,8 +153,8 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::fillField
      *
-     * @param string $field The id|title|alt|text of the field to be filled.
-     * @param string $value The value to be set on the field.
+     * @param string $field the id|title|alt|text of the field to be filled
+     * @param string $value the value to be set on the field
      */
     abstract public function fillField($field, $value);
 
@@ -163,7 +163,7 @@ trait FlexibleContextInterface
      *
      * @see MinkContext::uncheckOption
      *
-     * @param string $locator The id|title|alt|text of the option to be unchecked.
+     * @param string $locator the id|title|alt|text of the option to be unchecked
      */
     abstract public function uncheckOption($locator);
 
@@ -173,9 +173,9 @@ trait FlexibleContextInterface
      * @param string $locator  The button
      * @param bool   $disabled The state of the button
      *
-     * @throws ExpectationException If button is disabled but shouldn't be.
-     * @throws ExpectationException If button isn't disabled but should be.
-     * @throws ExpectationException If the button can't be found.
+     * @throws ExpectationException if button is disabled but shouldn't be
+     * @throws ExpectationException if button isn't disabled but should be
+     * @throws ExpectationException if the button can't be found
      */
     abstract public function assertButtonDisabled($locator, $disabled = true);
 
@@ -184,11 +184,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first button if the driver does not support visibility checks.
      *
-     * @param string $locator The button name.
+     * @param string $locator the button name
      *
-     * @throws ExpectationException If a visible button was not found.
+     * @throws ExpectationException if a visible button was not found
      *
-     * @return NodeElement The button.
+     * @return NodeElement the button
      */
     abstract public function assertVisibleButton($locator);
 
@@ -197,11 +197,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first link if the driver does not support visibility checks.
      *
-     * @param string $locator The link name.
+     * @param string $locator the link name
      *
-     * @throws ExpectationException If a visible link was not found.
+     * @throws ExpectationException if a visible link was not found
      *
-     * @return NodeElement The link.
+     * @return NodeElement the link
      */
     abstract public function assertVisibleLink($locator);
 
@@ -210,42 +210,42 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first option if the driver does not support visibility checks.
      *
-     * @param string $locator The option name.
+     * @param string $locator the option name
      *
-     * @throws ExpectationException If a visible option was not found.
+     * @throws ExpectationException if a visible option was not found
      *
-     * @return NodeElement The option.
+     * @return NodeElement the option
      */
     abstract public function assertVisibleOption($locator);
 
     /**
      * Checks that the page contains a visible input field and then returns it.
      *
-     * @param string                  $fieldName The input name.
-     * @param TraversableElement|null $context   The context to search in, if not provided defaults to page.
+     * @param string                  $fieldName the input name
+     * @param TraversableElement|null $context   the context to search in, if not provided defaults to page
      *
-     * @throws ExpectationException If a visible input field is not found.
+     * @throws ExpectationException if a visible input field is not found
      *
-     * @return NodeElement The found input field.
+     * @return NodeElement the found input field
      */
     abstract public function assertFieldExists($fieldName, TraversableElement $context = null);
 
     /**
      * Checks that the page not contain a visible input field.
      *
-     * @param string $fieldName The name of the input field.
+     * @param string $fieldName the name of the input field
      *
-     * @throws ExpectationException If a visible input field is found.
+     * @throws ExpectationException if a visible input field is found
      */
     abstract public function assertFieldNotExists($fieldName);
 
     /**
      * Checks that the page contains the given lines of text in the order specified.
      *
-     * @param TableNode $table A list of text lines to look for.
+     * @param TableNode $table a list of text lines to look for
      *
-     * @throws ExpectationException     if a line is not found, or is found out of order.
-     * @throws InvalidArgumentException if the list of lines has more than one column.
+     * @throws ExpectationException     if a line is not found, or is found out of order
+     * @throws InvalidArgumentException if the list of lines has more than one column
      */
     abstract public function assertLinesInOrder(TableNode $table);
 
@@ -283,11 +283,11 @@ trait FlexibleContextInterface
      * Assert if the options in the select match given options.
      *
      * @param string    $select    The name of the select
-     * @param TableNode $tableNode The text of the options.
+     * @param TableNode $tableNode the text of the options
      *
-     * @throws ExpectationException     When there is no option in the select.
-     * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
-     * @throws InvalidArgumentException When no expected options listed in the test step.
+     * @throws ExpectationException     when there is no option in the select
+     * @throws ExpectationException     when the option(s) in the select not match the option(s) listed
+     * @throws InvalidArgumentException when no expected options listed in the test step
      */
     abstract public function assertSelectContainsExactOptions($select, TableNode $tableNode);
 
@@ -338,7 +338,7 @@ trait FlexibleContextInterface
      *
      * @param string $button button id, inner text, value or alt
      *
-     * @throws ExpectationException If a visible button field is not found.
+     * @throws ExpectationException if a visible button field is not found
      */
     abstract public function pressButton($button);
 
@@ -376,25 +376,25 @@ trait FlexibleContextInterface
     /**
      * Check the radio button.
      *
-     * @param string $label The label of the radio button.
+     * @param string $label the label of the radio button
      */
     abstract public function ensureRadioButtonChecked($label);
 
     /**
      * Assert the radio button is checked.
      *
-     * @param string $label The label of the radio button.
+     * @param string $label the label of the radio button
      *
-     * @throws ExpectationException When the radio button is not checked.
+     * @throws ExpectationException when the radio button is not checked
      */
     abstract public function assertRadioButtonChecked($label);
 
     /**
      * Assert the radio button is not checked.
      *
-     * @param string $label The label of the radio button.
+     * @param string $label the label of the radio button
      *
-     * @throws ExpectationException When the radio button is checked.
+     * @throws ExpectationException when the radio button is checked
      */
     abstract public function assertRadioButtonNotChecked($label);
 }

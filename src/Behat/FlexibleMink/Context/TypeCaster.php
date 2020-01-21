@@ -12,9 +12,9 @@ trait TypeCaster
      *
      * @Transform /^(\d+)$/
      *
-     * @param string $string the string to cast.
+     * @param string $string the string to cast
      *
-     * @return int The resulting int.
+     * @return int the resulting int
      */
     public function castStringToInt($string)
     {
@@ -26,9 +26,9 @@ trait TypeCaster
      *
      * @Transform /^\d*\.\d+$/
      *
-     * @param string $string the string to cast.
+     * @param string $string the string to cast
      *
-     * @return float The resulting float.
+     * @return float the resulting float
      */
     public function castStringToFloat($string)
     {
@@ -42,9 +42,9 @@ trait TypeCaster
      *
      * @Transform /^(true|false)$/i
      *
-     * @param string $string the string to cast.
+     * @param string $string the string to cast
      *
-     * @return bool The resulting bool.
+     * @return bool the resulting bool
      */
     public function castStringToBool($string)
     {
@@ -80,9 +80,9 @@ trait TypeCaster
      *
      * @Transform /^('([^']|\\')*'|"([^"]|\\")*")$/
      *
-     * @param string $string the string to cast.
+     * @param string $string the string to cast
      *
-     * @return string The resulting bool.
+     * @return string the resulting bool
      */
     public function castQuotedStringToString($string)
     {

@@ -39,9 +39,7 @@ trait StoreContext
     public function assertThingIs($key, $expected = null)
     {
         if (($actual = $this->get($key)) !== $expected) {
-            throw new Exception(
-                "Expected $key to be ".var_export($expected, true).', but it was '.var_export($actual, true)
-            );
+            throw new Exception("Expected $key to be " . var_export($expected, true) . ', but it was ' . var_export($actual, true));
         }
     }
 
@@ -63,25 +61,6 @@ trait StoreContext
         }
 
         return $this->get($key, $nth);
-    }
-
-    /**
-     * Converts a key of the form "nth thing" into "n" and "thing".
-     *
-     * @param string $key The key to parse
-     *
-     * @return array For a key "nth thing", returns [thing, n], else [thing, null]
-     */
-    private function parseKey($key)
-    {
-        if (preg_match('/^([1-9][0-9]*)(?:st|nd|rd|th) (.+)$/', $key, $matches)) {
-            $nth = $matches[1];
-            $key = $matches[2];
-        } else {
-            $nth = '';
-        }
-
-        return [$key, $nth];
     }
 
     /**
@@ -201,5 +180,24 @@ trait StoreContext
         if (strpos($actual, $expected) === false) {
             throw new Exception("Expected the '$property' of the '$thing' to contain '$expected', but found '$actual' instead");
         }
+    }
+
+    /**
+     * Converts a key of the form "nth thing" into "n" and "thing".
+     *
+     * @param string $key The key to parse
+     *
+     * @return array For a key "nth thing", returns [thing, n], else [thing, null]
+     */
+    private function parseKey($key)
+    {
+        if (preg_match('/^([1-9][0-9]*)(?:st|nd|rd|th) (.+)$/', $key, $matches)) {
+            $nth = $matches[1];
+            $key = $matches[2];
+        } else {
+            $nth = '';
+        }
+
+        return [$key, $nth];
     }
 }

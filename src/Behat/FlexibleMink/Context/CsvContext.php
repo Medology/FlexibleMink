@@ -57,9 +57,7 @@ trait CsvContext
 
                 // check values match
                 if ($expectedValue != $actualValue) {
-                    throw new Exception(
-                        "Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'"
-                    );
+                    throw new Exception("Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'");
                 }
             }
         }

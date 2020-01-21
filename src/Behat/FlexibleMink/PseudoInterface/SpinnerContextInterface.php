@@ -17,11 +17,11 @@ trait SpinnerContextInterface
      * drivers such as Selenium.
      *
      * @param callable $lambda  The lambda to call. Must return true on success.
-     * @param int      $timeout The number of seconds to spin for.
+     * @param int      $timeout the number of seconds to spin for
      *
-     * @throws Exception If the timeout expires and the lambda has thrown a Exception.
+     * @throws Exception if the timeout expires and the lambda has thrown a Exception
      *
-     * @return mixed The result of the lambda if it succeeds.
+     * @return mixed the result of the lambda if it succeeds
      */
     abstract public function waitFor(callable $lambda, $timeout = 30);
 }

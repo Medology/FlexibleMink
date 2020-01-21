@@ -13,28 +13,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     use StoreContext;
 
     /**
-     * Creates a simple mock object.
-     *
-     * @return stdClass A mock object with properties test_property_1/2/3
-     */
-    private function getMockObject()
-    {
-        static $obj = null;
-
-        if (is_object($obj)) {
-            return $obj;
-        }
-
-        $obj = (object) [
-            'test_property_1' => 'test_value_1',
-            'test_property_2' => 'test_value_2',
-            'test_property_3' => 'test_value_3',
-        ];
-
-        return $obj;
-    }
-
-    /**
      * Tests the StoreContext::injectStoredValues method.
      */
     public function testInjectStoredValues()
@@ -396,5 +374,27 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          ***********************/
         $this->assertEquals(['1 University', null], $this->parseKey('1 University'));
         $this->assertEquals(['2 University', null], $this->parseKey('2 University'));
+    }
+
+    /**
+     * Creates a simple mock object.
+     *
+     * @return stdClass A mock object with properties test_property_1/2/3
+     */
+    private function getMockObject()
+    {
+        static $obj = null;
+
+        if (is_object($obj)) {
+            return $obj;
+        }
+
+        $obj = (object) [
+            'test_property_1' => 'test_value_1',
+            'test_property_2' => 'test_value_2',
+            'test_property_3' => 'test_value_3',
+        ];
+
+        return $obj;
     }
 }

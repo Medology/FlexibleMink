@@ -33,8 +33,6 @@ trait ScreenShotContextInterface
      *        public function onFailedStep(AfterStepScope $scope) {
      *          $this->takeScreenShotAfterFailedStep($scope);
      *        }
-     *
-     * @param AfterStepScope $scope
      */
     abstract public function takeScreenShotAfterFailedStep(AfterStepScope $scope);
 }

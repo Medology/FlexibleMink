@@ -91,8 +91,6 @@ trait TableContextInterface
     /**
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
-     * @param TableNode $tableNode
-     *
      * @return mixed
      */
     abstract public function assertTableWithStructureExists(TableNode $tableNode);
@@ -101,9 +99,9 @@ trait TableContextInterface
      * Asserts that the table contains a row with the provided values.
      *
      * @param string    $name      The name of the table
-     * @param TableNode $tableNode The list of values to search.
+     * @param TableNode $tableNode the list of values to search
      *
-     * @throws ExpectationException If the values are not found in the table.
+     * @throws ExpectationException if the values are not found in the table
      */
     abstract public function assertTableShouldHaveTheFollowingValues($name, TableNode $tableNode);
 }

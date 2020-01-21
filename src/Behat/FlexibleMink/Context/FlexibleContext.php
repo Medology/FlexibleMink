@@ -121,9 +121,7 @@ class FlexibleContext extends MinkContext
                 parent::assertPageNotContainsText($text);
             }, 15);
         } catch (ExpectationException $e) {
-            throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
-            );
+            throw new ResponseTextException("Timed out waiting for '$text' to no longer appear.", $this->getSession());
         }
     }
 
@@ -147,7 +145,7 @@ class FlexibleContext extends MinkContext
 
         $shouldBeVisible = !$not;
         if (($shouldBeVisible && !$fields[0]->isVisible()) || (!$shouldBeVisible && $fields[0]->isVisible())) {
-            throw new ExpectationException("The field '$locator' was ".(!$not ? 'not ' : '').'visible or not found', $this->getSession());
+            throw new ExpectationException("The field '$locator' was " . (!$not ? 'not ' : '') . 'visible or not found', $this->getSession());
         }
     }
 
@@ -250,16 +248,10 @@ class FlexibleContext extends MinkContext
 
             if ($button->hasAttribute('disabled')) {
                 if (!$disabled) {
-                    throw new ExpectationException(
-                        "The button, $locator, was disabled, but it should not have been disabled.",
-                        $this->getSession()
-                    );
+                    throw new ExpectationException("The button, $locator, was disabled, but it should not have been disabled.", $this->getSession());
                 }
             } elseif ($disabled) {
-                throw new ExpectationException(
-                    "The button, $locator, was not disabled, but it should have been disabled.",
-                    $this->getSession()
-                );
+                throw new ExpectationException("The button, $locator, was not disabled, but it should have been disabled.", $this->getSession());
             }
         });
     }
@@ -478,10 +470,10 @@ class FlexibleContext extends MinkContext
         $selectField = $this->assertFieldExists($select);
         $opt = $selectField->find('named', ['option', $option]);
         if ($existence && $opt) {
-            throw new ExpectationException("The option '".$option."' exist in the select", $this->getSession());
+            throw new ExpectationException("The option '" . $option . "' exist in the select", $this->getSession());
         }
         if (!$existence && !$opt) {
-            throw new ExpectationException("The option '".$option."' does not exist in the select", $this->getSession());
+            throw new ExpectationException("The option '" . $option . "' does not exist in the select", $this->getSession());
         }
     }
 
@@ -524,16 +516,10 @@ class FlexibleContext extends MinkContext
             $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
 
             if (count($intersect) < count($expectedOptTexts)) {
-                throw new ExpectationException(
-                    'Expecting '.count($expectedOptTexts).' matching option(s), found '.count($intersect),
-                    $this->getSession()
-                );
+                throw new ExpectationException('Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect), $this->getSession());
             }
 
-            throw new ExpectationException(
-                'Options in select match expected but not in expected order',
-                $this->getSession()
-            );
+            throw new ExpectationException('Options in select match expected but not in expected order', $this->getSession());
         }
     }
 
@@ -571,7 +557,7 @@ class FlexibleContext extends MinkContext
 
         if ($this->getMinkParameter('files_path')) {
             $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
+                    DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -635,7 +621,7 @@ class FlexibleContext extends MinkContext
             throw new ExpectationException("The key '$key' is not defined.", $this->getSession());
         }
 
-        $script = "jQuery.event.trigger({ type : 'keypress', which : '".self::$keyCodes[$key]."' });";
+        $script = "jQuery.event.trigger({ type : 'keypress', which : '" . self::$keyCodes[$key] . "' });";
         $this->getSession()->evaluateScript($script);
     }
 
@@ -727,7 +713,7 @@ class FlexibleContext extends MinkContext
     /**
      * Locate the radio button by label.
      *
-     * @param string $label The Label of the radio button.
+     * @param string $label the Label of the radio button
      *
      * @return NodeElement
      */
@@ -767,10 +753,10 @@ class FlexibleContext extends MinkContext
      * NodeElements by their coordinates. The typical use case is to determine
      * the order of elements on a page as a viewer would perceive them.
      *
-     * @param NodeElement $a one of the two NodeElements to compare.
-     * @param NodeElement $b the other NodeElement to compare.
+     * @param NodeElement $a one of the two NodeElements to compare
+     * @param NodeElement $b the other NodeElement to compare
      *
-     * @throws UnsupportedDriverActionException If the current driver does not support getXpathBoundingClientRect.
+     * @throws UnsupportedDriverActionException if the current driver does not support getXpathBoundingClientRect
      *
      * @return int
      */

@@ -35,8 +35,6 @@ trait AssertionContext
      * Grabs execution details that step definitions in the context need but can't access themselves.
      *
      * @BeforeScenario
-     *
-     * @param BeforeScenarioScope $scope
      */
     public function prepareToRunAssertion(BeforeScenarioScope $scope)
     {
@@ -49,10 +47,10 @@ trait AssertionContext
      *
      * @When /^I assert that (?P<assertion>.+)$/
      *
-     * @param string                      $assertion The step to assert.
-     * @param PyStringNode|TableNode|null $argument  An additional argument to pass to the assertion.
+     * @param string                      $assertion the step to assert
+     * @param PyStringNode|TableNode|null $argument  an additional argument to pass to the assertion
      *
-     * @throws Exception if the step is not defined or otherwise did not execute.
+     * @throws Exception if the step is not defined or otherwise did not execute
      */
     public function runAssertion($assertion, $argument = null)
     {
@@ -81,7 +79,7 @@ trait AssertionContext
      *
      * @Then the assertion should pass
      *
-     * @throws Exception of the assertion if it failed.
+     * @throws Exception of the assertion if it failed
      */
     public function assertAssertionPassed()
     {
@@ -95,9 +93,9 @@ trait AssertionContext
      *
      * @Then /^the assertion should throw an? (?P<exceptionType>.+)$/
      *
-     * @param string $exceptionType The short classname of the exception to look for.
+     * @param string $exceptionType the short classname of the exception to look for
      *
-     * @throws Exception if an Exception was not thrown or was not of the given type.
+     * @throws Exception if an Exception was not thrown or was not of the given type
      */
     public function assertAssertionException($exceptionType)
     {
@@ -118,9 +116,9 @@ trait AssertionContext
      *
      * @Then the assertion should fail with the message :message
      *
-     * @param string $message The error message the assertion should have thrown.
+     * @param string $message the error message the assertion should have thrown
      *
-     * @throws Exception if the assertion did not fail as expected.
+     * @throws Exception if the assertion did not fail as expected
      */
     public function assertAssertionFailedMessage($message)
     {

@@ -15,6 +15,7 @@ use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Behat\MinkExtension\Context\MinkContext;
 use Exception as GenericException;
 use InvalidArgumentException;
+use Medology\Behat\HasWaitProxy;
 use Medology\Behat\Mink\Models\Geometry\Rectangle;
 use Medology\Behat\StoreContext;
 use Medology\Behat\TypeCaster;
@@ -29,9 +30,12 @@ use ZipArchive;
 /**
  * Overwrites some MinkContext step definitions to make them more resilient to failures caused by browser/driver
  * discrepancies and unpredictable load times.
+ *
+ * @property-read AsyncMink $wait
  */
 class FlexibleContext extends MinkContext
 {
+    use HasWaitProxy;
     use TypeCaster;
     use UsesStoreContext;
 

@@ -11,7 +11,7 @@ use WebDriver\Exception\NoAlertOpenError;
 /**
  * A context for handling JavaScript alerts. Based on a gist by Benjamin Lazarecki with improvements.
  *
- * @link https://gist.github.com/blazarecki/2888851
+ * @see https://gist.github.com/blazarecki/2888851
  */
 class AlertContext implements Context
 {
@@ -22,7 +22,8 @@ class AlertContext implements Context
      *
      * @AfterScenario @clearAlertsWhenFinished
      * @Given there are no alerts on the page
-     * @throws UnsupportedDriverActionException If the current driver does not support cancelling the alert.
+     *
+     * @throws UnsupportedDriverActionException if the current driver does not support cancelling the alert
      */
     public function clearAlerts()
     {
@@ -41,7 +42,8 @@ class AlertContext implements Context
      * Confirms the current JavaScript alert.
      *
      * @When /^(?:|I )confirm the alert$/
-     * @throws UnsupportedDriverActionException If the current driver does not support confirming the alert.
+     *
+     * @throws UnsupportedDriverActionException if the current driver does not support confirming the alert
      */
     public function confirmAlert()
     {
@@ -58,7 +60,8 @@ class AlertContext implements Context
      * Cancels the current JavaScript alert.
      *
      * @When   /^(?:|I )cancel the alert$/
-     * @throws UnsupportedDriverActionException If the current driver does not support cancelling the alert.
+     *
+     * @throws UnsupportedDriverActionException if the current driver does not support cancelling the alert
      */
     public function cancelAlert()
     {
@@ -75,9 +78,11 @@ class AlertContext implements Context
      * Asserts that the current JavaScript alert contains the given text.
      *
      * @Then   /^(?:|I )should see an alert containing "(?P<expected>[^"]*)"$/
-     * @param  string                           $expected The expected text.
-     * @throws ExpectationException             if the given text is not present in the current alert.
-     * @throws UnsupportedDriverActionException If the current driver does not support asserting the alert message.
+     *
+     * @param string $expected the expected text
+     *
+     * @throws ExpectationException             if the given text is not present in the current alert
+     * @throws UnsupportedDriverActionException if the current driver does not support asserting the alert message
      */
     public function assertAlertMessage($expected)
     {
@@ -103,8 +108,10 @@ class AlertContext implements Context
      * Fills in the given text to the current JavaScript prompt.
      *
      * @When   /^(?:|I )fill "(?P<message>[^"]*)" into the prompt$/
-     * @param  string                           $message The text to fill in.
-     * @throws UnsupportedDriverActionException If the current driver does not support setting the alert text.
+     *
+     * @param string $message the text to fill in
+     *
+     * @throws UnsupportedDriverActionException if the current driver does not support setting the alert text
      */
     public function setAlertText($message)
     {

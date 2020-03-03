@@ -1,4 +1,6 @@
-<?php namespace Medology\Behat\Mink;
+<?php
+
+namespace Medology\Behat\Mink;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Exception\ExpectationException;
@@ -17,9 +19,10 @@ class LinkContext implements Context
     /**
      * Asserts that the canonical tag points to the given location.
      *
-     * @param  string               $destination The location the link should be pointing to.
-     * @throws Exception            if the assertion did not pass before the timeout was exceeded.
-     * @throws ExpectationException When the canonical tag does not contain the given destination.
+     * @param string $destination the location the link should be pointing to
+     *
+     * @throws Exception            if the assertion did not pass before the timeout was exceeded
+     * @throws ExpectationException when the canonical tag does not contain the given destination
      *
      * @Then the canonical tag should point to :destination
      */

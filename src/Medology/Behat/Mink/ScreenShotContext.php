@@ -20,6 +20,7 @@ class ScreenShotContext implements Context
      * Captures a screenshot and saves it to the artifacts directory.
      *
      * @When  /^(?:I )?take a screenshot(?: named "(?P<name>(?:[^"]|\\")*)")$/
+     *
      * @param string $name the name for the screenshot file (excluding path and extension)
      */
     public function takeScreenShot($name = 'screenshot')
@@ -40,8 +41,6 @@ class ScreenShotContext implements Context
      *        public function onFailedStep(AfterStepScope $scope) {
      *          $this->takeScreenShotAfterFailedStep($scope);
      *        }
-     *
-     * @param AfterStepScope $scope
      */
     public function takeScreenShotAfterFailedStep(AfterStepScope $scope)
     {

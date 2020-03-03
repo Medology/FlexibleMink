@@ -21,36 +21,10 @@ use RuntimeException;
 class Filter extends SimpleFilter
 {
     private $totalNodes;
+
     private $curNode;
+
     private $curScenario;
-
-    /**
-     * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
-     * example is treated like it's own scenario as far as counting goes for the workers.
-     *
-     * @param  ExampleTableNode $examples The examples of the Scenario Outline
-     * @throws RuntimeException If there are no examples in this outline which will run on this node
-     * @return ExampleTableNode A filtered table leaving only examples that should run on this node
-     */
-    private function filterExampleNode(ExampleTableNode $examples)
-    {
-        $table = $examples->getTable();
-        $newExamples = [];
-
-        foreach ($table as $lineNum => $example) {
-            // Add the header (first row) automatically, then add the examples that we should run.
-            if (!count($newExamples) || $this->curScenario++ % $this->totalNodes == 0) {
-                $newExamples[$lineNum] = $example;
-            }
-        }
-
-        if (count($newExamples) == 1) {
-            // All we got was the header.
-            throw new RuntimeException('No examples will run on this node!');
-        }
-
-        return new ExampleTableNode($newExamples, $examples->getKeyword());
-    }
 
     /**
      * {@inheritdoc}
@@ -135,5 +109,35 @@ class Filter extends SimpleFilter
     {
         // we do the filtering up in filterFeature, so always return true
         return true;
+    }
+
+    /**
+     * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
+     * example is treated like it's own scenario as far as counting goes for the workers.
+     *
+     * @param ExampleTableNode $examples The examples of the Scenario Outline
+     *
+     * @throws RuntimeException If there are no examples in this outline which will run on this node
+     *
+     * @return ExampleTableNode A filtered table leaving only examples that should run on this node
+     */
+    private function filterExampleNode(ExampleTableNode $examples)
+    {
+        $table = $examples->getTable();
+        $newExamples = [];
+
+        foreach ($table as $lineNum => $example) {
+            // Add the header (first row) automatically, then add the examples that we should run.
+            if (!count($newExamples) || $this->curScenario++ % $this->totalNodes == 0) {
+                $newExamples[$lineNum] = $example;
+            }
+        }
+
+        if (count($newExamples) == 1) {
+            // All we got was the header.
+            throw new RuntimeException('No examples will run on this node!');
+        }
+
+        return new ExampleTableNode($newExamples, $examples->getKeyword());
     }
 }

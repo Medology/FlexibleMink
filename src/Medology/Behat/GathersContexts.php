@@ -23,9 +23,7 @@ interface GathersContexts
      * singletons. This method allows this Context to get references to the Context singletons, and
      * leverage their features.
      *
-     * @param  BeforeScenarioScope $scope
-     * @throws RuntimeException    If the current environment is not initialized.
-     * @return void
+     * @throws RuntimeException if the current environment is not initialized
      * @BeforeScenario
      */
     public function gatherContexts(BeforeScenarioScope $scope);

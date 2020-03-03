@@ -1,4 +1,6 @@
-<?php namespace Tests\Medology\Behat\Mink\FlexibleContext;
+<?php
+
+namespace Tests\Medology\Behat\Mink\FlexibleContext;
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Element\TraversableElement;

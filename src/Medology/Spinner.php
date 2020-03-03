@@ -15,10 +15,12 @@ class Spinner
      * during the specified timeout period. As soon as the lambda does not throw an exception, the method will return
      * the value returned by the lambda. This is useful when waiting on remote drivers such as Selenium.
      *
-     * @param  callable  $lambda  The lambda to call. Must return true on success.
-     * @param  int       $timeout The number of seconds to spin for.
-     * @throws Exception if the assertion did not pass before the timeout was exceeded.
-     * @return mixed     The result of the lambda if it succeeds.
+     * @param callable $lambda  The lambda to call. Must return true on success.
+     * @param int      $timeout the number of seconds to spin for
+     *
+     * @throws Exception if the assertion did not pass before the timeout was exceeded
+     *
+     * @return mixed the result of the lambda if it succeeds
      */
     public static function waitFor(callable $lambda, $timeout = null)
     {

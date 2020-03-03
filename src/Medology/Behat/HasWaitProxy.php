@@ -19,9 +19,11 @@ trait HasWaitProxy
     /**
      * Dynamic accessor for the wait proxy.
      *
-     * @param  string    $property the property to read.
-     * @throws Exception if the property does not exist on this class.
-     * @return mixed     the value of the property if it exists and is accessible.
+     * @param string $property the property to read
+     *
+     * @throws Exception if the property does not exist on this class
+     *
+     * @return mixed the value of the property if it exists and is accessible
      */
     public function __get($property)
     {

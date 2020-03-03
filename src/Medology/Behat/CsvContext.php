@@ -21,9 +21,11 @@ class CsvContext implements Context
      * must contain all of the columns in the expected rows.
      *
      * @Then   /^the "(?P<key>[^"]+)" should be CSV data as follows:$/
-     * @param  string    $key   The key the CSV is stored under.
-     * @param  TableNode $table The rows expected in the CSV.
-     * @throws Exception if the given rows are not present in the CSV.
+     *
+     * @param string    $key   the key the CSV is stored under
+     * @param TableNode $table the rows expected in the CSV
+     *
+     * @throws Exception if the given rows are not present in the CSV
      */
     public function assertThingIsCSVWithData($key, TableNode $table)
     {
@@ -58,9 +60,7 @@ class CsvContext implements Context
 
                 // check values match
                 if ($expectedValue != $actualValue) {
-                    throw new Exception(
-                        "Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'"
-                    );
+                    throw new Exception("Expected '$expectedValue' for '$name' in row $rowNum, but found '$actualValue'");
                 }
             }
         }
@@ -71,9 +71,11 @@ class CsvContext implements Context
      * The CSV must contain exactly the rows given, and no more.
      *
      * @Then   /^the "(?P<key>[^"]+)" should be CSV data with the following headers:$/
-     * @param  string    $key   The key the CSV is stored under.
-     * @param  TableNode $table A list of headers that the CSV must match.
-     * @throws Exception if the given headers are not an exact match with the CSV headers.
+     *
+     * @param string    $key   the key the CSV is stored under
+     * @param TableNode $table a list of headers that the CSV must match
+     *
+     * @throws Exception if the given headers are not an exact match with the CSV headers
      */
     public function assertThingIsCSVWithRows($key, TableNode $table)
     {

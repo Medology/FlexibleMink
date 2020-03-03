@@ -17,7 +17,7 @@ class AssertionInitializer implements ContextInitializer
     /**
      * Stores an injected StepTester to add to AssertionContexts later.
      *
-     * @param StepTester $tester The step tester to inject into AssertionContexts.
+     * @param StepTester $tester the step tester to inject into AssertionContexts
      */
     public function __construct(StepTester $tester)
     {

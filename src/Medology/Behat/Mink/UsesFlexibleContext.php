@@ -1,4 +1,6 @@
-<?php namespace Medology\Behat\Mink;
+<?php
+
+namespace Medology\Behat\Mink;
 
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -15,9 +17,7 @@ trait UsesFlexibleContext
     /**
      * Gathers the FlexibleContext instance and stores a reference in $this->flexibleContext.
      *
-     * @param  BeforeScenarioScope $scope
-     * @throws RuntimeException    If the current environment is not initialized.
-     * @return void
+     * @throws RuntimeException if the current environment is not initialized
      * @BeforeScenario
      */
     public function gatherFlexibleContext(BeforeScenarioScope $scope)
@@ -25,10 +25,7 @@ trait UsesFlexibleContext
         $environment = $scope->getEnvironment();
 
         if (!($environment instanceof InitializedContextEnvironment)) {
-            throw new RuntimeException(
-                'Expected Environment to be ' . InitializedContextEnvironment::class .
-                ', but got ' . get_class($environment)
-            );
+            throw new RuntimeException('Expected Environment to be ' . InitializedContextEnvironment::class . ', but got ' . get_class($environment));
         }
 
         if (!$this->flexibleContext = $environment->getContext(FlexibleContext::class)) {

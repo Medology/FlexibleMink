@@ -1,4 +1,6 @@
-<?php namespace Medology\Behat\Mink;
+<?php
+
+namespace Medology\Behat\Mink;
 
 use Behat\Behat\Context\Context;
 use Behat\Mink\Element\NodeElement;
@@ -24,10 +26,13 @@ class QualityAssurance implements Context
      * Get a NodeElement by qaId.
      *
      * @noinspection PhpDocMissingThrowsInspection waitForPageLoad throws ExpectationException, not Exception.
-     * @param  string               $qaId string the qaId of the Element to get
+     *
+     * @param string $qaId string the qaId of the Element to get
+     *
      * @throws ReflectionException  If injectStoredValues incorrectly believes one or more closures were
      * @throws ExpectationException Exception thrown for failed expectations
-     * @return NodeElement|null     Page element node
+     *
+     * @return NodeElement|null Page element node
      */
     public function getNodeElementByQaId($qaId)
     {
@@ -40,21 +45,20 @@ class QualityAssurance implements Context
     /**
      * Assert a NodeElement by qaId.
      *
-     * @param  string               $qaId string the qaId of the Element to get
+     * @param string $qaId string the qaId of the Element to get
+     *
      * @throws ExpectationException Exception thrown for failed expectations
-     * @throws ReflectionException  If injectStoredValues incorrectly believes one or more closures were
-     *                                   single attempt of the closure before the timeout expired.
-     * @return NodeElement          Page element node
+     * @throws ReflectionException  if injectStoredValues incorrectly believes one or more closures were
+     *                              single attempt of the closure before the timeout expired
+     *
+     * @return NodeElement Page element node
      */
     public function assertNodeElementExistsByQaId($qaId)
     {
         $element = $this->getNodeElementByQaID($qaId);
 
         if (!$element) {
-            throw new ExpectationException(
-                "$qaId was not found in the document.",
-                $this->flexibleContext->getSession()
-            );
+            throw new ExpectationException("$qaId was not found in the document.", $this->flexibleContext->getSession());
         }
 
         return $element;
@@ -65,11 +69,12 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should be fully visible in the viewport
      *
-     * @param  string                           $qaId
+     * @param string $qaId
+     *
      * @throws ExpectationException             If the element is not fully visible
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                               passed. This should never happen. If it does, there is a problem with
-     *                                               the injectStoredValues method.
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      * @throws WebDriverException               If cannot get the Web Driver
      */
@@ -78,10 +83,7 @@ class QualityAssurance implements Context
         $element = $this->assertNodeElementExistsByQaId($qaId);
 
         if (!$this->flexibleContext->nodeIsFullyVisibleInViewport($element)) {
-            throw new ExpectationException(
-                "$qaId is not fully visible in the viewport.",
-                $this->flexibleContext->getSession()->getDriver()
-            );
+            throw new ExpectationException("$qaId is not fully visible in the viewport.", $this->flexibleContext->getSession()->getDriver());
         }
     }
 
@@ -90,12 +92,13 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should be partially visible in the viewport
      *
-     * @param  string                           $qaId
+     * @param string $qaId
+     *
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      * @throws ExpectationException             If the element is not visible
-     *                                               passed. This should never happen. If it does, there is a problem with
-     *                                               the injectStoredValues method.
-     * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
+     * @throws UnsupportedDriverActionException exception thrown by drivers when they don't support the requested action
      * @throws WebDriverException               If cannot get the Web Driver
      */
     public function assertQaIdIsPartiallyVisibleInViewport($qaId)
@@ -105,10 +108,7 @@ class QualityAssurance implements Context
         if (!$this->flexibleContext->nodeIsVisibleInViewport($element) ||
             $this->flexibleContext->nodeIsFullyVisibleInViewport($element)
         ) {
-            throw new ExpectationException(
-                "$qaId is not partially visible in the viewport.",
-                $this->flexibleContext->getSession()->getDriver()
-            );
+            throw new ExpectationException("$qaId is not partially visible in the viewport.", $this->flexibleContext->getSession()->getDriver());
         }
     }
 
@@ -117,12 +117,13 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should not be visible in the viewport
      *
-     * @param  string                           $qaId
+     * @param string $qaId
+     *
      * @throws ExpectationException             If the element is visible
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                               passed. This should never happen. If it does, there is a problem
-     *                                               with the injectStoredValues method.
-     * @throws UnsupportedDriverActionException Exception thrown by drivers when they don't support the requested action.
+     *                                          passed. This should never happen. If it does, there is a problem
+     *                                          with the injectStoredValues method.
+     * @throws UnsupportedDriverActionException exception thrown by drivers when they don't support the requested action
      * @throws WebDriverException               If cannot get the Web Driver
      */
     public function assertQaIdIsNotVisibleInViewport($qaId)
@@ -130,10 +131,7 @@ class QualityAssurance implements Context
         $element = $this->getNodeElementByQaID($qaId);
 
         if ($element && $this->flexibleContext->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException(
-                "$qaId is visible in the viewport.",
-                $this->flexibleContext->getSession()->getDriver()
-            );
+            throw new ExpectationException("$qaId is visible in the viewport.", $this->flexibleContext->getSession()->getDriver());
         }
     }
 
@@ -142,11 +140,12 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should be visible in the document
      *
-     * @param  string                           $qaId
+     * @param string $qaId
+     *
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
      * @throws ExpectationException             If the element is not visible in the document
-     *                                               passed. This should never happen. If it does, there is a problem with
-     *                                               the injectStoredValues method.
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
      * @throws WebDriverException               If cannot get the Web Driver
      * @throws UnsupportedDriverActionException
      */
@@ -155,10 +154,7 @@ class QualityAssurance implements Context
         $element = $this->assertNodeElementExistsByQaId($qaId);
 
         if (!$this->flexibleContext->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException(
-                "$qaId is not visible in the document.",
-                $this->flexibleContext->getSession()->getDriver()
-            );
+            throw new ExpectationException("$qaId is not visible in the document.", $this->flexibleContext->getSession()->getDriver());
         }
     }
 
@@ -167,11 +163,12 @@ class QualityAssurance implements Context
      *
      * @Then :qaId should not be visible in the document
      *
-     * @param  string                           $qaId
+     * @param string $qaId
+     *
      * @throws ExpectationException             If the element is visible in the document
      * @throws ReflectionException              If injectStoredValues incorrectly believes one or more closures were
-     *                                               passed. This should never happen. If it does, there is a problem with
-     *                                               the injectStoredValues method.
+     *                                          passed. This should never happen. If it does, there is a problem with
+     *                                          the injectStoredValues method.
      * @throws UnsupportedDriverActionException If driver is not the selenium 2 driver
      * @throws WebDriverException               If cannot get the Web Driver
      */
@@ -180,10 +177,7 @@ class QualityAssurance implements Context
         $element = $this->getNodeElementByQaID($qaId);
 
         if ($element && $this->flexibleContext->nodeIsVisibleInDocument($element)) {
-            throw new ExpectationException(
-                "$qaId is visible in the document.",
-                $this->flexibleContext->getSession()->getDriver()
-            );
+            throw new ExpectationException("$qaId is visible in the document.", $this->flexibleContext->getSession()->getDriver());
         }
     }
 
@@ -192,12 +186,13 @@ class QualityAssurance implements Context
      *
      * @When /^I (?P<action>check|uncheck) the checkbox "(?P<checkbox>[^"]+)" in the "(?P<qaId>[^"]+)"$/
      *
-     * @param  string               $action   The action on the checkbox.
-     * @param  string               $checkbox The text inside the checkbox.
-     * @param  string               $qaId     The qa ID
-     * @throws ReflectionException  If the string references something that does not exist in the store.
-     * @throws ExpectationException If the QA element was not found.
-     * @throws ExpectationException If the Checkbox with that label was not found.
+     * @param string $action   the action on the checkbox
+     * @param string $checkbox the text inside the checkbox
+     * @param string $qaId     The qa ID
+     *
+     * @throws ReflectionException  if the string references something that does not exist in the store
+     * @throws ExpectationException if the QA element was not found
+     * @throws ExpectationException if the Checkbox with that label was not found
      */
     public function checkElementWithTextInQaElement($action, $checkbox, $qaId)
     {
@@ -209,10 +204,7 @@ class QualityAssurance implements Context
 
             $targetElement = $qaElement->find('xpath', '//label[contains(.,"' . $checkbox . '")]/input[@type="checkbox"]');
             if (!$targetElement) {
-                throw new ExpectationException(
-                    "Checkbox with label '$checkbox' was not found within '$qaId'",
-                    $this->flexibleContext->getSession()->getDriver()
-                );
+                throw new ExpectationException("Checkbox with label '$checkbox' was not found within '$qaId'", $this->flexibleContext->getSession()->getDriver());
             }
 
             if ($action === 'check') {

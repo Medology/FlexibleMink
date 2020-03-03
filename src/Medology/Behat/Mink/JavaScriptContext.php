@@ -19,8 +19,10 @@ class JavaScriptContext implements Context
      * Determines if a javascript variable is set and has a value.
      *
      * @Then   the javascript variable :variable should not be null
-     * @param  string               $variable The variable to check.
-     * @throws ExpectationException if the given variable is undefined.
+     *
+     * @param string $variable the variable to check
+     *
+     * @throws ExpectationException if the given variable is undefined
      */
     public function assertJavascriptVariableHasAValue($variable)
     {
@@ -29,10 +31,7 @@ class JavaScriptContext implements Context
 
         // If it's null - we failed
         if ($result === null) {
-            throw new ExpectationException(
-                'The custom variable "' . $variable . '" is null or does not exist.',
-                $this->flexibleContext->getSession()
-            );
+            throw new ExpectationException('The custom variable "' . $variable . '" is null or does not exist.', $this->flexibleContext->getSession());
         }
     }
 
@@ -40,10 +39,12 @@ class JavaScriptContext implements Context
      * Determines if the type of a javascript variable matches a specific type.
      *
      * @Then   /^the javascript variable "(?P<variable>.+)" should(?P<not>| not) be type "(?P<type>[\w]+)"$/
-     * @param  string               $variable The variable to evaluate type for.
-     * @param  string|bool          $not      Invert the check? Cast as a boolean based on PHP typecasting.
-     * @param  string               $type     The type to match against.
-     * @throws ExpectationException if the type of the given variable does not match what's expected.
+     *
+     * @param string      $variable the variable to evaluate type for
+     * @param string|bool $not      invert the check? Cast as a boolean based on PHP typecasting
+     * @param string      $type     the type to match against
+     *
+     * @throws ExpectationException if the type of the given variable does not match what's expected
      */
     public function assertJavascriptVariableType($variable, $not, $type)
     {
@@ -52,10 +53,7 @@ class JavaScriptContext implements Context
 
         // If it doesn't match - we failed.
         if ($result != $type xor $not) {
-            throw new ExpectationException(
-                "The variable \"$variable\" should$not be type $type, but is $result",
-                $this->flexibleContext->getSession()
-            );
+            throw new ExpectationException("The variable \"$variable\" should$not be type $type, but is $result", $this->flexibleContext->getSession());
         }
     }
 
@@ -63,8 +61,10 @@ class JavaScriptContext implements Context
      * Selectively compares two JSON objects.
      *
      * @Then   the javascript variable :variableName should have the following contents:
-     * @param  string               $variableName The name of the JS variable to look for.
-     * @param  TableNode            $values       JavaScript variable key-value pair.
+     *
+     * @param string    $variableName the name of the JS variable to look for
+     * @param TableNode $values       javaScript variable key-value pair
+     *
      * @throws ExpectationException if the Javascript variable isn't a match
      */
     public function assertJsonContentsOneByOne($variableName, TableNode $values)
@@ -76,21 +76,54 @@ class JavaScriptContext implements Context
 
         foreach ($values->getHash() as $row) {
             if (!isset($response[$row['key']])) {
-                throw new ExpectationException(
-                    "Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n" .
-                        "Actual: $returnedJsonData",
-                    $this->flexibleContext->getSession()
-                );
+                throw new ExpectationException("Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n" . "Actual: $returnedJsonData", $this->flexibleContext->getSession());
             }
             $expected = $this->getRawOrJson($row['value']);
             $actual = $this->getRawOrJson($response[$row['key']]);
 
             if ($actual != $expected) {
-                throw new ExpectationException(
-                    "Expected \"$expected\" in {$row['key']} position but got \"$actual\"",
-                    $this->flexibleContext->getSession()
-                );
+                throw new ExpectationException("Expected \"$expected\" in {$row['key']} position but got \"$actual\"", $this->flexibleContext->getSession());
             }
+        }
+    }
+
+    /**
+     * Asserts that a javascript variable has a specified value.
+     *
+     * @Then   the javascript variable :variableName should have the value of :expectedValue
+     *
+     * @param string $variableName  this is the name of the variable to be checked
+     * @param string $expectedValue this is the expected value
+     *
+     * @throws ExpectationException if variable value does not match expected value
+     */
+    public function assertJavascriptVariable($variableName, $expectedValue)
+    {
+        $returnedValue = $this->flexibleContext->getSession()->evaluateScript(
+            'return ' . $variableName . ';'
+        );
+
+        if ($returnedValue != $expectedValue) {
+            throw new ExpectationException("Expected \"$expectedValue\" but got \"$returnedValue\"", $this->flexibleContext->getSession());
+        }
+    }
+
+    /**
+     * Asserts that a set of javascript variables have specified values.
+     * The $table should have the variable name in the first column, and the value in the second.
+     *
+     * @Then   the javascript variables should be:
+     *
+     * @param TableNode $table the variable names and values to check
+     *
+     * @throws ExpectationException if variable value does not match expected value
+     */
+    public function assertJavascriptVariables(TableNode $table)
+    {
+        $attributes = array_map([$this->storeContext, 'injectStoredValues'], $table->getRowsHash());
+
+        foreach ($attributes as $key => $value) {
+            $this->assertJavascriptVariable($key, $value);
         }
     }
 
@@ -98,7 +131,8 @@ class JavaScriptContext implements Context
      * Returns as-is literal inputs (string, int, float), otherwise
      * returns the JSON encoded output.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return string JSON encoded string
      */
     protected function getRawOrJson($value)
@@ -108,44 +142,5 @@ class JavaScriptContext implements Context
         }
 
         return $value;
-    }
-
-    /**
-     * Asserts that a javascript variable has a specified value.
-     *
-     * @Then   the javascript variable :variableName should have the value of :expectedValue
-     * @param  string               $variableName  This is the name of the variable to be checked.
-     * @param  string               $expectedValue This is the expected value.
-     * @throws ExpectationException If variable value does not match expected value.
-     */
-    public function assertJavascriptVariable($variableName, $expectedValue)
-    {
-        $returnedValue = $this->flexibleContext->getSession()->evaluateScript(
-            'return ' . $variableName . ';'
-        );
-
-        if ($returnedValue != $expectedValue) {
-            throw new ExpectationException(
-                "Expected \"$expectedValue\" but got \"$returnedValue\"",
-                $this->flexibleContext->getSession()
-            );
-        }
-    }
-
-    /**
-     * Asserts that a set of javascript variables have specified values.
-     * The $table should have the variable name in the first column, and the value in the second.
-     *
-     * @Then   the javascript variables should be:
-     * @param  TableNode            $table The variable names and values to check.
-     * @throws ExpectationException If variable value does not match expected value.
-     */
-    public function assertJavascriptVariables(TableNode $table)
-    {
-        $attributes = array_map([$this->storeContext, 'injectStoredValues'], $table->getRowsHash());
-
-        foreach ($attributes as $key => $value) {
-            $this->assertJavascriptVariable($key, $value);
-        }
     }
 }

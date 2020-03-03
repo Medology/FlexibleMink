@@ -1,4 +1,6 @@
-<?php namespace Behat\ParallelWorker\Filter;
+<?php
+
+namespace Behat\ParallelWorker\Filter;
 
 use Behat\Gherkin\Filter\SimpleFilter;
 use Behat\Gherkin\Node\ExampleTableNode;
@@ -19,37 +21,12 @@ use RuntimeException;
 class ParallelWorkerFilter extends SimpleFilter
 {
     private $totalNodes;
+
     private $curNode;
+
     private $curScenario;
+
     private $lineMode;
-
-    /**
-     * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
-     * example is treated like it's own scenario as far as counting goes for the workers.
-     *
-     * @param  ExampleTableNode $examples The examples of the Scenario Outline
-     * @throws RuntimeException If there are no examples in this outline which will run on this node
-     * @return ExampleTableNode A filtered table leaving only examples that should run on this node
-     */
-    private function filterExampleNode(ExampleTableNode $examples)
-    {
-        $table = $examples->getTable();
-        $newExamples = [];
-
-        foreach ($table as $lineNum => $example) {
-            // Add the header (first row) automatically, then add the examples that we should run.
-            if (!count($newExamples) || $this->curScenario++ % $this->totalNodes == 0) {
-                $newExamples[$lineNum] = $example;
-            }
-        }
-
-        if (count($newExamples) == 1) {
-            // All we got was the header.
-            throw new RuntimeException('No examples will run on this node!');
-        }
-
-        return new ExampleTableNode($newExamples, $examples->getKeyword());
-    }
 
     /**
      * {@inheritdoc}
@@ -124,6 +101,24 @@ class ParallelWorkerFilter extends SimpleFilter
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isFeatureMatch(FeatureNode $feature)
+    {
+        // we don't want to filter by feature, we want to filter by scenario, so always return false
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isScenarioMatch(ScenarioInterface $scenario)
+    {
+        // we do the filtering up in filterFeature, so always return true
+        return true;
+    }
+
+    /**
      * When the scenarios is imported by a file like the following:
      * --Start of the file---
      * features/api/v1/coupon.feature:9
@@ -137,7 +132,8 @@ class ParallelWorkerFilter extends SimpleFilter
      * The scenarios will be executed by behat one by one from exactly the number on the feature file it suffixed to.
      * In this case, we don't have to dig into the feature file and loop thru the scenarios.
      *
-     * @param  FeatureNode $feature The feature node that currently filtering.
+     * @param FeatureNode $feature the feature node that currently filtering
+     *
      * @return FeatureNode
      */
     protected function handelScenarioAsList(FeatureNode $feature)
@@ -160,20 +156,32 @@ class ParallelWorkerFilter extends SimpleFilter
     }
 
     /**
-     * {@inheritdoc}
+     * This method takes an example table for a scenario and filters it according to the total number of nodes. Each
+     * example is treated like it's own scenario as far as counting goes for the workers.
+     *
+     * @param ExampleTableNode $examples The examples of the Scenario Outline
+     *
+     * @throws RuntimeException If there are no examples in this outline which will run on this node
+     *
+     * @return ExampleTableNode A filtered table leaving only examples that should run on this node
      */
-    public function isFeatureMatch(FeatureNode $feature)
+    private function filterExampleNode(ExampleTableNode $examples)
     {
-        // we don't want to filter by feature, we want to filter by scenario, so always return false
-        return false;
-    }
+        $table = $examples->getTable();
+        $newExamples = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isScenarioMatch(ScenarioInterface $scenario)
-    {
-        // we do the filtering up in filterFeature, so always return true
-        return true;
+        foreach ($table as $lineNum => $example) {
+            // Add the header (first row) automatically, then add the examples that we should run.
+            if (!count($newExamples) || $this->curScenario++ % $this->totalNodes == 0) {
+                $newExamples[$lineNum] = $example;
+            }
+        }
+
+        if (count($newExamples) == 1) {
+            // All we got was the header.
+            throw new RuntimeException('No examples will run on this node!');
+        }
+
+        return new ExampleTableNode($newExamples, $examples->getKeyword());
     }
 }

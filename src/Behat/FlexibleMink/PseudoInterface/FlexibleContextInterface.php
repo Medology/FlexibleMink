@@ -24,16 +24,18 @@ trait FlexibleContextInterface
      * ensure that it waits for the text to be available with a max time limit.
      *
      * @see MinkContext::assertPageContainsText
-     * @param string $text Text to be searched in the page.
+     *
+     * @param string $text text to be searched in the page
      */
     abstract public function assertPageContainsText($text);
 
     /**
      * Asserts that the page contains a list of strings.
      *
-     * @param  TableNode             $table The list of strings to find.
-     * @param  string                $not   A flag to assert not containing text.
-     * @throws ResponseTextException If the text is not found.
+     * @param TableNode $table the list of strings to find
+     * @param string    $not   a flag to assert not containing text
+     *
+     * @throws ResponseTextException if the text is not found
      */
     abstract public function assertPageContainsTexts(TableNode $table, $not = null);
 
@@ -48,8 +50,9 @@ trait FlexibleContextInterface
     /**
      * Asserts that a field is visible or not.
      *
-     * @param  string               $field The field to be checked
-     * @param  bool                 $not   check if field should be visible or not.
+     * @param string $field The field to be checked
+     * @param bool   $not   check if field should be visible or not
+     *
      * @throws ExpectationException
      */
     abstract public function assertFieldVisibility($field, $not);
@@ -59,6 +62,7 @@ trait FlexibleContextInterface
      * ensure that it waits for the text to be available with a max time limit.
      *
      * @see MinkContext::assertFieldContains
+     *
      * @throws ExpectationException If the field can't be found
      * @throws ExpectationException If the field doesn't match the value
      */
@@ -67,7 +71,8 @@ trait FlexibleContextInterface
     /**
      * Returns Mink session.
      *
-     * @param  string|null $name name of the session OR active session will be used
+     * @param string|null $name name of the session OR active session will be used
+     *
      * @return Session
      */
     abstract public function getSession($name = null);
@@ -77,7 +82,8 @@ trait FlexibleContextInterface
      * to ensure that it waits for the item to not be available with a max time limit.
      *
      * @see MinkContext::assertPageNotContainsText
-     * @param string $text The text that should not be found on the page.
+     *
+     * @param string $text the text that should not be found on the page
      */
     abstract public function assertPageNotContainsText($text);
 
@@ -87,9 +93,11 @@ trait FlexibleContextInterface
      *
      * @see assertPageContainsText()
      * @see assertPageNotContainsText()
-     * @param  string                $text The text to wait on to not show up on the page anymore.
-     * @throws ResponseTextException If the text is not found initially or if the text was still visible after seeing
-     *                                    it and waiting for 15 seconds.
+     *
+     * @param string $text the text to wait on to not show up on the page anymore
+     *
+     * @throws ResponseTextException if the text is not found initially or if the text was still visible after seeing
+     *                               it and waiting for 15 seconds
      */
     abstract public function assertPageContainsTextTemporarily($text);
 
@@ -98,6 +106,7 @@ trait FlexibleContextInterface
      * assertElementContainsText to ensure that it waits for the item to be available with a max time limit.
      *
      * @see MinkContext::assertElementContainsText
+     *
      * @param string|array $element css element selector
      * @param string       $text    expected text
      */
@@ -106,21 +115,25 @@ trait FlexibleContextInterface
     /**
      * Checks that elements with specified selector exist.
      *
-     * @param  string               $elementsSelector The element to search from.
-     * @param  string|array         $selectorType     selector type locator.
-     * @throws ExpectationException When no element is found.
-     * @return NodeElement[]        All elements found with by the given selector.
+     * @param string       $elementsSelector the element to search from
+     * @param string|array $selectorType     selector type locator
+     *
+     * @throws ExpectationException when no element is found
+     *
+     * @return NodeElement[] all elements found with by the given selector
      */
     abstract public function assertElementsExist($elementsSelector, $selectorType = 'css');
 
     /**
      * Checks that the nth element exists and returns it.
      *
-     * @param  string               $elementSelector The elements to search from.
-     * @param  int                  $nth             This is the nth amount of the element.
-     * @param  string|array         $selectorType    selector type locator.
+     * @param string       $elementSelector the elements to search from
+     * @param int          $nth             this is the nth amount of the element
+     * @param string|array $selectorType    selector type locator
+     *
      * @throws ExpectationException When there is no Nth element found
-     * @return NodeElement          The nth element found.
+     *
+     * @return NodeElement the nth element found
      */
     abstract public function assertNthElement($elementSelector, $nth, $selectorType = 'css');
 
@@ -128,19 +141,21 @@ trait FlexibleContextInterface
      * Checks, that element with specified CSS doesn't contain specified text.
      *
      * @see MinkContext::assertElementNotContainsText
-     * @param string|array $element css element selector.
-     * @param string       $text    expected text that should not being found.
+     *
+     * @param string|array $element css element selector
+     * @param string       $text    expected text that should not being found
      */
     abstract public function assertElementNotContainsText($element, $text);
 
     /**
      * Asserts that all nodes have the specified attribute value.
      *
-     * @param  string                           $locator     The attribute locator of the node element.
-     * @param  array                            $attributes  A key value paid of the attribute and value the nodes
-     *                                                       should contain
-     * @param  string                           $selector    The selector to use to find the node.
-     * @param  null                             $occurrences The number of time the node element should be found.
+     * @param string $locator     the attribute locator of the node element
+     * @param array  $attributes  A key value paid of the attribute and value the nodes
+     *                            should contain
+     * @param string $selector    the selector to use to find the node
+     * @param null   $occurrences the number of time the node element should be found
+     *
      * @throws DriverException                  When the operation cannot be done
      * @throws ExpectationException             If the nodes attributes do not match
      * @throws UnsupportedDriverActionException When operation not supported by the driver
@@ -152,8 +167,10 @@ trait FlexibleContextInterface
      *
      * This method overrides the MinkContext::clickLink() default behavior for clickLink to ensure that only visible
      * links are clicked.
+     *
      * @see MinkContext::clickLink
-     * @param string $locator The id|title|alt|text of the link to be clicked.
+     *
+     * @param string $locator the id|title|alt|text of the link to be clicked
      */
     abstract public function clickLink($locator);
 
@@ -162,8 +179,10 @@ trait FlexibleContextInterface
      *
      * This method overrides the MinkContext::checkOption() default behavior for checkOption to ensure that only visible
      * options are checked and that it waits for the option to be available with a max time limit.
+     *
      * @see MinkContext::checkOption
-     * @param string $locator The id|title|alt|text of the option to be clicked.
+     *
+     * @param string $locator the id|title|alt|text of the option to be clicked
      */
     abstract public function checkOption($locator);
 
@@ -172,9 +191,11 @@ trait FlexibleContextInterface
      *
      * This method overrides the MinkContext::fillField() default behavior for fill a field to ensure that only visible
      * field is filled.
+     *
      * @see MinkContext::fillField
-     * @param string $field The id|title|alt|text of the field to be filled.
-     * @param string $value The value to be set on the field.
+     *
+     * @param string $field the id|title|alt|text of the field to be filled
+     * @param string $value the value to be set on the field
      */
     abstract public function fillField($field, $value);
 
@@ -182,18 +203,20 @@ trait FlexibleContextInterface
      * Unchecks checkbox with specified id|name|label|value.
      *
      * @see MinkContext::uncheckOption
-     * @param string $locator The id|title|alt|text of the option to be unchecked.
+     *
+     * @param string $locator the id|title|alt|text of the option to be unchecked
      */
     abstract public function uncheckOption($locator);
 
     /**
      * Checks if the selected button is disabled.
      *
-     * @param  string               $locator  The button
-     * @param  bool                 $disabled The state of the button
-     * @throws ExpectationException If button is disabled but shouldn't be.
-     * @throws ExpectationException If button isn't disabled but should be.
-     * @throws ExpectationException If the button can't be found.
+     * @param string $locator  The button
+     * @param bool   $disabled The state of the button
+     *
+     * @throws ExpectationException if button is disabled but shouldn't be
+     * @throws ExpectationException if button isn't disabled but should be
+     * @throws ExpectationException if the button can't be found
      */
     abstract public function assertButtonDisabled($locator, $disabled = true);
 
@@ -202,10 +225,12 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first button if the driver does not support visibility checks.
      *
-     * @param  string               $locator The button name.
-     * @param  TraversableElement   $context Element on the page to which button belongs.
-     * @throws ExpectationException If a visible button was not found.
-     * @return NodeElement          The button.
+     * @param string             $locator the button name
+     * @param TraversableElement $context element on the page to which button belongs
+     *
+     * @throws ExpectationException if a visible button was not found
+     *
+     * @return NodeElement the button
      */
     abstract public function scrollToButton($locator, TraversableElement $context = null);
 
@@ -214,9 +239,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first button if the driver does not support visibility checks.
      *
-     * @param  string               $locator The button name.
-     * @throws ExpectationException If a visible button was not found.
-     * @return NodeElement          The button.
+     * @param string $locator the button name
+     *
+     * @throws ExpectationException if a visible button was not found
+     *
+     * @return NodeElement the button
      */
     abstract public function assertVisibleButton($locator);
 
@@ -225,9 +252,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first link if the driver does not support visibility checks.
      *
-     * @param  string               $locator The link name.
-     * @throws ExpectationException If a visible link was not found.
-     * @return NodeElement          The link.
+     * @param string $locator the link name
+     *
+     * @throws ExpectationException if a visible link was not found
+     *
+     * @return NodeElement the link
      */
     abstract public function scrollToLink($locator);
 
@@ -236,9 +265,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first link if the driver does not support visibility checks.
      *
-     * @param  string               $locator The link name.
-     * @throws ExpectationException If a visible link was not found.
-     * @return NodeElement          The link.
+     * @param string $locator the link name
+     *
+     * @throws ExpectationException if a visible link was not found
+     *
+     * @return NodeElement the link
      */
     abstract public function assertVisibleLink($locator);
 
@@ -247,9 +278,11 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first option if the driver does not support visibility checks.
      *
-     * @param  string               $locator The option name.
-     * @throws ExpectationException If a visible option was not found.
-     * @return NodeElement          The option.
+     * @param string $locator the option name
+     *
+     * @throws ExpectationException if a visible option was not found
+     *
+     * @return NodeElement the option
      */
     abstract public function scrollToOption($locator);
 
@@ -258,37 +291,43 @@ trait FlexibleContextInterface
      *
      * Warning: Will return the first option if the driver does not support visibility checks.
      *
-     * @param  string               $locator The option name.
-     * @throws ExpectationException If a visible option was not found.
-     * @return NodeElement          The option.
+     * @param string $locator the option name
+     *
+     * @throws ExpectationException if a visible option was not found
+     *
+     * @return NodeElement the option
      */
     abstract public function assertVisibleOption($locator);
 
     /**
      * Checks that the page contains a visible input field, scrolls to it if it's not in the viewport, then returns it.
      *
-     * @param  string                  $fieldName The input name.
-     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
-     * @throws ExpectationException    If a visible input field is not found.
-     * @return NodeElement             The found input field.
+     * @param string                  $fieldName the input name
+     * @param TraversableElement|null $context   the context to search in, if not provided defaults to page
+     *
+     * @throws ExpectationException if a visible input field is not found
+     *
+     * @return NodeElement the found input field
      */
     abstract public function scrollToField($fieldName, TraversableElement $context = null);
 
     /**
      * Checks that the page contains a visible input field and then returns it.
      *
-     * @param  string                  $fieldName The input name.
-     * @param  TraversableElement|null $context   The context to search in, if not provided defaults to page.
-     * @throws ExpectationException    If a visible input field is not found.
-     * @return NodeElement             The found input field.
+     * @param string                  $fieldName the input name
+     * @param TraversableElement|null $context   the context to search in, if not provided defaults to page
+     *
+     * @throws ExpectationException if a visible input field is not found
+     *
+     * @return NodeElement the found input field
      */
     abstract public function assertFieldExists($fieldName, TraversableElement $context = null);
 
     /**
      * Gets all the inputs that have the label name specified within the context specified.
      *
-     * @param string             $labelName The label text used to find the inputs for.
-     * @param TraversableElement $context   The context to search in.
+     * @param string             $labelName the label text used to find the inputs for
+     * @param TraversableElement $context   the context to search in
      *
      * @return NodeElement[]
      */
@@ -297,24 +336,27 @@ trait FlexibleContextInterface
     /**
      * Checks that the page not contain a visible input field.
      *
-     * @param  string               $fieldName The name of the input field.
-     * @throws ExpectationException If a visible input field is found.
+     * @param string $fieldName the name of the input field
+     *
+     * @throws ExpectationException if a visible input field is found
      */
     abstract public function assertFieldNotExists($fieldName);
 
     /**
      * Checks that the page contains the given lines of text in the order specified.
      *
-     * @param  TableNode                $table A list of text lines to look for.
-     * @throws ExpectationException     if a line is not found, or is found out of order.
-     * @throws InvalidArgumentException if the list of lines has more than one column.
+     * @param TableNode $table a list of text lines to look for
+     *
+     * @throws ExpectationException     if a line is not found, or is found out of order
+     * @throws InvalidArgumentException if the list of lines has more than one column
      */
     abstract public function assertLinesInOrder(TableNode $table);
 
     /**
      * This method will check if all the fields exists and visible in the current page.
      *
-     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
+     * @param TableNode $tableNode The id|name|title|alt|value of the input field
+     *
      * @throws ExpectationException if any of the fields is not visible in the page
      */
     abstract public function assertPageContainsFields(TableNode $tableNode);
@@ -322,7 +364,8 @@ trait FlexibleContextInterface
     /**
      * This method will check if all the fields not exists or not visible in the current page.
      *
-     * @param  TableNode            $tableNode The id|name|title|alt|value of the input field
+     * @param TableNode $tableNode The id|name|title|alt|value of the input field
+     *
      * @throws ExpectationException if any of the fields is visible in the page
      */
     abstract public function assertPageNotContainsFields(TableNode $tableNode);
@@ -330,9 +373,10 @@ trait FlexibleContextInterface
     /**
      * Assert if the option exist/not exist in the select.
      *
-     * @param  string                   $select    The name of the select
-     * @param  string                   $existence The status of the option item
-     * @param  string                   $option    The name of the option item
+     * @param string $select    The name of the select
+     * @param string $existence The status of the option item
+     * @param string $option    The name of the option item
+     *
      * @throws ElementNotFoundException If the select is not found in the page
      * @throws ExpectationException     If the option is exist/not exist as expected
      */
@@ -342,11 +386,11 @@ trait FlexibleContextInterface
      * Assert if the options in the select match given options.
      *
      * @param string    $select    The name of the select
-     * @param TableNode $tableNode The text of the options.
+     * @param TableNode $tableNode the text of the options
      *
-     * @throws ExpectationException     When there is no option in the select.
-     * @throws ExpectationException     When the option(s) in the select not match the option(s) listed.
-     * @throws InvalidArgumentException When no expected options listed in the test step.
+     * @throws ExpectationException     when there is no option in the select
+     * @throws ExpectationException     when the option(s) in the select not match the option(s) listed
+     * @throws InvalidArgumentException when no expected options listed in the test step
      */
     abstract public function assertSelectContainsExactOptions($select, TableNode $tableNode);
 
@@ -354,12 +398,14 @@ trait FlexibleContextInterface
      * Asserts that the specified option is selected.
      *
      * @Then   the :field drop down should have the :option selected
-     * @param  string                   $field  the select field
-     * @param  string                   $option the option that should be selected in the select field
-     * @throws ExpectationException     If the select dropdown doesn't exist in the view.
-     * @throws ElementNotFoundException If the option is not found in the dropdown.
-     * @throws ExpectationException     If the option is not selected from the dropdown.
-     * @throws Exception                If the string references something that does not exist in the store.
+     *
+     * @param string $field  the select field
+     * @param string $option the option that should be selected in the select field
+     *
+     * @throws ExpectationException     if the select dropdown doesn't exist in the view
+     * @throws ElementNotFoundException if the option is not found in the dropdown
+     * @throws ExpectationException     if the option is not selected from the dropdown
+     * @throws Exception                if the string references something that does not exist in the store
      */
     abstract public function assertSelectOptionSelected($field, $option);
 
@@ -407,10 +453,12 @@ trait FlexibleContextInterface
      * buttons are pressed and that it waits for the button to be available with a max time limit.
      *
      * @see MinkContext::pressButton
-     * @param  string               $button  button id, inner text, value or alt
-     * @param  TraversableElement   $context Element on the page to which button belongs.
-     * @throws ExpectationException If a visible button field is not found.
-     * @throws ExpectationException If Button is found but not visible in the viewport.
+     *
+     * @param string             $button  button id, inner text, value or alt
+     * @param TraversableElement $context element on the page to which button belongs
+     *
+     * @throws ExpectationException if a visible button field is not found
+     * @throws ExpectationException if Button is found but not visible in the viewport
      */
     abstract public function pressButton($button, TraversableElement $context = null);
 
@@ -419,7 +467,7 @@ trait FlexibleContextInterface
      *
      * @param string $whereToScroll   The direction to scroll the page. Can be any valid combination of "top", "bottom",
      *                                "left" and "right". e.g. "top", "top right", but not "top bottom"
-     * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
+     * @param bool   $useSmoothScroll use the smooth scrolling behavior if the browser supports it
      */
     abstract public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false);
 
@@ -427,15 +475,16 @@ trait FlexibleContextInterface
      * Finds the first visible element in the given set, prioritizing elements in the viewport but scrolling to one if
      * necessary.
      *
-     * @param  NodeElement[] $elements The elements to look for.
-     * @return NodeElement   The first visible element.
+     * @param NodeElement[] $elements the elements to look for
+     *
+     * @return NodeElement the first visible element
      */
     abstract public function scrollWindowToFirstVisibleElement(array $elements);
 
     /**
      * Scrolls the window to the given element.
      *
-     * @param NodeElement $element The element to scroll to.
+     * @param NodeElement $element the element to scroll to
      */
     abstract public function scrollWindowToElement(NodeElement $element);
 
@@ -463,32 +512,35 @@ trait FlexibleContextInterface
     /**
      * Check the radio button.
      *
-     * @param string $label The label of the radio button.
+     * @param string $label the label of the radio button
      */
     abstract public function ensureRadioButtonChecked($label);
 
     /**
      * Assert the radio button is checked.
      *
-     * @param  string               $label The label of the radio button.
-     * @throws ExpectationException When the radio button is not checked.
+     * @param string $label the label of the radio button
+     *
+     * @throws ExpectationException when the radio button is not checked
      */
     abstract public function assertRadioButtonChecked($label);
 
     /**
      * Assert the radio button is not checked.
      *
-     * @param  string               $label The label of the radio button.
-     * @throws ExpectationException When the radio button is checked.
+     * @param string $label the label of the radio button
+     *
+     * @throws ExpectationException when the radio button is checked
      */
     abstract public function assertRadioButtonNotChecked($label);
 
     /**
      * Asserts that the node element is visible in the viewport.
      *
-     * @param  NodeElement          $element Element expected to be visble in the viewport.
-     * @throws ExpectationException If the element was not found visible in the viewport.
-     * @throws Exception            If the assertion did not pass before the timeout was exceeded.
+     * @param NodeElement $element element expected to be visble in the viewport
+     *
+     * @throws ExpectationException if the element was not found visible in the viewport
+     * @throws Exception            if the assertion did not pass before the timeout was exceeded
      */
     abstract public function assertNodeElementVisibleInViewport(NodeElement $element);
 }

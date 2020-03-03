@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\FlexibleMink\Context\FlexibleContext;
+<?php
+
+namespace Tests\Behat\FlexibleMink\Context\FlexibleContext;
 
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ExpectationException;

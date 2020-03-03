@@ -29,10 +29,7 @@ trait JavaScriptContext
 
         // If it's null - we failed
         if ($result === null) {
-            throw new ExpectationException(
-                'The custom variable "' . $variable . '" is null or does not exist.',
-                $this->getSession()
-            );
+            throw new ExpectationException('The custom variable "' . $variable . '" is null or does not exist.', $this->getSession());
         }
     }
 
@@ -49,10 +46,7 @@ trait JavaScriptContext
             $result = $session->evaluateScript('return typeof(' . $variable . ');');
 
             if ($result !== $type xor $not) {
-                throw new ExpectationException(
-                    "The variable \"$variable\" should$not be type $type, but is $result",
-                    $session
-                );
+                throw new ExpectationException("The variable \"$variable\" should$not be type $type, but is $result", $session);
             }
 
             return true;
@@ -73,38 +67,15 @@ trait JavaScriptContext
 
         foreach ($values->getHash() as $row) {
             if (!isset($response[$row['key']])) {
-                throw new ExpectationException(
-                    "Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n" .
-                        "Actual: $returnedJsonData",
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected key \"{$row['key']}\" was not in the JS variable \"{$variableName}\"\n" . "Actual: $returnedJsonData", $this->getSession());
             }
             $expected = $this->getRawOrJson($row['value']);
             $actual = $this->getRawOrJson($response[$row['key']]);
 
             if ($actual != $expected) {
-                throw new ExpectationException(
-                    "Expected \"$expected\" in {$row['key']} position but got \"$actual\"",
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected \"$expected\" in {$row['key']} position but got \"$actual\"", $this->getSession());
             }
         }
-    }
-
-    /**
-     * Returns as-is literal inputs (string, int, float), otherwise
-     * returns the JSON encoded output.
-     *
-     * @param  mixed  $value
-     * @return string JSON encoded string
-     */
-    protected function getRawOrJson($value)
-    {
-        if (is_array($value) || is_object($value)) {
-            return json_encode($value);
-        }
-
-        return $value;
     }
 
     /**
@@ -119,10 +90,7 @@ trait JavaScriptContext
         );
 
         if ($returnedValue != $expectedValue) {
-            throw new ExpectationException(
-                "Expected \"$expectedValue\" but got \"$returnedValue\"",
-                $this->getSession()
-            );
+            throw new ExpectationException("Expected \"$expectedValue\" but got \"$returnedValue\"", $this->getSession());
         }
     }
 
@@ -131,8 +99,10 @@ trait JavaScriptContext
      * The $table should have the variable name in the first column, and the value in the second.
      *
      * @Then   the javascript variables should be:
-     * @param  TableNode            $table The variable names and values to check.
-     * @throws ExpectationException If variable value does not match expected value.
+     *
+     * @param TableNode $table the variable names and values to check
+     *
+     * @throws ExpectationException if variable value does not match expected value
      */
     public function assertJavascriptVariables(TableNode $table)
     {
@@ -141,5 +111,22 @@ trait JavaScriptContext
         foreach ($attributes as $key => $value) {
             $this->assertJavascriptVariable($key, $value);
         }
+    }
+
+    /**
+     * Returns as-is literal inputs (string, int, float), otherwise
+     * returns the JSON encoded output.
+     *
+     * @param mixed $value
+     *
+     * @return string JSON encoded string
+     */
+    protected function getRawOrJson($value)
+    {
+        if (is_array($value) || is_object($value)) {
+            return json_encode($value);
+        }
+
+        return $value;
     }
 }

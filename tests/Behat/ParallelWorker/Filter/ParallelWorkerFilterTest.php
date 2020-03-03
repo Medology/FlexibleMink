@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\ParallelRunner\Filter;
+<?php
+
+namespace Tests\Behat\ParallelRunner\Filter;
 
 use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Node\OutlineNode;

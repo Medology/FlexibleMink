@@ -1,4 +1,6 @@
-<?php namespace Behat\FlexibleMink\PseudoInterface;
+<?php
+
+namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Behat\Hook\Scope\AfterStepScope;
 
@@ -17,6 +19,7 @@ trait ScreenShotContextInterface
      * Captures a screenshot and saves it to the artifacts directory.
      *
      * @When  /^(?:I )?take a screenshot(?: named "(?P<name>(?:[^"]|\\")*)")$/
+     *
      * @param string $name the name for the screenshot file (excluding path and extension)
      */
     abstract public function takeScreenShot($name = 'screenshot');
@@ -30,8 +33,6 @@ trait ScreenShotContextInterface
      *        public function onFailedStep(AfterStepScope $scope) {
      *          $this->takeScreenShotAfterFailedStep($scope);
      *        }
-     *
-     * @param AfterStepScope $scope
      */
     abstract public function takeScreenShotAfterFailedStep(AfterStepScope $scope);
 }

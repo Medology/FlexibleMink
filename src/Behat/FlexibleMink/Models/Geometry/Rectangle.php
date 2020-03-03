@@ -22,7 +22,6 @@ class Rectangle
     /**
      * Rectangle constructor.
      *
-     *
      * @param int $left   left x position
      * @param int $top    Top y position
      * @param int $right  right x position
@@ -39,7 +38,8 @@ class Rectangle
     /**
      * Checks if this is fully inside another rectangle.
      *
-     * @param  Rectangle $rectangle Rectangle to check against this one
+     * @param Rectangle $rectangle Rectangle to check against this one
+     *
      * @return bool
      */
     public function isContainedIn(self $rectangle)
@@ -54,7 +54,8 @@ class Rectangle
     /**
      * Checks if the specified rectangle overlaps with this rectangle.
      *
-     * @param  Rectangle $rectangle Rectangle to check against this one
+     * @param Rectangle $rectangle Rectangle to check against this one
+     *
      * @return bool
      */
     public function overlaps(self $rectangle)
@@ -65,7 +66,8 @@ class Rectangle
     /**
      * Checks if the specified rectangle overlaps with this rectangle on the X-axis.
      *
-     * @param  Rectangle $rectangle Rectangle to check against this one
+     * @param Rectangle $rectangle Rectangle to check against this one
+     *
      * @return bool
      */
     private function overlapsInX(self $rectangle)
@@ -82,7 +84,8 @@ class Rectangle
     /**
      * Checks if the specified rectangle overlaps with this rectangle on the Y-axis.
      *
-     * @param  Rectangle $rectangle Rectangle to check against this one
+     * @param Rectangle $rectangle Rectangle to check against this one
+     *
      * @return bool
      */
     private function overlapsInY(self $rectangle)

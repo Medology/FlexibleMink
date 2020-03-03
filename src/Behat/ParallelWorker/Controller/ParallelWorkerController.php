@@ -1,4 +1,6 @@
-<?php namespace Behat\ParallelWorker\Controller;
+<?php
+
+namespace Behat\ParallelWorker\Controller;
 
 use Behat\Gherkin\Gherkin;
 use Behat\ParallelWorker\Filter\ParallelWorkerFilter;

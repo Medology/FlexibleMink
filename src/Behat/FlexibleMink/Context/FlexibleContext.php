@@ -78,10 +78,7 @@ class FlexibleContext extends MinkContext
                 $actual = $this->getSession()->getCurrentUrl();
 
                 if (!strpos($actual, $page) === 0) {
-                    throw new ExpectationException(
-                        sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
-                        $this->getSession()
-                    );
+                    throw new ExpectationException(sprintf('Current page is "%s", but "%s" expected.', $actual, $page), $this->getSession());
                 }
             }
         });
@@ -92,11 +89,12 @@ class FlexibleContext extends MinkContext
      *
      * @Then /^(?:|I )should be on "(?P<page>[^"]+)" with the following query parameters:$/
      *
-     * @param  string               $page       the current page path of the query parameters.
-     * @param  TableNode            $parameters the values of the query parameters.
-     * @throws ExpectationException if the expected current page is different.
-     * @throws ExpectationException if the one of the current page params are not set.
-     * @throws ExpectationException if the one of the current page param values does not match with the expected.
+     * @param string    $page       the current page path of the query parameters
+     * @param TableNode $parameters the values of the query parameters
+     *
+     * @throws ExpectationException if the expected current page is different
+     * @throws ExpectationException if the one of the current page params are not set
+     * @throws ExpectationException if the one of the current page param values does not match with the expected
      */
     public function assertPageAddressWithQueryParameters($page, TableNode $parameters)
     {
@@ -110,10 +108,7 @@ class FlexibleContext extends MinkContext
             }
 
             if ($params[$param] != $value) {
-                throw new ExpectationException(
-                    "Expected query parameter $param to be $value, but found " . print_r($params[$param], true),
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected query parameter $param to be $value, but found " . print_r($params[$param], true), $this->getSession());
             }
         }
     }
@@ -179,14 +174,13 @@ class FlexibleContext extends MinkContext
                 parent::assertPageNotContainsText($text);
             }, 15);
         } catch (ExpectationException $e) {
-            throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
-            );
+            throw new ResponseTextException("Timed out waiting for '$text' to no longer appear.", $this->getSession());
         }
     }
 
     /**
      * {@inheritdoc}
+     *
      * @Then /^the field "(?P<field>[^"]+)" should(?P<not> not|) be visible$/
      */
     public function assertFieldVisibility($field, $not)
@@ -224,11 +218,13 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that an element with the given XPath is present in the container, and returns it.
      *
-     * @param  NodeElement          $container The base element to search in.
-     * @param  string               $xpath     The XPath of the element to locate inside the container.
+     * @param NodeElement $container the base element to search in
+     * @param string      $xpath     the XPath of the element to locate inside the container
+     *
      * @throws DriverException      When the operation cannot be done
-     * @throws ExpectationException if no element was found.
-     * @return NodeElement          The found element.
+     * @throws ExpectationException if no element was found
+     *
+     * @return NodeElement the found element
      */
     public function assertElementInsideElement(NodeElement $container, $xpath)
     {
@@ -288,8 +284,9 @@ class FlexibleContext extends MinkContext
      * Overrides the base method to wait for the assertion to pass, and store
      * the resulting element in the store under "element".
      *
-     * @throws ElementNotFoundException if the element was not found.
-     * @return NodeElement              The element found.
+     * @throws ElementNotFoundException if the element was not found
+     *
+     * @return NodeElement the element found
      */
     public function assertElementOnPage($element, $selectorType = 'css')
     {
@@ -357,6 +354,7 @@ class FlexibleContext extends MinkContext
 
     /**
      * {@inheritdoc}
+     *
      * @Given the :locator button is :disabled
      * @Then the :locator button should be :disabled
      */
@@ -375,16 +373,10 @@ class FlexibleContext extends MinkContext
 
             if ($button->hasAttribute('disabled')) {
                 if (!$disabled) {
-                    throw new ExpectationException(
-                        "The button, $locator, was disabled, but it should not have been disabled.",
-                        $this->getSession()
-                    );
+                    throw new ExpectationException("The button, $locator, was disabled, but it should not have been disabled.", $this->getSession());
                 }
             } elseif ($disabled) {
-                throw new ExpectationException(
-                    "The button, $locator, was not disabled, but it should have been disabled.",
-                    $this->getSession()
-                );
+                throw new ExpectationException("The button, $locator, was not disabled, but it should have been disabled.", $this->getSession());
             }
         });
     }
@@ -394,12 +386,15 @@ class FlexibleContext extends MinkContext
      *
      * @noinspection PhpDocRedundantThrowsInspection exceptions bubble up from waitFor
      * @Then   I should see a :locator button
-     * @param  string                           $locator The id|name|title|alt|value of the button.
-     * @throws Exception                        If the timeout expired before the assertion could be ran even once.
-     * @throws DriverException                  When the operation cannot be done.
-     * @throws ExpectationException             If no button was found.
-     * @throws UnsupportedDriverActionException When operation not supported by the driver.
-     * @return NodeElement                      The button.
+     *
+     * @param string $locator the id|name|title|alt|value of the button
+     *
+     * @throws Exception                        if the timeout expired before the assertion could be ran even once
+     * @throws DriverException                  when the operation cannot be done
+     * @throws ExpectationException             if no button was found
+     * @throws UnsupportedDriverActionException when operation not supported by the driver
+     *
+     * @return NodeElement the button
      */
     public function assertButtonExists($locator)
     {
@@ -749,16 +744,10 @@ class FlexibleContext extends MinkContext
                 $intersect = array_intersect($actualOptTexts, $expectedOptTexts);
 
                 if (count($intersect) < count($expectedOptTexts)) {
-                    throw new ExpectationException(
-                        'Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect),
-                        $this->getSession()
-                    );
+                    throw new ExpectationException('Expecting ' . count($expectedOptTexts) . ' matching option(s), found ' . count($intersect), $this->getSession());
                 }
 
-                throw new ExpectationException(
-                    'Options in select match expected but not in expected order',
-                    $this->getSession()
-                );
+                throw new ExpectationException('Options in select match expected but not in expected order', $this->getSession());
             }
         });
     }
@@ -781,19 +770,11 @@ class FlexibleContext extends MinkContext
             $optionField = $selectField->find('named', ['option', $option]);
 
             if (null === $optionField) {
-                throw new ElementNotFoundException(
-                    $this->getSession(),
-                    'select option field',
-                    'id|name|label|value',
-                    $option
-                );
+                throw new ElementNotFoundException($this->getSession(), 'select option field', 'id|name|label|value', $option);
             }
 
             if (!$optionField->isSelected()) {
-                throw new ExpectationException(
-                    'Select option field with value|text "' . $option . '" is not selected in the select "' . $field . '"',
-                    $this->getSession()
-                );
+                throw new ExpectationException('Select option field with value|text "' . $option . '" is not selected in the select "' . $field . '"', $this->getSession());
             }
         });
     }
@@ -813,9 +794,10 @@ class FlexibleContext extends MinkContext
     /**
      * Returns all cookies.
      *
-     * @throws Exception                        If the operation failed.
-     * @throws UnsupportedDriverActionException When operation not supported by the driver.
-     * @return array                            Key/value pairs of cookie name/value.
+     * @throws Exception                        if the operation failed
+     * @throws UnsupportedDriverActionException when operation not supported by the driver
+     *
+     * @return array key/value pairs of cookie name/value
      */
     public function getCookies()
     {
@@ -844,9 +826,10 @@ class FlexibleContext extends MinkContext
      * Deletes all cookies.
      *
      * @When   /^(?:|I )delete all cookies$/
-     * @throws DriverException                  When the operation cannot be performed.
-     * @throws Exception                        If the operation failed.
-     * @throws UnsupportedDriverActionException When operation not supported by the driver.
+     *
+     * @throws DriverException                  when the operation cannot be performed
+     * @throws Exception                        if the operation failed
+     * @throws UnsupportedDriverActionException when operation not supported by the driver
      */
     public function deleteCookies()
     {
@@ -893,8 +876,8 @@ class FlexibleContext extends MinkContext
      *
      * {@inheritdoc}
      *
-     * @throws Exception            if the timeout expired before a single try could be attempted.
-     * @throws ExpectationException if the value of the input does not match expected after the file is attached.
+     * @throws Exception            if the timeout expired before a single try could be attempted
+     * @throws ExpectationException if the value of the input does not match expected after the file is attached
      */
     public function attachFileToField($field, $path)
     {
@@ -909,10 +892,7 @@ class FlexibleContext extends MinkContext
             $filename = end($fileParts); // end() cannot take inline expressions, only variables.
 
             if (strpos($value, $filename) === false) {
-                throw new ExpectationException(
-                    "Value of $field is '$value', expected to contain '$filename'",
-                    $session
-                );
+                throw new ExpectationException("Value of $field is '$value', expected to contain '$filename'", $session);
             }
         });
     }
@@ -991,11 +971,7 @@ class FlexibleContext extends MinkContext
     {
         $this->waitFor(function () use ($element) {
             if (!$this->nodeIsVisibleInViewport($element)) {
-                throw new ExpectationException(
-                    'The following element was expected to be visible in viewport, but was not: ' .
-                        $element->getHtml(),
-                    $this->getSession()
-                );
+                throw new ExpectationException('The following element was expected to be visible in viewport, but was not: ' . $element->getHtml(), $this->getSession());
             }
         });
     }
@@ -1009,9 +985,9 @@ class FlexibleContext extends MinkContext
      *
      * @throws DriverException                  When the operation cannot be done
      * @throws ElementNotFoundException         when the option is not found in the select box
-     * @throws Exception                        If the string references something that does not exist in the store.
-     * @throws Exception                        If the timeout expires and the lambda has thrown a Exception.
-     * @throws ExpectationException             If a visible select was not found.
+     * @throws Exception                        if the string references something that does not exist in the store
+     * @throws Exception                        if the timeout expires and the lambda has thrown a Exception
+     * @throws ExpectationException             if a visible select was not found
      * @throws UnsupportedDriverActionException When operation not supported by the driver
      */
     public function selectOption($select, $option)
@@ -1030,9 +1006,11 @@ class FlexibleContext extends MinkContext
     /**
      * Finds all of the matching selects or radios on the page.
      *
-     * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @param string $locator the id|name|label|value|placeholder of the select or radio
+     *
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException When operation not supported by the driver
+     *
      * @return NodeElement[]
      */
     public function getOptionFields($locator)
@@ -1048,11 +1026,13 @@ class FlexibleContext extends MinkContext
     /**
      * Finds the first matching visible select or radio on the page.
      *
-     * @param  string                           $locator The id|name|label|value|placeholder of the select or radio.
+     * @param string $locator the id|name|label|value|placeholder of the select or radio
+     *
      * @throws DriverException                  When the operation cannot be done
-     * @throws ExpectationException             If a visible select was not found.
+     * @throws ExpectationException             if a visible select was not found
      * @throws UnsupportedDriverActionException When operation not supported by the driver
-     * @return NodeElement                      The select or radio.
+     *
+     * @return NodeElement the select or radio
      */
     public function assertVisibleOptionField($locator)
     {
@@ -1073,7 +1053,7 @@ class FlexibleContext extends MinkContext
      *
      * @param string $whereToScroll   The direction to scroll the page. Can be any valid combination of
      *                                "top", "bottom", "left" and "right". e.g. "top", "top right", but not "top bottom"
-     * @param bool   $useSmoothScroll Use the smooth scrolling behavior if the browser supports it.
+     * @param bool   $useSmoothScroll use the smooth scrolling behavior if the browser supports it
      */
     public function scrollWindowToBody($whereToScroll, $useSmoothScroll = false)
     {
@@ -1207,11 +1187,13 @@ JS
     /**
      * Checks if a node has the specified attribute values.
      *
-     * @param  NodeElement                      $node       The node to check the expected attributes against.
-     * @param  array                            $attributes An associative array of the expected attributes.
+     * @param NodeElement $node       the node to check the expected attributes against
+     * @param array       $attributes an associative array of the expected attributes
+     *
      * @throws DriverException                  When the operation cannot be done
      * @throws UnsupportedDriverActionException When operation not supported by the driver
-     * @return bool                             true if the element has the specified attribute values, false if not.
+     *
+     * @return bool true if the element has the specified attribute values, false if not
      */
     public function elementHasAttributeValues(NodeElement $node, array $attributes)
     {
@@ -1240,18 +1222,262 @@ JS
 
         foreach ($nodes as $node) {
             if (!$this->elementHasAttributeValues($node, $attributes)) {
-                throw new ExpectationException(
-                    "Expected  node with '$locator' but found " . print_r($node, true),
-                    $this->getSession()
-                );
+                throw new ExpectationException("Expected  node with '$locator' but found " . print_r($node, true), $this->getSession());
             }
         }
     }
 
     /**
+     * Waits for the page to be loaded.
+     *
+     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
+     * ready. This is done by waiting for the document.readyState to be "complete".
+     */
+    public function waitForPageLoad($timeout = 120)
+    {
+        $this->waitFor(function () {
+            $readyState = $this->getSession()->evaluateScript('document.readyState');
+            if ($readyState !== 'complete') {
+                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
+            }
+        }, $timeout);
+    }
+
+    /**
+     * Checks if a node Element is fully visible in the viewport.
+     *
+     * @param NodeElement $element the NodeElement to look for in the viewport
+     *
+     * @throws UnsupportedDriverActionException if driver does not support the requested action
+     * @throws \WebDriver\Exception             If cannot get the Web Driver
+     *
+     * @return bool
+     */
+    public function nodeIsFullyVisibleInViewport(NodeElement $element)
+    {
+        $driver = $this->assertSelenium2Driver('Checks if a node Element is fully visible in the viewport.');
+        if (!$driver->isDisplayed($element->getXpath()) ||
+            count(($parents = $this->getListOfAllNodeElementParents($element, 'body'))) < 1
+        ) {
+            return false;
+        }
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+        foreach ($parents as $parent) {
+            if (!$parent->isVisible() ||
+                !$elementViewportRectangle->isContainedIn($this->getElementViewportRectangle($parent))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if a node Element is visible in the viewport.
+     *
+     * @param NodeElement $element The NodeElement to check for in the viewport
+     *
+     * @throws UnsupportedDriverActionException if driver does not support the requested action
+     * @throws \WebDriver\Exception             If cannot get the Web Driver
+     *
+     * @return bool
+     */
+    public function nodeIsVisibleInViewport(NodeElement $element)
+    {
+        $driver = $this->assertSelenium2Driver('Checks if a node Element is visible in the viewport.');
+        $parents = $this->getListOfAllNodeElementParents($element, 'body');
+
+        if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
+            return false;
+        }
+
+        $elementViewportRectangle = $this->getElementViewportRectangle($element);
+
+        foreach ($parents as $parent) {
+            if (!$elementViewportRectangle->overlaps($this->getElementViewportRectangle($parent))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if a node Element is visible in the document.
+     *
+     * @param NodeElement $element The NodeElement to check for in the viewport
+     *
+     * @throws UnsupportedDriverActionException if driver does not support the requested action
+     * @throws \WebDriver\Exception             If cannot get the Web Driver
+     *
+     * @return bool
+     */
+    public function nodeIsVisibleInDocument(NodeElement $element)
+    {
+        return $this->assertSelenium2Driver('Check if element is displayed')
+            ->isDisplayed($element->getXpath());
+    }
+
+    /**
+     * Get a rectangle that represents the location of a NodeElements viewport.
+     *
+     * @param NodeElement $element nodeElement to get the viewport of
+     *
+     * @throws UnsupportedDriverActionException when operation not supported by the driver
+     *
+     * @return Rectangle representing the viewport
+     */
+    public function getElementViewportRectangle(NodeElement $element)
+    {
+        $driver = $this->assertSelenium2Driver('Get XPath Element Dimensions');
+        $dimensions = $driver->getXpathElementDimensions($element->getXpath());
+        $YScrollBarWidth = $dimensions['clientWidth'] > 0 ? $dimensions['width'] - $dimensions['clientWidth'] : 0;
+        $XScrollBarHeight = $dimensions['clientHeight'] > 0 ? $dimensions['height'] - $dimensions['clientHeight'] : 0;
+
+        return new Rectangle(
+            $dimensions['left'],
+            $dimensions['top'],
+            $dimensions['right'] - $YScrollBarWidth,
+            $dimensions['bottom'] - $XScrollBarHeight
+        );
+    }
+
+    /**
+     * Step to assert that the specified element is not covered.
+     *
+     * @param string $identifier element Id to find the element used in the assertion
+     *
+     * @throws ExpectationException if element is found to be covered by another
+     *
+     * @Then the :identifier element should not be covered by another
+     */
+    public function assertElementIsNotCoveredByIdStep($identifier)
+    {
+        /** @var NodeElement $element */
+        $element = $this->getSession()->getPage()->find('css', "#$identifier");
+
+        $this->assertElementIsNotCovered($element);
+    }
+
+    /**
+     * Asserts that the specified element is not covered by another element.
+     *
+     * Keep in mind that at the moment, this method performs a check in a square area so this may not work
+     * correctly with elements of different shapes.
+     *
+     * @param NodeElement $element  the element to assert that is not covered by something else
+     * @param int         $leniency percent of leniency when performing each pixel check
+     *
+     * @throws ExpectationException     if element is found to be covered by another
+     * @throws InvalidArgumentException the threshold provided is outside of the 0-100 range accepted
+     */
+    public function assertElementIsNotCovered(NodeElement $element, $leniency = 20)
+    {
+        if ($leniency < 0 || $leniency > 99) {
+            throw new InvalidArgumentException('The leniency provided is outside of the 0-50 range accepted.');
+        }
+
+        $xpath = $element->getXpath();
+
+        /** @var array $coordinates */
+        $coordinates = $this->getSession()->evaluateScript(<<<JS
+          return document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue.getBoundingClientRect();
+JS
+        );
+
+        $width = $coordinates['width'] - 1;
+        $height = $coordinates['height'] - 1;
+        $right = $coordinates['right'];
+        $bottom = $coordinates['bottom'];
+
+        // X and Y are the starting points.
+        $x = $coordinates['left'];
+        $y = $coordinates['top'];
+
+        $xSpacing = ($width * ($leniency / 100)) ?: 1;
+        $ySpacing = ($height * ($leniency / 100)) ?: 1;
+
+        $expected = $element->getOuterHtml();
+
+        /**
+         * Asserts that each point checked on the row isn't covered by an element that doesn't match the expected.
+         *
+         * @param int $x      starting X position
+         * @param int $y      starting Y position
+         * @param int $xLimit width of element
+         *
+         * @throws ExpectationException if element is found to be covered by another in the row specified
+         */
+        $assertRow = function ($x, $y, $xLimit) use ($expected, $xSpacing) {
+            while ($x < $xLimit) {
+                $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
+                if (strpos($expected, $found) === false) {
+                    throw new ExpectationException('An element is above an interacting element.', $this->getSession());
+                }
+
+                $x += $xSpacing;
+            }
+        };
+
+        // Go through each row in the square area found.
+        while ($y < $bottom) {
+            $assertRow($x, $y, $right);
+            $y += $ySpacing;
+        }
+    }
+
+    /**
+     * Asserts that the current driver is Selenium 2 in preparation for performing an action that requires it.
+     *
+     * @param string $operation the operation that you will attempt to perform that requires
+     *                          the Selenium 2 driver
+     *
+     * @throws UnsupportedDriverActionException if the current driver is not Selenium 2
+     *
+     * @return Selenium2Driver
+     */
+    public function assertSelenium2Driver($operation)
+    {
+        $driver = $this->getSession()->getDriver();
+        if (!($driver instanceof Selenium2Driver)) {
+            throw new UnsupportedDriverActionException($operation . ' is not supported by %s', $driver);
+        }
+
+        return $driver;
+    }
+
+    /**
+     * Asserts a javascript variable's value matches its expected value. This method is necessitated by
+     * the fact that assertJavascriptVariable() doesn't use a waitFor().
+     *
+     * @param string $variableName  The name of the JS variable
+     * @param string $expectedValue The expected value of the JS variable
+     *
+     * @throws ExpectationException If the JS variable value doesn't match the expected value
+     * @throws Exception
+     *
+     * @Then the javascript variable :variableName should be set to :expectedValue
+     */
+    public function assertJavascriptVariableEquals($variableName, $expectedValue)
+    {
+        $this->waitFor(function () use ($variableName, $expectedValue) {
+            $returnedValue = $this->getSession()->evaluateScript(
+                'return ' . $variableName . ';'
+            );
+
+            if ($returnedValue != $expectedValue) {
+                throw new ExpectationException("Expected \"$expectedValue\" but got \"$returnedValue\"", $this->getSession());
+            }
+        });
+    }
+
+    /**
      * Locate the radio button by label.
      *
-     * @param  string      $label The Label of the radio button.
+     * @param string $label the Label of the radio button
+     *
      * @return NodeElement
      */
     protected function findRadioButton($label)
@@ -1288,9 +1514,11 @@ JS
      * NodeElements by their coordinates. The typical use case is to determine
      * the order of elements on a page as a viewer would perceive them.
      *
-     * @param  NodeElement                      $a one of the two NodeElements to compare.
-     * @param  NodeElement                      $b the other NodeElement to compare.
-     * @throws UnsupportedDriverActionException If the current driver does not support getXpathBoundingClientRect.
+     * @param NodeElement $a one of the two NodeElements to compare
+     * @param NodeElement $b the other NodeElement to compare
+     *
+     * @throws UnsupportedDriverActionException if the current driver does not support getXpathBoundingClientRect
+     *
      * @return int
      */
     protected function compareElementsByCoords(NodeElement $a, NodeElement $b)
@@ -1315,118 +1543,10 @@ JS
     }
 
     /**
-     * Waits for the page to be loaded.
-     *
-     * This does not wait for any particular javascript frameworks to be ready, it only waits for the DOM to be
-     * ready. This is done by waiting for the document.readyState to be "complete".
-     */
-    public function waitForPageLoad($timeout = 120)
-    {
-        $this->waitFor(function () {
-            $readyState = $this->getSession()->evaluateScript('document.readyState');
-            if ($readyState !== 'complete') {
-                throw new ExpectationException("Page is not loaded. Ready state is '$readyState'", $this->getSession());
-            }
-        }, $timeout);
-    }
-
-    /**
-     * Checks if a node Element is fully visible in the viewport.
-     *
-     * @param  NodeElement                      $element the NodeElement to look for in the viewport.
-     * @throws UnsupportedDriverActionException If driver does not support the requested action.
-     * @throws \WebDriver\Exception             If cannot get the Web Driver
-     * @return bool
-     */
-    public function nodeIsFullyVisibleInViewport(NodeElement $element)
-    {
-        $driver = $this->assertSelenium2Driver('Checks if a node Element is fully visible in the viewport.');
-        if (!$driver->isDisplayed($element->getXpath()) ||
-            count(($parents = $this->getListOfAllNodeElementParents($element, 'body'))) < 1
-        ) {
-            return false;
-        }
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-        foreach ($parents as $parent) {
-            if (!$parent->isVisible() ||
-                !$elementViewportRectangle->isContainedIn($this->getElementViewportRectangle($parent))
-            ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if a node Element is visible in the viewport.
-     *
-     * @param  NodeElement                      $element The NodeElement to check for in the viewport
-     * @throws UnsupportedDriverActionException If driver does not support the requested action.
-     * @throws \WebDriver\Exception             If cannot get the Web Driver
-     * @return bool
-     */
-    public function nodeIsVisibleInViewport(NodeElement $element)
-    {
-        $driver = $this->assertSelenium2Driver('Checks if a node Element is visible in the viewport.');
-        $parents = $this->getListOfAllNodeElementParents($element, 'body');
-
-        if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
-            return false;
-        }
-
-        $elementViewportRectangle = $this->getElementViewportRectangle($element);
-
-        foreach ($parents as $parent) {
-            if (!$elementViewportRectangle->overlaps($this->getElementViewportRectangle($parent))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Checks if a node Element is visible in the document.
-     *
-     * @param  NodeElement                      $element The NodeElement to check for in the viewport
-     * @throws UnsupportedDriverActionException If driver does not support the requested action.
-     * @throws \WebDriver\Exception             If cannot get the Web Driver
-     * @return bool
-     */
-    public function nodeIsVisibleInDocument(NodeElement $element)
-    {
-        return $this->assertSelenium2Driver('Check if element is displayed')
-            ->isDisplayed($element->getXpath());
-    }
-
-    /**
-     * Get a rectangle that represents the location of a NodeElements viewport.
-     *
-     * @param  NodeElement                      $element NodeElement to get the viewport of.
-     * @throws UnsupportedDriverActionException When operation not supported by the driver.
-     * @return Rectangle                        representing the viewport
-     */
-    public function getElementViewportRectangle(NodeElement $element)
-    {
-        $driver = $this->assertSelenium2Driver('Get XPath Element Dimensions');
-        $dimensions = $driver->getXpathElementDimensions($element->getXpath());
-        $YScrollBarWidth = $dimensions['clientWidth'] > 0 ? $dimensions['width'] - $dimensions['clientWidth'] : 0;
-        $XScrollBarHeight = $dimensions['clientHeight'] > 0 ? $dimensions['height'] - $dimensions['clientHeight'] : 0;
-
-        return new Rectangle(
-            $dimensions['left'],
-            $dimensions['top'],
-            $dimensions['right'] - $YScrollBarWidth,
-            $dimensions['bottom'] - $XScrollBarHeight
-        );
-    }
-
-    /**
      * Get list of of all NodeElement parents.
      *
-     * @param  NodeElement   $nodeElement
-     * @param  string        $stopAt      html tag to stop at
+     * @param string $stopAt html tag to stop at
+     *
      * @return NodeElement[]
      */
     private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)
@@ -1441,135 +1561,5 @@ JS
         }
 
         return $nodeElements;
-    }
-
-    /**
-     * Step to assert that the specified element is not covered.
-     *
-     * @param  string               $identifier Element Id to find the element used in the assertion.
-     * @throws ExpectationException If element is found to be covered by another.
-     *
-     * @Then the :identifier element should not be covered by another
-     */
-    public function assertElementIsNotCoveredByIdStep($identifier)
-    {
-        /** @var NodeElement $element */
-        $element = $this->getSession()->getPage()->find('css', "#$identifier");
-
-        $this->assertElementIsNotCovered($element);
-    }
-
-    /**
-     * Asserts that the specified element is not covered by another element.
-     *
-     * Keep in mind that at the moment, this method performs a check in a square area so this may not work
-     * correctly with elements of different shapes.
-     *
-     * @param  NodeElement              $element  The element to assert that is not covered by something else.
-     * @param  int                      $leniency Percent of leniency when performing each pixel check.
-     * @throws ExpectationException     If element is found to be covered by another.
-     * @throws InvalidArgumentException The threshold provided is outside of the 0-100 range accepted.
-     */
-    public function assertElementIsNotCovered(NodeElement $element, $leniency = 20)
-    {
-        if ($leniency < 0 || $leniency > 99) {
-            throw new InvalidArgumentException('The leniency provided is outside of the 0-50 range accepted.');
-        }
-
-        $xpath = $element->getXpath();
-
-        /** @var array $coordinates */
-        $coordinates = $this->getSession()->evaluateScript(<<<JS
-          return document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
-            .singleNodeValue.getBoundingClientRect();
-JS
-        );
-
-        $width = $coordinates['width'] - 1;
-        $height = $coordinates['height'] - 1;
-        $right = $coordinates['right'];
-        $bottom = $coordinates['bottom'];
-
-        // X and Y are the starting points.
-        $x = $coordinates['left'];
-        $y = $coordinates['top'];
-
-        $xSpacing = ($width * ($leniency / 100)) ?: 1;
-        $ySpacing = ($height * ($leniency / 100)) ?: 1;
-
-        $expected = $element->getOuterHtml();
-
-        /**
-         * Asserts that each point checked on the row isn't covered by an element that doesn't match the expected.
-         *
-         * @param  int                  $x      Starting X position.
-         * @param  int                  $y      Starting Y position.
-         * @param  int                  $xLimit Width of element.
-         * @throws ExpectationException If element is found to be covered by another in the row specified.
-         */
-        $assertRow = function ($x, $y, $xLimit) use ($expected, $xSpacing) {
-            while ($x < $xLimit) {
-                $found = $this->getSession()->evaluateScript("return document.elementFromPoint($x, $y).outerHTML;");
-                if (strpos($expected, $found) === false) {
-                    throw new ExpectationException(
-                        'An element is above an interacting element.',
-                        $this->getSession()
-                    );
-                }
-
-                $x += $xSpacing;
-            }
-        };
-
-        // Go through each row in the square area found.
-        while ($y < $bottom) {
-            $assertRow($x, $y, $right);
-            $y += $ySpacing;
-        }
-    }
-
-    /**
-     * Asserts that the current driver is Selenium 2 in preparation for performing an action that requires it.
-     *
-     * @param  string                           $operation the operation that you will attempt to perform that requires
-     *                                                     the Selenium 2 driver.
-     * @throws UnsupportedDriverActionException if the current driver is not Selenium 2.
-     * @return Selenium2Driver
-     */
-    public function assertSelenium2Driver($operation)
-    {
-        $driver = $this->getSession()->getDriver();
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException($operation . ' is not supported by %s', $driver);
-        }
-
-        return $driver;
-    }
-
-    /**
-     * Asserts a javascript variable's value matches its expected value. This method is necessitated by
-     * the fact that assertJavascriptVariable() doesn't use a waitFor().
-     *
-     * @param  string               $variableName  The name of the JS variable
-     * @param  string               $expectedValue The expected value of the JS variable
-     * @throws ExpectationException If the JS variable value doesn't match the expected value
-     * @throws Exception
-     *
-     * @Then the javascript variable :variableName should be set to :expectedValue
-     */
-    public function assertJavascriptVariableEquals($variableName, $expectedValue)
-    {
-        $this->waitFor(function () use ($variableName, $expectedValue) {
-            $returnedValue = $this->getSession()->evaluateScript(
-                'return ' . $variableName . ';'
-            );
-
-            if ($returnedValue != $expectedValue) {
-                throw new ExpectationException(
-                    "Expected \"$expectedValue\" but got \"$returnedValue\"",
-                    $this->getSession()
-                );
-            }
-        });
     }
 }

@@ -11,8 +11,10 @@ trait TypeCaster
      * Casts a step argument from a string to an int.
      *
      * @Transform /^(0|[1-9]\d*)$/
-     * @param  string $string the string to cast.
-     * @return int    The resulting int.
+     *
+     * @param string $string the string to cast
+     *
+     * @return int the resulting int
      */
     public function castStringToInt($string)
     {
@@ -23,8 +25,10 @@ trait TypeCaster
      * Casts a step argument from a string to a float.
      *
      * @Transform /^\d*\.\d+$/
-     * @param  string $string the string to cast.
-     * @return float  The resulting float.
+     *
+     * @param string $string the string to cast
+     *
+     * @return float the resulting float
      */
     public function castStringToFloat($string)
     {
@@ -37,8 +41,10 @@ trait TypeCaster
      * Supports true and false only. e.g. will not cast 0 or 1.
      *
      * @Transform /^(true|false)$/i
-     * @param  string $string the string to cast.
-     * @return bool   The resulting bool.
+     *
+     * @param string $string the string to cast
+     *
+     * @return bool the resulting bool
      */
     public function castStringToBool($string)
     {
@@ -73,8 +79,10 @@ trait TypeCaster
      * methods pattern and be casted to a string *without* the quotes.
      *
      * @Transform /^('([^']|\\')*'|"([^"]|\\")*")$/
-     * @param  string $string the string to cast.
-     * @return string The resulting bool.
+     *
+     * @param string $string the string to cast
+     *
+     * @return string the resulting bool
      */
     public function castQuotedStringToString($string)
     {

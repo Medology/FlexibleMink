@@ -10,7 +10,7 @@ trait TestArtifactContextInterface
     /**
      * Provides the directory that test artifacts should be stored to.
      *
-     * @return string the fully qualified directory, with no trailing directory separator.
+     * @return string the fully qualified directory, with no trailing directory separator
      */
     abstract public function getArtifactsDir();
 }

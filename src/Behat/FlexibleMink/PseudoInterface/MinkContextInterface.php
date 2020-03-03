@@ -1,4 +1,6 @@
-<?php namespace Behat\FlexibleMink\PseudoInterface;
+<?php
+
+namespace Behat\FlexibleMink\PseudoInterface;
 
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Element\TraversableElement;
@@ -15,7 +17,7 @@ trait MinkContextInterface
     /**
      * Checks that page contains the specified text.
      *
-     * @param string $text The text that should be found on the page.
+     * @param string $text the text that should be found on the page
      */
     abstract public function assertPageContainsText($text);
 
@@ -54,7 +56,8 @@ trait MinkContextInterface
     /**
      * Returns the Mink session.
      *
-     * @param  string|null $name name of the session OR active session will be used
+     * @param string|null $name name of the session OR active session will be used
+     *
      * @return Session
      */
     abstract public function getSession($name = null);
@@ -63,21 +66,21 @@ trait MinkContextInterface
      * Presses the button with specified id|name|title|alt|value.
      *
      * @param string             $button  button id, value or alt
-     * @param TraversableElement $context Element on the page to which button belongs.
+     * @param TraversableElement $context element on the page to which button belongs
      */
     abstract public function pressButton($button, TraversableElement $context = null);
 
     /**
      * Opens specified page.
      *
-     * @param string $page The URL to visit.
+     * @param string $page the URL to visit
      */
     abstract public function visit($page);
 
     /**
      * Checks, that current page PATH is equal to specified.
      *
-     * @param string $page The path of the path to get asserted.
+     * @param string $page the path of the path to get asserted
      */
     abstract public function assertPageAddress($page);
 }

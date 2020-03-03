@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\FlexibleMink\Context\FlexibleContext;
+<?php
+
+namespace Tests\Behat\FlexibleMink\Context\FlexibleContext;
 
 use Behat\FlexibleMink\Context\FlexibleContext;
 use Behat\Mink\Element\NodeElement;
@@ -14,27 +16,6 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
  */
 class PressButtonTest extends FlexibleContextTest
 {
-    /**
-     * Create a flexible context with some methods declared for mocking that are used in pressButton.
-     *
-     * @param  array                      $additional_methods Additional methods not specified that may be needed.
-     * @return MockObject|FlexibleContext
-     */
-    protected function getFlexibleMock(array $additional_methods = [])
-    {
-        $sessionMock = $this->getMock(Session::class, [], [], '', false);
-        $flexible_context = $this->getMockBuilder(FlexibleContext::class)
-            ->enableOriginalConstructor()
-            ->setMethods(
-                array_merge(['scrollToButton', 'assertNodeElementVisibleInViewport', 'getSession'], $additional_methods)
-            )
-            ->getMock();
-
-        $flexible_context->method('getSession')->willReturn($sessionMock);
-
-        return $flexible_context;
-    }
-
     /**
      * Asserts an exception is thrown and the press method is not triggered if the node is not visible in the viewport.
      */
@@ -110,8 +91,9 @@ class PressButtonTest extends FlexibleContextTest
      * Asserts that an exception called from FlexibleContext methods bubble up.
      *
      * @dataProvider dataFlexibleContextExceptions
-     * @param string    $method    Name of method called on mock being tested.
-     * @param Exception $exception Exception that should be have bubbled up.
+     *
+     * @param string    $method    name of method called on mock being tested
+     * @param Exception $exception exception that should be have bubbled up
      */
     public function testExceptionsThrownFromFlexibleContextMethodsShouldBubbleOut($method, Exception $exception)
     {
@@ -148,8 +130,9 @@ class PressButtonTest extends FlexibleContextTest
      * Asserts that an exception called from Button methods bubble up.
      *
      * @dataProvider dataButtonExceptions
-     * @param string    $method    Name of method called on mock being tested.
-     * @param Exception $exception Exception that should be have bubbled up.
+     *
+     * @param string    $method    name of method called on mock being tested
+     * @param Exception $exception exception that should be have bubbled up
      */
     public function testExceptionsThrownFromButtonMethodsShouldBubbleOut($method, Exception $exception)
     {
@@ -165,5 +148,27 @@ class PressButtonTest extends FlexibleContextTest
         $this->setExpectedException(get_class($exception));
 
         $flexible_context->pressButton('dsfaljklkj');
+    }
+
+    /**
+     * Create a flexible context with some methods declared for mocking that are used in pressButton.
+     *
+     * @param array $additional_methods additional methods not specified that may be needed
+     *
+     * @return MockObject|FlexibleContext
+     */
+    protected function getFlexibleMock(array $additional_methods = [])
+    {
+        $sessionMock = $this->getMock(Session::class, [], [], '', false);
+        $flexible_context = $this->getMockBuilder(FlexibleContext::class)
+            ->enableOriginalConstructor()
+            ->setMethods(
+                array_merge(['scrollToButton', 'assertNodeElementVisibleInViewport', 'getSession'], $additional_methods)
+            )
+            ->getMock();
+
+        $flexible_context->method('getSession')->willReturn($sessionMock);
+
+        return $flexible_context;
     }
 }

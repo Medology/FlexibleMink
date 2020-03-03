@@ -1,4 +1,6 @@
-<?php namespace Behat\FlexibleMink\Context;
+<?php
+
+namespace Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\PseudoInterface\FlexibleContextInterface;
 use Behat\FlexibleMink\PseudoInterface\TableContextInterface;
@@ -20,36 +22,6 @@ trait TableContext
     use TableContextInterface;
 
     /**
-     * Finds a table with a given data-qa-id, name, or id. data-qa-id is given preference and matched exactly, while
-     * name and id are matched partially.
-     *
-     * @param  string                   $name The name of the table. Will be matched against id or name properties.
-     * @throws ElementNotFoundException If not table is found with id or name {@paramref $name}
-     * @throws RuntimeException         If a table is found, but is not visible
-     * @return NodeElement              The matched table
-     */
-    private function findNamedTable($name)
-    {
-        $idPiece = "contains(normalize-space(@id), '$name')";
-        $namePiece = "contains(normalize-space(@name), '$name')";
-
-        /** @var NodeElement $table */
-        $table = $this->waitFor(function () use ($idPiece, $namePiece) {
-            return $this->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
-        });
-
-        if (!$table) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'table', 'xpath', 'id, name');
-        }
-
-        if (!$table->isVisible()) {
-            throw new RuntimeException("Found table '$name', but it is not visible!");
-        }
-
-        return $table;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getTableFromName($name, $forceFresh = false)
@@ -66,189 +38,6 @@ trait TableContext
         $this->put($tableData, $name);
 
         return $tableData;
-    }
-
-    /**
-     * Retrieves a row from the table HEAD (thead) that has no cells with a colspan property that has a value of greater
-     * than 1. This row is assumed to be the column "titles".
-     *
-     * @param  NodeElement              $table The table to find the columns for
-     * @throws InvalidArgumentException If {@paramref $table} is not an instance of NodeElement
-     * @throws ElementNotFoundException If no HEAD (thead) rows are found in {@paramref $table}
-     * @throws ElementNotFoundException If all head rows have a td/th with colspan property with a value greater than 1
-     * @throws ElementNotFoundException If the row has no td/th at all
-     * @return NodeElement[]            The columns for {@paramref $table}
-     */
-    private function findHeadColumns($table)
-    {
-        if (!($table instanceof NodeElement)) {
-            throw new InvalidArgumentException('Parameter $table must be an instance of NodeElement.');
-        }
-
-        /** @var NodeElement[] $rows */
-        $rows = $table->findAll('xpath', '/thead/tr');
-
-        if (!$rows) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'tr', 'xpath');
-        }
-
-        $colRow = null;
-        foreach ($rows as $row) {
-            // finds all td|th elements that have a colspan tag with a value greater than 1. We do this because we don't
-            // want any HEAD rows when some of the cells span multiple columns
-            /** @var NodeElement[] $splitCell */
-            $splitCell = $row->findAll('xpath', '/*[@colspan>\'1\' and (self::td or self::th)]');
-
-            if (!$splitCell) {
-                $colRow = $row;
-
-                break;
-            }
-        }
-
-        // we couldn't find a HEAD row that didn't have split columns
-        if (!$colRow) {
-            throw new ElementNotFoundException(
-                $this->getSession()->getDriver(),
-                'tr/(td or th)',
-                'xpath',
-                'not(@colspan>\'1\')'
-            );
-        }
-
-        // get all the cells in the selected row
-        /** @var NodeElement[] $columns */
-        $columns = $colRow->findAll('xpath', '/*[self::td or self::th]');
-
-        if (!$columns) {
-            throw new ElementNotFoundException($this->getSession()->getDriver(), 'td or th', 'xpath');
-        }
-
-        return $columns;
-    }
-
-    /**
-     * This method parses an HTML table to build a two-dimensional array indexed by [row][column] for each cell.
-     *
-     * @param  NodeElement $table   The HTML table to parse
-     * @param  string      $keyName The name of the table, for storing in the key store
-     * @return array       Returns an array with the following form:
-     *                             colHeaders => the best "guess" for column titles
-     *                             head => [row][column] Cells parsed from the thead section of the table
-     *                             body => [row][column] Cells parsed from the tbody section of the table
-     *                             foot => [row][column] Cells parsed from the tfoot section of the table
-     */
-    private function buildTableFromHtml($table, $keyName = '')
-    {
-        $colTitles = array_map(function ($ele) {
-            return trim($ele->getText());
-        }, $this->findHeadColumns($table));
-
-        $colTitles = array_filter($colTitles, function ($ele) {
-            return (bool) $ele;
-        });
-
-        /* @var NodeElement[] $rows */
-        $headRows = $table->findAll('xpath', '/thead/tr');
-        $bodyRows = $table->findAll('xpath', '/tbody/tr');
-        $footRows = $table->findAll('xpath', '/tfoot/tr');
-
-        /*
-         * Anonymous function to retrieve cell values from an array of row nodes. Does not support row and colspans!
-         *
-         * @param NodeElement[] $rows The rows to parse
-         * @return array The cell values for the rows numerically indexed as [row][col]
-         */
-        $parser = function ($rows) {
-            $data = [];
-
-            for ($i = 0; $i < count($rows); $i++) {
-                $row = $rows[$i];
-                /** @var NodeElement[] $cells */
-                $cells = $row->findAll('xpath', '/td|/th');
-
-                for ($j = 0; $j < count($cells); $j++) {
-                    /** @var NodeElement $cell */
-                    $cell = $cells[$j];
-
-                    //Handle select
-                    if (($options = $cell->findAll('xpath', '//option'))) {
-                        /** @var NodeElement $option */
-                        foreach ($options as $option) {
-                            if ($option->isSelected()) {
-                                $data[$i][$j] = trim($option->getText());
-
-                                break;
-                            }
-                        }
-
-                        continue;
-                    }
-                    $data[$i][$j] = trim($cell->getText());
-                }
-            }
-
-            return $data;
-        };
-
-        // build the table array with parsed cells
-        $tableData = [
-            'colHeaders' => $colTitles,
-            'head'       => $headRows ? $parser($headRows) : [],
-            'body'       => $parser($bodyRows),
-            'foot'       => $footRows ? $parser($footRows) : [],
-        ];
-
-        // if a key name was provided, we can store this array for quick access next time
-        if ($keyName) {
-            $this->put($tableData, $keyName);
-        }
-
-        return $tableData;
-    }
-
-    /**
-     * This method returns the value of a particular cell from a parsed table.
-     *
-     * @param  array                    $table A table array as returned by $this->buildTableFromHtml
-     * @param  int                      $rIdx  The row index of the cell to retrieve
-     * @param  int                      $cIdx  The col index of the cell to retrieve
-     * @param  string                   $piece Must be one of (head, body, foot). Specifies which section of the table
-     *                                         to look in
-     * @throws InvalidArgumentException If $piece is not one of head/body/foot
-     * @throws InvalidArgumentException If $rIdx is less than 1
-     * @throws InvalidArgumentException If $cIdx is less than 1
-     * @throws ExpectationException     If $rIdx is out of bounds
-     * @throws ExpectationException     If $cIdx is out of bounds
-     * @return string                   The value of the cell
-     */
-    protected function getCellFromTable($table, $rIdx, $cIdx, $piece = 'body')
-    {
-        if (!in_array($piece, ['head', 'body', 'foot'])) {
-            throw new InvalidArgumentException('$piece must be one of (head, body, foot)!');
-        }
-
-        if ($rIdx < 1) {
-            throw new InvalidArgumentException('$rIdx must be greater than or equal to 1.');
-        }
-
-        if ($cIdx < 1) {
-            throw new InvalidArgumentException('$cIdx must be greater than or equal to 1.');
-        }
-
-        if (count($table[$piece]) < $rIdx) {
-            throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has " .
-                count($table[$piece]) . ' rows.',
-                $this->getSession());
-        }
-
-        if (count($table[$piece][$rIdx - 1]) < $cIdx) {
-            throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has " .
-                count($table[$piece][$rIdx - 1]) . ' cols.',
-                $this->getSession());
-        }
-
-        return $table[$piece][$rIdx - 1][$cIdx - 1];
     }
 
     /**
@@ -384,10 +173,7 @@ trait TableContext
         $cellVal = $this->getCellFromTable($table, $rIdx, $cIdx, $section);
 
         if ($cellVal != $val) {
-            throw new ExpectationException(
-                "Expected $val at ($rIdx, $cIdx) in table $piece. Instead got $cellVal!",
-                $this->getSession()
-            );
+            throw new ExpectationException("Expected $val at ($rIdx, $cIdx) in table $piece. Instead got $cellVal!", $this->getSession());
         }
 
         return true;
@@ -397,7 +183,8 @@ trait TableContext
      * Ensures there is a table on this page that matches the given table. Cells with * match anything.
      *
      * @Then  there should be a table on the page with the following information:
-     * @param TableNode $tableNode The table to compare.
+     *
+     * @param TableNode $tableNode the table to compare
      */
     public function assertTableWithStructureExists(TableNode $tableNode)
     {
@@ -446,10 +233,7 @@ trait TableContext
             }
 
             // Oh no! No matches.
-            throw new ExpectationException(
-                'A table matching the supplied structure could not be found.',
-                $this->getSession()
-            );
+            throw new ExpectationException('A table matching the supplied structure could not be found.', $this->getSession());
         });
     }
 
@@ -478,10 +262,7 @@ trait TableContext
                 }
             }
 
-            throw new ExpectationException(
-                'A row matching the supplied values could not be found.',
-                $this->getSession()
-            );
+            throw new ExpectationException('A row matching the supplied values could not be found.', $this->getSession());
         });
     }
 
@@ -503,9 +284,7 @@ trait TableContext
 
             foreach ($expected as $row) {
                 if (($key = $this->getTableRow($row, $actual)) === -1) {
-                    throw new ExpectationException(
-                        'Row not found...',
-                        $this->getSession());
+                    throw new ExpectationException('Row not found...', $this->getSession());
                 }
 
                 unset($actual[$key]);
@@ -514,9 +293,51 @@ trait TableContext
     }
 
     /**
+     * This method returns the value of a particular cell from a parsed table.
+     *
+     * @param array  $table A table array as returned by $this->buildTableFromHtml
+     * @param int    $rIdx  The row index of the cell to retrieve
+     * @param int    $cIdx  The col index of the cell to retrieve
+     * @param string $piece Must be one of (head, body, foot). Specifies which section of the table
+     *                      to look in
+     *
+     * @throws InvalidArgumentException If $piece is not one of head/body/foot
+     * @throws InvalidArgumentException If $rIdx is less than 1
+     * @throws InvalidArgumentException If $cIdx is less than 1
+     * @throws ExpectationException     If $rIdx is out of bounds
+     * @throws ExpectationException     If $cIdx is out of bounds
+     *
+     * @return string The value of the cell
+     */
+    protected function getCellFromTable($table, $rIdx, $cIdx, $piece = 'body')
+    {
+        if (!in_array($piece, ['head', 'body', 'foot'])) {
+            throw new InvalidArgumentException('$piece must be one of (head, body, foot)!');
+        }
+
+        if ($rIdx < 1) {
+            throw new InvalidArgumentException('$rIdx must be greater than or equal to 1.');
+        }
+
+        if ($cIdx < 1) {
+            throw new InvalidArgumentException('$cIdx must be greater than or equal to 1.');
+        }
+
+        if (count($table[$piece]) < $rIdx) {
+            throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has " . count($table[$piece]) . ' rows.', $this->getSession());
+        }
+
+        if (count($table[$piece][$rIdx - 1]) < $cIdx) {
+            throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has " . count($table[$piece][$rIdx - 1]) . ' cols.', $this->getSession());
+        }
+
+        return $table[$piece][$rIdx - 1][$cIdx - 1];
+    }
+
+    /**
      * Checks if the expected row exists in the table provided and returns the row key where it was found.
      *
-     * @param array $expectedRow The that is expected in the table.
+     * @param array $expectedRow the that is expected in the table
      * @param array $table       The table to find row
      *
      * @return int False when the row was not found or the key where the row was found
@@ -536,9 +357,9 @@ trait TableContext
      * Checks if the columns are found on the row.
      *
      * @param array $cols The columns to be found on the row
-     * @param array $row  The the row to inspect.
+     * @param array $row  the the row to inspect
      *
-     * @return bool whether the row has the values and all columns expected.
+     * @return bool whether the row has the values and all columns expected
      **/
     protected function rowContains($cols, $row)
     {
@@ -549,5 +370,174 @@ trait TableContext
         }
 
         return true;
+    }
+
+    /**
+     * Finds a table with a given data-qa-id, name, or id. data-qa-id is given preference and matched exactly, while
+     * name and id are matched partially.
+     *
+     * @param string $name The name of the table. Will be matched against id or name properties.
+     *
+     * @throws ElementNotFoundException If not table is found with id or name {@paramref $name}
+     * @throws RuntimeException         If a table is found, but is not visible
+     *
+     * @return NodeElement The matched table
+     */
+    private function findNamedTable($name)
+    {
+        $idPiece = "contains(normalize-space(@id), '$name')";
+        $namePiece = "contains(normalize-space(@name), '$name')";
+
+        /** @var NodeElement $table */
+        $table = $this->waitFor(function () use ($idPiece, $namePiece) {
+            return $this->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
+        });
+
+        if (!$table) {
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'table', 'xpath', 'id, name');
+        }
+
+        if (!$table->isVisible()) {
+            throw new RuntimeException("Found table '$name', but it is not visible!");
+        }
+
+        return $table;
+    }
+
+    /**
+     * Retrieves a row from the table HEAD (thead) that has no cells with a colspan property that has a value of greater
+     * than 1. This row is assumed to be the column "titles".
+     *
+     * @param NodeElement $table The table to find the columns for
+     *
+     * @throws InvalidArgumentException If {@paramref $table} is not an instance of NodeElement
+     * @throws ElementNotFoundException If no HEAD (thead) rows are found in {@paramref $table}
+     * @throws ElementNotFoundException If all head rows have a td/th with colspan property with a value greater than 1
+     * @throws ElementNotFoundException If the row has no td/th at all
+     *
+     * @return NodeElement[] The columns for {@paramref $table}
+     */
+    private function findHeadColumns($table)
+    {
+        if (!($table instanceof NodeElement)) {
+            throw new InvalidArgumentException('Parameter $table must be an instance of NodeElement.');
+        }
+
+        /** @var NodeElement[] $rows */
+        $rows = $table->findAll('xpath', '/thead/tr');
+
+        if (!$rows) {
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'tr', 'xpath');
+        }
+
+        $colRow = null;
+        foreach ($rows as $row) {
+            // finds all td|th elements that have a colspan tag with a value greater than 1. We do this because we don't
+            // want any HEAD rows when some of the cells span multiple columns
+            /** @var NodeElement[] $splitCell */
+            $splitCell = $row->findAll('xpath', '/*[@colspan>\'1\' and (self::td or self::th)]');
+
+            if (!$splitCell) {
+                $colRow = $row;
+
+                break;
+            }
+        }
+
+        // we couldn't find a HEAD row that didn't have split columns
+        if (!$colRow) {
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'tr/(td or th)', 'xpath', 'not(@colspan>\'1\')');
+        }
+
+        // get all the cells in the selected row
+        /** @var NodeElement[] $columns */
+        $columns = $colRow->findAll('xpath', '/*[self::td or self::th]');
+
+        if (!$columns) {
+            throw new ElementNotFoundException($this->getSession()->getDriver(), 'td or th', 'xpath');
+        }
+
+        return $columns;
+    }
+
+    /**
+     * This method parses an HTML table to build a two-dimensional array indexed by [row][column] for each cell.
+     *
+     * @param NodeElement $table   The HTML table to parse
+     * @param string      $keyName The name of the table, for storing in the key store
+     *
+     * @return array Returns an array with the following form:
+     *               colHeaders => the best "guess" for column titles
+     *               head => [row][column] Cells parsed from the thead section of the table
+     *               body => [row][column] Cells parsed from the tbody section of the table
+     *               foot => [row][column] Cells parsed from the tfoot section of the table
+     */
+    private function buildTableFromHtml($table, $keyName = '')
+    {
+        $colTitles = array_map(function ($ele) {
+            return trim($ele->getText());
+        }, $this->findHeadColumns($table));
+
+        $colTitles = array_filter($colTitles, function ($ele) {
+            return (bool) $ele;
+        });
+
+        /* @var NodeElement[] $rows */
+        $headRows = $table->findAll('xpath', '/thead/tr');
+        $bodyRows = $table->findAll('xpath', '/tbody/tr');
+        $footRows = $table->findAll('xpath', '/tfoot/tr');
+
+        /*
+         * Anonymous function to retrieve cell values from an array of row nodes. Does not support row and colspans!
+         *
+         * @param NodeElement[] $rows The rows to parse
+         * @return array The cell values for the rows numerically indexed as [row][col]
+         */
+        $parser = function ($rows) {
+            $data = [];
+
+            for ($i = 0; $i < count($rows); ++$i) {
+                $row = $rows[$i];
+                /** @var NodeElement[] $cells */
+                $cells = $row->findAll('xpath', '/td|/th');
+
+                for ($j = 0; $j < count($cells); ++$j) {
+                    /** @var NodeElement $cell */
+                    $cell = $cells[$j];
+
+                    //Handle select
+                    if (($options = $cell->findAll('xpath', '//option'))) {
+                        /** @var NodeElement $option */
+                        foreach ($options as $option) {
+                            if ($option->isSelected()) {
+                                $data[$i][$j] = trim($option->getText());
+
+                                break;
+                            }
+                        }
+
+                        continue;
+                    }
+                    $data[$i][$j] = trim($cell->getText());
+                }
+            }
+
+            return $data;
+        };
+
+        // build the table array with parsed cells
+        $tableData = [
+            'colHeaders' => $colTitles,
+            'head'       => $headRows ? $parser($headRows) : [],
+            'body'       => $parser($bodyRows),
+            'foot'       => $footRows ? $parser($footRows) : [],
+        ];
+
+        // if a key name was provided, we can store this array for quick access next time
+        if ($keyName) {
+            $this->put($tableData, $keyName);
+        }
+
+        return $tableData;
     }
 }

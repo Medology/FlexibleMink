@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\ParallelRunner\Filter;
+<?php
+
+namespace Tests\Behat\ParallelRunner\Filter;
 
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;

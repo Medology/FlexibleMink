@@ -1,4 +1,6 @@
-<?php namespace Tests\Behat\FlexibleMink\Context;
+<?php
+
+namespace Tests\Behat\FlexibleMink\Context;
 
 use Behat\FlexibleMink\Context\StoreContext;
 use DateTime;
@@ -13,74 +15,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     use StoreContext;
 
     /**
-     * Creates a simple mock object.
-     *
-     * @return stdClass A mock object with properties test_property_1/2/3
-     */
-    private function getMockObject()
-    {
-        static $obj = null;
-
-        if (is_object($obj)) {
-            return $obj;
-        }
-
-        $obj = (object) [
-            'test_property_1' => 'test_value_1',
-            'test_property_2' => 'test_value_2',
-            'test_property_3' => 'test_value_3',
-            'date_prop'       => new DateTime('2028-10-28 15:30:10'),
-        ];
-
-        return $obj;
-    }
-
-    /**
-     * Expects the correct type error exception depending on the php version.
-     *
-     * @throws Exception When a unsupported version of PHP is being used.
-     */
-    protected function expectTypeErrorException()
-    {
-        list($majorVersion, $minorVersion) = explode('.', PHP_VERSION, 3);
-
-        if ($majorVersion >= 7) {
-            $this->setExpectedException(TypeError::class);
-        } elseif ($majorVersion == 5 && $minorVersion == 6) {
-            $this->setExpectedException(PHPUnit_Framework_Error::class);
-        } else {
-            throw new Exception('This php version is not supported. PHP version must be >= 5.6');
-        }
-    }
-
-    /**
-     * Asserts that a function throws a type error that contains a string.
-     *
-     * @param  callable  $fn              A closure expected to throw the exception.
-     * @param  string    $expectedMessage The message expected to be found in the exception message.
-     * @throws Exception When a unsupported version of PHP is being used.
-     */
-    protected function assertFunctionThrowsTypeErrorThatContainsMessage(callable $fn, $expectedMessage)
-    {
-        $this->expectTypeErrorException();
-
-        try {
-            $fn();
-        } catch (TypeError $e) {
-            $this->assertContains($expectedMessage, $e->getMessage());
-
-            throw $e;
-        } catch (PHPUnit_Framework_Error $e) {
-            $this->assertContains($expectedMessage, $e->getMessage());
-
-            throw $e;
-        }
-    }
-
-    /**
      * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
      *
-     * @throws Exception When a unsupported version of PHP is being used.
+     * @throws Exception when a unsupported version of PHP is being used
      */
     public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnEmptyString()
     {
@@ -92,7 +29,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     /**
      * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
      *
-     * @throws Exception When a unsupported version of PHP is being used.
+     * @throws Exception when a unsupported version of PHP is being used
      */
     public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnInteger()
     {
@@ -104,7 +41,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     /**
      * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
      *
-     * @throws Exception When a unsupported version of PHP is being used.
+     * @throws Exception when a unsupported version of PHP is being used
      */
     public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnObject()
     {
@@ -118,8 +55,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
      *
      * @dataProvider nonCallableValuesProvider
      *
-     * @param  mixed     $nonCallable Non-callable variable from data provider.
-     * @throws Exception When a unsupported version of PHP is being used.
+     * @param mixed $nonCallable non-callable variable from data provider
+     *
+     * @throws Exception when a unsupported version of PHP is being used
      */
     public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
     {
@@ -504,5 +442,71 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['Object', ['property']], $this->parseKeyNested('Object\'s property'));
         $this->assertEquals(['Object', ['ChildObject', 'property']],
             $this->parseKeyNested('Object\'s ChildObject\'s property'));
+    }
+
+    /**
+     * Expects the correct type error exception depending on the php version.
+     *
+     * @throws Exception when a unsupported version of PHP is being used
+     */
+    protected function expectTypeErrorException()
+    {
+        list($majorVersion, $minorVersion) = explode('.', PHP_VERSION, 3);
+
+        if ($majorVersion >= 7) {
+            $this->setExpectedException(TypeError::class);
+        } elseif ($majorVersion == 5 && $minorVersion == 6) {
+            $this->setExpectedException(PHPUnit_Framework_Error::class);
+        } else {
+            throw new Exception('This php version is not supported. PHP version must be >= 5.6');
+        }
+    }
+
+    /**
+     * Asserts that a function throws a type error that contains a string.
+     *
+     * @param callable $fn              a closure expected to throw the exception
+     * @param string   $expectedMessage the message expected to be found in the exception message
+     *
+     * @throws Exception when a unsupported version of PHP is being used
+     */
+    protected function assertFunctionThrowsTypeErrorThatContainsMessage(callable $fn, $expectedMessage)
+    {
+        $this->expectTypeErrorException();
+
+        try {
+            $fn();
+        } catch (TypeError $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        } catch (PHPUnit_Framework_Error $e) {
+            $this->assertContains($expectedMessage, $e->getMessage());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Creates a simple mock object.
+     *
+     * @return stdClass A mock object with properties test_property_1/2/3
+     */
+    private function getMockObject()
+    {
+        static $obj = null;
+
+        if (is_object($obj)) {
+            return $obj;
+        }
+
+        $obj = (object) [
+            'test_property_1' => 'test_value_1',
+            'test_property_2' => 'test_value_2',
+            'test_property_3' => 'test_value_3',
+            'date_prop'       => new DateTime('2028-10-28 15:30:10'),
+        ];
+
+        return $obj;
     }
 }

@@ -1,4 +1,6 @@
-<?php namespace Behat\ParallelWorker\ServiceContainer;
+<?php
+
+namespace Behat\ParallelWorker\ServiceContainer;
 
 use Behat\Behat\Gherkin\ServiceContainer\GherkinExtension;
 use Behat\Testwork\Cli\ServiceContainer\CliExtension;

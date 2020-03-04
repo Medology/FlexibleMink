@@ -1,17 +1,21 @@
-#!/bin/bash +x
+#!/usr/bin/env bash
+
+set -eu
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 
 . "${ROOT}"/bin/lib/env.sh
 . "${ROOT}"/bin/lib/tty.sh
+. "${ROOT}"/docker/lib/docker_host_user_id.sh
 . "${ROOT}"/docker/lib/images.sh
 . "${ROOT}"/docker/lib/php_image.sh
 
 docker run \
-    -i${TTY} \
+    -e LOCAL_USER_ID="$DOCKER_HOST_USER_ID" \
+    -i"${TTY}" \
     --rm \
     -v "$(pwd)":/app \
     -w /app \
-	--link web:dockermachine.local \
-	--net ${PROJECT_NAME}_default \
-	${RESOLVED_PHP_IMAGE} php "$@"
+	  --link web:dockermachine.local \
+	  --net "${PROJECT_NAME}"_default \
+	  "${RESOLVED_PHP_IMAGE}" php "$@"

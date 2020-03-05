@@ -5,6 +5,7 @@ set -eu
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 
 EXPECTED_VERSION=1.9.3
+EXPECTED_CHECKSUM=19c30bc551e1d1e458b974772627faf13331072e88dcc912b11e3c8e29ae34c92594353f4fa36038c93de2e2d3a06e3b
 
 # Check for existing installation
 if [ -e "$ROOT"/bin/composer ]; then
@@ -32,6 +33,15 @@ fi
 # Install composer
 echo "Installing Composer ${EXPECTED_VERSION}..."
 curl -L https://getcomposer.org/download/${EXPECTED_VERSION}/composer.phar > "$ROOT"/bin/composer
+
+echo -n "Checking the hash..."
+if [[ ! $(shasum -a 384 "${ROOT}"/bin/composer) = "$EXPECTED_CHECKSUM"* ]]; then
+    echo "ERROR: composer's sha384 doesn't match. Redownload it."
+    rm "${ROOT}"/bin/composer
+    exit 1
+else
+    echo "passed"
+fi
 
 # Fix permissions
 echo "Setting composer permissions..."

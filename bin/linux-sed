@@ -2,11 +2,10 @@
 
 set -eu
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-ROOT="$(cd "${DIR}"/../ && pwd)"
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 
 . "${ROOT}"/docker/lib/images.sh
-. "${DIR}"/lib/tty.sh
+. "${ROOT}"/docker/lib/tty.sh
 
 docker run \
   -i"${TTY}" \

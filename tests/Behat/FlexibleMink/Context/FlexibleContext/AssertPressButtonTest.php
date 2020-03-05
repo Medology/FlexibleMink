@@ -12,7 +12,7 @@ class AssertPressButtonTest extends FlexibleContextTest
     /** @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
     protected $button;
 
-    /** @var ExpectationException $expectation_exception */
+    /** @var ExpectationException */
     protected $expectation_exception;
 
     public function testIfExceptionThrownInScrollToButtonFunctionBubblesUP()

@@ -180,7 +180,8 @@ class FlexibleContext extends MinkContext
             }, 15);
         } catch (ExpectationException $e) {
             throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
+                "Timed out waiting for '$text' to no longer appear.",
+                $this->getSession()
             );
         }
     }
@@ -194,8 +195,8 @@ class FlexibleContext extends MinkContext
         $locator = $this->fixStepArgument($field);
 
         $fields = $this->getSession()->getPage()->findAll(
-          'named',
-          ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
+            'named',
+            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
         );
 
         if (count($fields) > 1) {
@@ -865,8 +866,10 @@ class FlexibleContext extends MinkContext
         $field = $this->fixStepArgument($field);
 
         if ($this->getMinkParameter('files_path')) {
-            $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
+            $fullPath = rtrim(
+                realpath($this->getMinkParameter('files_path')),
+                DIRECTORY_SEPARATOR
+            ) . DIRECTORY_SEPARATOR . $path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -1131,7 +1134,8 @@ class FlexibleContext extends MinkContext
     public function scrollWindowToElement(NodeElement $element)
     {
         $xpath = json_encode($element->getXpath());
-        $this->getSession()->evaluateScript(<<<JS
+        $this->getSession()->evaluateScript(
+            <<<JS
                 document.evaluate($xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
                     .singleNodeValue
                     .scrollIntoView(false)
@@ -1479,7 +1483,8 @@ JS
         $xpath = $element->getXpath();
 
         /** @var array $coordinates */
-        $coordinates = $this->getSession()->evaluateScript(<<<JS
+        $coordinates = $this->getSession()->evaluateScript(
+            <<<JS
           return document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.getBoundingClientRect();
 JS

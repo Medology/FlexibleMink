@@ -502,7 +502,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     public function testParseKeyNested()
     {
         $this->assertEquals(['Object', ['property']], $this->parseKeyNested('Object\'s property'));
-        $this->assertEquals(['Object', ['ChildObject', 'property']],
-            $this->parseKeyNested('Object\'s ChildObject\'s property'));
+        $this->assertEquals(
+            ['Object', ['ChildObject', 'property']],
+            $this->parseKeyNested('Object\'s ChildObject\'s property')
+        );
     }
 }

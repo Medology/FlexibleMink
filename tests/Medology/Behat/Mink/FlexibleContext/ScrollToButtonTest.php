@@ -87,7 +87,8 @@ class ScrollToButtonTest extends FlexibleContextTest
     protected function mockContext()
     {
         $this->context = $this->getMockForAbstractClass(
-            TraversableElement::class, [$this->sessionMock],
+            TraversableElement::class,
+            [$this->sessionMock],
             '',
             true,
             true,

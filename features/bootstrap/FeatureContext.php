@@ -75,7 +75,7 @@ class FeatureContext implements Context
         $timeout *= 1000;
 
         $this->flexibleContext->getSession()->executeScript(
-<<<JS
+            <<<JS
             window.setTimeout(function() {
                 window.location = $path;
             }, $timeout);

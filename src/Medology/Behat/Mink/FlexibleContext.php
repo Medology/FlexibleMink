@@ -1171,8 +1171,10 @@ class FlexibleContext extends MinkContext
         $field = $this->fixStepArgument($field);
 
         if ($this->getMinkParameter('files_path')) {
-            $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $path;
+            $fullPath = rtrim(
+                realpath($this->getMinkParameter('files_path')),
+                DIRECTORY_SEPARATOR
+            ) . DIRECTORY_SEPARATOR . $path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }
@@ -1863,7 +1865,8 @@ class FlexibleContext extends MinkContext
         $xpath = $element->getXpath();
 
         /** @var array $coordinates */
-        $coordinates = $this->getSession()->evaluateScript(<<<JS
+        $coordinates = $this->getSession()->evaluateScript(
+            <<<JS
           return document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
             .singleNodeValue.getBoundingClientRect();
 JS
@@ -1968,7 +1971,8 @@ JS
     public function scrollWindowToElement(NodeElement $element)
     {
         $xpath = json_encode($element->getXpath());
-        $this->getSession()->evaluateScript(<<<JS
+        $this->getSession()->evaluateScript(
+            <<<JS
             document.evaluate($xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
                 .singleNodeValue
                 .scrollIntoView(false)

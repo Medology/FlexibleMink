@@ -252,15 +252,19 @@ trait TableContext
         }
 
         if (count($table[$piece]) < $rIdx) {
-            throw new ExpectationException("The row index $rIdx for the table is out of bounds. Table has ".
+            throw new ExpectationException(
+                "The row index $rIdx for the table is out of bounds. Table has ".
                 count($table[$piece]).' rows.',
-                $this->getSession());
+                $this->getSession()
+            );
         }
 
         if (count($table[$piece][$rIdx - 1]) < $cIdx) {
-            throw new ExpectationException("The col index $cIdx for the table is out of bounds. Table has ".
+            throw new ExpectationException(
+                "The col index $cIdx for the table is out of bounds. Table has ".
                 count($table[$piece][$rIdx - 1]).' cols.',
-                $this->getSession());
+                $this->getSession()
+            );
         }
 
         return $table[$piece][$rIdx - 1][$cIdx - 1];

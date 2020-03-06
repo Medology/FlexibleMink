@@ -122,7 +122,8 @@ class FlexibleContext extends MinkContext
             }, 15);
         } catch (ExpectationException $e) {
             throw new ResponseTextException(
-                "Timed out waiting for '$text' to no longer appear.", $this->getSession()
+                "Timed out waiting for '$text' to no longer appear.",
+                $this->getSession()
             );
         }
     }
@@ -137,8 +138,8 @@ class FlexibleContext extends MinkContext
         $locator = $this->fixStepArgument($field);
 
         $fields = $this->getSession()->getPage()->findAll(
-          'named',
-          ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
+            'named',
+            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
         );
 
         if (count($fields) > 1) {
@@ -570,8 +571,10 @@ class FlexibleContext extends MinkContext
         $field = $this->fixStepArgument($field);
 
         if ($this->getMinkParameter('files_path')) {
-            $fullPath = rtrim(realpath($this->getMinkParameter('files_path')),
-                    DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
+            $fullPath = rtrim(
+                realpath($this->getMinkParameter('files_path')),
+                DIRECTORY_SEPARATOR
+            ).DIRECTORY_SEPARATOR.$path;
             if (is_file($fullPath)) {
                 $path = $fullPath;
             }

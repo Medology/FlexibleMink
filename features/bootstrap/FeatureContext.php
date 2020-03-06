@@ -72,7 +72,7 @@ class FeatureContext extends FlexibleContext
         $timeout *= 1000;
 
         $this->getSession()->executeScript(
-<<<JS
+            <<<JS
             window.setTimeout(function() {
                 window.location = $path;
             }, $timeout);

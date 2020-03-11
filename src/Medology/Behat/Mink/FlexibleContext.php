@@ -2002,7 +2002,7 @@ JS
      *
      * @return NodeElement
      */
-    protected function findRadioButton($label)
+    public function findRadioButton($label)
     {
         $label = $this->storeContext->injectStoredValues($label);
         $this->fixStepArgument($label);

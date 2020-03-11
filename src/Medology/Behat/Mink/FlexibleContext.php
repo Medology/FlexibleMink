@@ -1748,11 +1748,9 @@ class FlexibleContext extends MinkContext
      */
     public function assertNodeElementVisibleInViewport(NodeElement $element)
     {
-        Spinner::waitFor(function () use ($element) {
-            if (!$this->nodeIsVisibleInViewport($element)) {
-                throw new ExpectationException('The following element was expected to be visible in viewport, but was not: ' . $element->getHtml(), $this->getSession());
-            }
-        });
+        if (!$this->nodeIsVisibleInViewport($element)) {
+            throw new ExpectationException('The following element was expected to be visible in viewport, but was not: ' . $element->getHtml(), $this->getSession());
+        }
     }
 
     /**

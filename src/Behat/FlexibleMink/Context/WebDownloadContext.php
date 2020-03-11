@@ -121,7 +121,6 @@ JS;
             return $imgProperties;
         });
 
-
         return $result['width'] !== 0 && $result['height'] !== 0;
     }
 }

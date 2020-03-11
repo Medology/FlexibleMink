@@ -1670,9 +1670,7 @@ class FlexibleContext extends MinkContext
             return -1;
         }
 
-        /* @noinspection PhpUndefinedMethodInspection */
         $aRect = $driver->getXpathBoundingClientRect($a->getXpath());
-        /* @noinspection PhpUndefinedMethodInspection */
         $bRect = $driver->getXpathBoundingClientRect($b->getXpath());
 
         if ($aRect['top'] == $bRect['top']) {

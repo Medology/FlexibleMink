@@ -622,14 +622,17 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->fixStepArgument($locator);
 
-        $context = $context ? $context : $this->getSession()->getPage();
-        $buttons = $context->findAll('named', ['button', $locator]);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return Spinner::waitFor(function () use ($locator, $context) {
+          $context = $context ? $context : $this->getSession()->getPage();
+          $buttons = $context->findAll('named', ['button', $locator]);
 
-        if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
+          if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
             throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
-        }
+          }
 
-        return $element;
+          return $element;
+        });
     }
 
     /**
@@ -677,13 +680,16 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToLink($locator)
     {
-        $links = $this->getLinks($locator);
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return Spinner::waitFor(function () use ($locator) {
+            $links = $this->getLinks($locator);
 
-        if (!($element = $this->scrollWindowToFirstVisibleElement($links))) {
-            throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
-        }
+            if (!($element = $this->scrollWindowToFirstVisibleElement($links))) {
+                throw new ExpectationException("No visible link found for '$locator'", $this->getSession());
+            }
 
-        return $element;
+            return $element;
+        });
     }
 
     /**
@@ -757,13 +763,17 @@ class FlexibleContext extends MinkContext
     public function scrollToOption($locator)
     {
         $locator = $this->fixStepArgument($locator);
-        $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
-        if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
-            throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
-        }
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return Spinner::waitFor(function () use ($locator) {
+          $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
-        return $element;
+          if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
+              throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+          }
+
+          return $element;
+        });
     }
 
     /**
@@ -808,16 +818,19 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToField($fieldName, TraversableElement $context = null)
     {
-        $context = $context ?: $this->getSession()->getPage();
+      /** @noinspection PhpUnhandledExceptionInspection */
+      return Spinner::waitFor(function () use ($fieldName, $context) {
+          $context = $context ?: $this->getSession()->getPage();
 
-        /** @var NodeElement[] $fields */
-        $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+          /** @var NodeElement[] $fields */
+          $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
 
-        if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
-            throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
-        }
+          if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
+              throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+          }
 
-        return $element;
+          return $element;
+      });
     }
 
     /**
@@ -1320,17 +1333,17 @@ class FlexibleContext extends MinkContext
      */
     public function pressButton($locator, TraversableElement $context = null)
     {
-        $button = $this->wait->scrollToButton($locator, $context);
-
         /* @noinspection PhpUnhandledExceptionInspection */
-        Spinner::waitFor(function () use ($button, $locator) {
+        Spinner::waitFor(function () use ($locator, $context) {
+            $button = $this->scrollToButton($locator, $context);
+
             if ($button->getAttribute('disabled') === 'disabled') {
                 throw new ExpectationException("Unable to press disabled button '$locator'.", $this->getSession());
             }
-        });
 
-        $this->assertNodeElementVisibleInViewport($button);
-        $button->press();
+            $this->assertNodeElementVisibleInViewport($button);
+            $button->press();
+        });
     }
 
     /**
@@ -1387,13 +1400,7 @@ class FlexibleContext extends MinkContext
         $select = $this->storeContext->injectStoredValues($select);
         $option = $this->storeContext->injectStoredValues($option);
 
-        /** @var NodeElement $field */
-        /** @noinspection PhpUnhandledExceptionInspection */
-        $field = Spinner::waitFor(function () use ($select, $context) {
-            return $this->assertVisibleOptionField($select, $context);
-        });
-
-        $field->selectOption($option);
+        $this->wait->assertVisibleOptionField($select, $context)->selectOption($option);
     }
 
     /**
@@ -1565,7 +1572,7 @@ class FlexibleContext extends MinkContext
      */
     public function ensureRadioButtonChecked($label)
     {
-        $this->findRadioButton($label)->click();
+        $this->wait->findRadioButton($label)->click();
     }
 
     /**

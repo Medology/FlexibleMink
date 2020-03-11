@@ -624,14 +624,14 @@ class FlexibleContext extends MinkContext
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($locator, $context) {
-          $context = $context ? $context : $this->getSession()->getPage();
-          $buttons = $context->findAll('named', ['button', $locator]);
+            $context = $context ? $context : $this->getSession()->getPage();
+            $buttons = $context->findAll('named', ['button', $locator]);
 
-          if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
-            throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
-          }
+            if (!($element = $this->scrollWindowToFirstVisibleElement($buttons))) {
+                throw new ExpectationException("No visible button found for '$locator'", $this->getSession());
+            }
 
-          return $element;
+            return $element;
         });
     }
 
@@ -766,13 +766,13 @@ class FlexibleContext extends MinkContext
 
         /** @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($locator) {
-          $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
+            $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
-          if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
-              throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
-          }
+            if (!($element = $this->scrollWindowToFirstVisibleElement($options))) {
+                throw new ExpectationException("No visible option found for '$locator'", $this->getSession());
+            }
 
-          return $element;
+            return $element;
         });
     }
 
@@ -818,19 +818,19 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToField($fieldName, TraversableElement $context = null)
     {
-      /** @noinspection PhpUnhandledExceptionInspection */
-      return Spinner::waitFor(function () use ($fieldName, $context) {
-          $context = $context ?: $this->getSession()->getPage();
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return Spinner::waitFor(function () use ($fieldName, $context) {
+            $context = $context ?: $this->getSession()->getPage();
 
-          /** @var NodeElement[] $fields */
-          $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
+            /** @var NodeElement[] $fields */
+            $fields = ($context->findAll('named', ['field', $fieldName]) ?: $this->getInputsByLabel($fieldName, $context));
 
-          if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
-              throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
-          }
+            if (!($element = $this->scrollWindowToFirstVisibleElement($fields))) {
+                throw new ExpectationException("No visible input found for '$fieldName'", $this->getSession());
+            }
 
-          return $element;
-      });
+            return $element;
+        });
     }
 
     /**

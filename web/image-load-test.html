@@ -9,6 +9,14 @@
       border: 2px solid #ccc;
     }
   </style>
+  <script>
+    window.onload = function() {
+      // Delay the load
+       setTimeout(function() {
+         document.getElementById('dynamic-image').src = 'img/medology.png';
+       }, 2000);
+    }
+  </script>
   <title>Table Test for Flexible Mink</title>
 </head>
 
@@ -17,6 +25,8 @@
   <img src="img/medology.png" id="valid-image" alt="Valid Image" />
   <h1>Invalid (Broken) Image</h1>
   <img src="img/doesnotexist.png" id="invalid-image" alt="Invalid Image" />
+  <h1>Dynamic Image</h1>
+  <img src="img/doesnotexist.png" id="dynamic-image" alt="Dynamic Image" />
 </body>
 
 </html>

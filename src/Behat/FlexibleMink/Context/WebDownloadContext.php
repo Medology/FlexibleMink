@@ -86,12 +86,12 @@ trait WebDownloadContext
     /**
      * {@inheritdoc}
      */
-    public function checkImageLoaded($xpath)
+    public function checkImageLoaded($xpath, $src = null)
     {
         $driver = $this->getSession()->getDriver();
         $xpath = str_replace('"', "'", $xpath);
 
-        $result = $this->waitFor(function () use ($driver, $xpath) {
+        $result = $this->waitFor(function () use ($driver, $xpath, $src) {
             if (!$driver->find($xpath)) {
                 throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
             }
@@ -100,7 +100,9 @@ trait WebDownloadContext
 return {
     complete: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.complete,
     height: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalHeight,
-    width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth
+    width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth,
+    src: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.currentSrc
+    .replace(location.protocol.concat("//").concat(window.location.hostname),"")
 }
 JS;
 
@@ -110,8 +112,15 @@ JS;
                 throw new Exception('Image did not finish loading.');
             }
 
+            if (!empty($src) && $imgProperties['src'] !== $src) {
+                throw new Exception(
+                    "The loaded image src is '{$imgProperties['src']}', but expected $src"
+                );
+            }
+
             return $imgProperties;
         });
+
 
         return $result['width'] !== 0 && $result['height'] !== 0;
     }

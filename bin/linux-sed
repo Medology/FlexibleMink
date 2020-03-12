@@ -5,7 +5,7 @@ set -eu
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../" && pwd )"
 
 . "${ROOT}"/docker/lib/images.sh
-. "${ROOT}"/docker/lib/tty.sh
+. "${ROOT}"/bin/lib/tty.sh
 
 docker run \
   -i"${TTY}" \

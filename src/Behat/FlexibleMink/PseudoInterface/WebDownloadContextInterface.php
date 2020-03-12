@@ -41,8 +41,9 @@ trait WebDownloadContextInterface
      * This method checks if the image for an <img> tag actually loaded.
      *
      * @param  string                   $xpath The xpath of the <img> tag to check
+     * @param  null|string              $src   The image src must match if given
      * @throws ElementNotFoundException If an <img> tag was not found at {@paramref $xpath}
      * @return bool                     True if image loaded, false otherwise
      */
-    abstract public function checkImageLoaded($xpath);
+    abstract public function checkImageLoaded($xpath, $src = null);
 }

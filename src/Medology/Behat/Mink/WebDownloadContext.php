@@ -7,6 +7,7 @@ use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Exception;
 use Medology\Behat\UsesStoreContext;
+use Medology\Spinner;
 
 /**
  * {@inheritdoc}
@@ -102,35 +103,42 @@ class WebDownloadContext implements Context
     /**
      * This method checks if the image for an <img> tag actually loaded.
      *
-     * @param string $xpath The xpath of the <img> tag to check
-     *
-     * @throws ElementNotFoundException If an <img> tag was not found at $xpath
-     *
-     * @return bool True if image loaded, false otherwise
+     * @param  string      $xpath The xpath of the <img> tag to check
+     * @param  string|null $src   The src value.
+     * @throws Exception
+     * @return bool        True if image loaded, false otherwise
      */
-    public function checkImageLoaded($xpath)
+    public function checkImageLoaded($xpath, $src = null)
     {
         $driver = $this->flexibleContext->getSession()->getDriver();
         $xpath = str_replace('"', "'", $xpath);
 
-        if (!$driver->find($xpath)) {
-            throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
-        }
-
-        $script = <<<JS
-            return {
-                complete: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.complete,
-                height: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalHeight,
-                width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth
+        return Spinner::waitFor(function () use ($driver, $xpath, $src) {
+            if (!$driver->find($xpath)) {
+                throw new ElementNotFoundException($driver, 'img', 'xpath', $xpath);
             }
+
+            $script = <<<JS
+        return {
+            complete: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.complete,
+            height: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalHeight,
+            width: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.naturalWidth,
+            src: document.evaluate("{$xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.currentSrc
+.replace(location.protocol.concat("//").concat(window.location.hostname),"")
+        }
 JS;
 
-        $imgProperties = $driver->evaluateScript($script);
+            $imgProperties = $driver->evaluateScript($script);
 
-        if (!$imgProperties['complete']) {
-            throw new Exception('Image did not finish loading.');
-        }
+            if (!$imgProperties['complete']) {
+                throw new Exception('Image did not finish loading.');
+            }
 
-        return $imgProperties['width'] !== 0 && $imgProperties['height'] !== 0;
+            if (!empty($src) && $imgProperties['src'] !== $src) {
+                throw new Exception("The loaded image src is '{$imgProperties['src']}', but expected $src");
+            }
+
+            return $imgProperties['width'] !== 0 && $imgProperties['height'] !== 0;
+        });
     }
 }

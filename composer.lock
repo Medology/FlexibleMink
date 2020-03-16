@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "30b03118a675ef7bb46c95f9340b369a",
+    "content-hash": "7e3d31e7a75948cca2e19d4eac99c0c1",
     "packages": [
         {
             "name": "behat/behat",
@@ -306,16 +306,16 @@
         },
         {
             "name": "chekote/noun-store",
-            "version": "v3.1.0",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chekote/noun-store.git",
-                "reference": "06aef8ca84545e24d96b405c4a7850e04df0ab0d"
+                "reference": "c50c685e44c8b3e348c3461727d8d278c4f45e50"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chekote/noun-store/zipball/06aef8ca84545e24d96b405c4a7850e04df0ab0d",
-                "reference": "06aef8ca84545e24d96b405c4a7850e04df0ab0d",
+                "url": "https://api.github.com/repos/Chekote/noun-store/zipball/c50c685e44c8b3e348c3461727d8d278c4f45e50",
+                "reference": "c50c685e44c8b3e348c3461727d8d278c4f45e50",
                 "shasum": ""
             },
             "require": {
@@ -343,7 +343,7 @@
                 "noun",
                 "testing"
             ],
-            "time": "2020-03-06T15:11:37+00:00"
+            "time": "2020-03-16T16:36:03+00:00"
         },
         {
             "name": "container-interop/container-interop",

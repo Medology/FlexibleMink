@@ -27,14 +27,13 @@
   },
   "autoload": {
     "psr-0": {
-      "": "src/",
-      "features": ""
-    },
-    "psr-4": {
-      "Tests\\": "tests"
+      "": "src/"
     }
   },
   "autoload-dev": {
+    "psr-0": {
+      "features": ""
+    },
     "psr-4": {
       "Tests\\": "tests/"
     }

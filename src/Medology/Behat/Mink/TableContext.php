@@ -9,6 +9,7 @@ use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use InvalidArgumentException;
 use Medology\Behat\UsesStoreContext;
+use Medology\Spinner;
 use RuntimeException;
 
 /**
@@ -102,19 +103,21 @@ class TableContext implements Context
             throw new InvalidArgumentException('Number of rows must be an integer greater than 0.');
         }
 
-        $table = $this->getTableFromName($name);
+        return Spinner::waitFor(function () use ($name, $num, $fullTable) {
+            $table = $this->getTableFromName($name);
 
-        $rowCount = count($table['body']);
+            $rowCount = count($table['body']);
 
-        if ($fullTable) {
-            $rowCount += count($table['head']) + count($table['body']);
-        }
+            if ($fullTable) {
+                $rowCount += count($table['head']) + count($table['body']);
+            }
 
-        if ($rowCount != $num) {
-            throw new ExpectationException("Expected $num row(s) for table '$name'. Instead got $rowCount.", $this->flexibleContext->getSession());
-        }
+            if ($rowCount != $num) {
+                throw new ExpectationException("Expected $num row(s) for table '$name'. Instead got $rowCount.", $this->getSession());
+            }
 
-        return true;
+            return true;
+        });
     }
 
     /**

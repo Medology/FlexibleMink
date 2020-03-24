@@ -285,8 +285,6 @@ trait TableContext
     /**
      * {@inheritdoc}
      *
-     * @Given the table :name has 1 row
-     * @Given the table :name has :num rows
      * @Then the table :name should have 1 row
      * @Then the table :name should have :num rows
      */

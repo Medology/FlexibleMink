@@ -295,7 +295,7 @@ trait TableContext
         }
 
         return $this->waitFor(function () use ($name, $num, $fullTable) {
-            $table = $this->getTableFromName($name);
+            $table = $this->getTableFromName($name, true);
 
             $rowCount = count($table['body']);
 

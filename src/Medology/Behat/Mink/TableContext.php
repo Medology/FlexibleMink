@@ -102,7 +102,7 @@ class TableContext implements Context
             throw new InvalidArgumentException('Number of rows must be an integer greater than 0.');
         }
 
-        $table = $this->getTableFromName($name);
+        $table = $this->getTableFromName($name, true);
 
         $rowCount = count($table['body']);
 

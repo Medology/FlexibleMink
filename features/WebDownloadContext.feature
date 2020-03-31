@@ -18,4 +18,6 @@ Feature: Web Download Context
 
   Scenario: Developer Can Test if an Image without src loaded dynamically
     When I reload the page
+    Then I should see "/img/placeholder.svg" image in "dynamic2-image"
+    When I press "Load image"
     Then I should see "/img/medology.png" image in "dynamic2-image"

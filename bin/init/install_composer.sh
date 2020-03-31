@@ -4,8 +4,8 @@ set -eu
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 
-EXPECTED_VERSION=1.9.3
-EXPECTED_CHECKSUM=19c30bc551e1d1e458b974772627faf13331072e88dcc912b11e3c8e29ae34c92594353f4fa36038c93de2e2d3a06e3b
+EXPECTED_VERSION=1.10.1
+EXPECTED_CHECKSUM=b6112e167c56731fe2c6b210f7a6c07da544ffe33d31d0e9676c411c59ffffbf55604f19b3ea49b6c43d2f6c54db52a2
 
 # Check for existing installation
 if [ -e "$ROOT"/bin/composer ]; then

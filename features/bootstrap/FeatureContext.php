@@ -130,8 +130,6 @@ JS
      *
      * @throws ExpectationException If the <img> tag is not found
      * @throws ExpectationException If the image is not loaded
-     *
-     * @return true
      */
     public function assertImageLoaded($imgSrc, $locator)
     {
@@ -142,15 +140,9 @@ JS
             throw new ExpectationException("Expected an img tag with id '$locator'. Found none!", $session);
         }
 
-        if ($image->getAttribute('src') != $imgSrc) {
-            throw new ExpectationException("Expected src '$imgSrc'. Instead got '" . $image->getAttribute('src') . "'.", $session);
-        }
-
-        if (!$this->webDownloadContext->checkImageLoaded($image->getXpath())) {
+        if (!$this->webDownloadContext->checkImageLoaded($image->getXpath(), $imgSrc)) {
             throw new ExpectationException("Expected img '$locator' to load. Instead it did not!", $session);
         }
-
-        return true;
     }
 
     /**
@@ -162,8 +154,6 @@ JS
      *
      * @throws ExpectationException If the <img> tag is not found
      * @throws ExpectationException If the image is loaded
-     *
-     * @return true
      */
     public function assertImageNotLoaded($locator)
     {
@@ -176,7 +166,5 @@ JS
         if ($this->webDownloadContext->checkImageLoaded($image->getXpath())) {
             throw new ExpectationException("Expected img '$locator' to not load. Instead it did load!", $this->flexibleContext->getSession());
         }
-
-        return true;
     }
 }

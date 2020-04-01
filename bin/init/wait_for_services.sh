@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
 
 i=0
@@ -13,13 +15,17 @@ VERSION=edge
 
 . "$ROOT"/bin/lib/colors.sh
 . "$ROOT"/bin/lib/env.sh
-. "$ROOT"/bin/lib/rm.sh
 . "$ROOT"/bin/lib/tty.sh
 
 # Checks the status of the app, db and web services
 checkServices() {
+  # Disabled exit-on-error because we're using nc's failure to detect if services are up yet
+  set +e
+
   "$ROOT"/bin/nc -z web 80 &> /dev/null
   WEB_STATUS=$?
+
+  set -e
 }
 
 # Prints the status of service named $1 based on the status code of $2

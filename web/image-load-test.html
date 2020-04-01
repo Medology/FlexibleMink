@@ -9,6 +9,18 @@
       border: 2px solid #ccc;
     }
   </style>
+  <script>
+    window.onload = function() {
+      // Delay the load
+       setTimeout(function() {
+         document.getElementById('dynamic-image').src = 'img/medology.png';
+       }, 1000);
+    };
+
+    function load_img() {
+      document.getElementById('dynamic2-image').src = 'img/medology.png';
+    }
+  </script>
   <title>Table Test for Flexible Mink</title>
 </head>
 
@@ -17,6 +29,11 @@
   <img src="img/medology.png" id="valid-image" alt="Valid Image" />
   <h1>Invalid (Broken) Image</h1>
   <img src="img/doesNotExist.png" id="invalid-image" alt="Invalid Image" />
+  <h1>Dynamic Image</h1>
+  <img src="img/placeholder.svg" id="dynamic-image" alt="Dynamic Image" />
+  <h1>Dynamic Image without src</h1>
+  <img src="img/placeholder.svg" id="dynamic2-image" alt="Dynamic Image without src" />
+  <button onclick="load_img()" data-qa-id="Load image">Load image</button>
 </body>
 
 </html>

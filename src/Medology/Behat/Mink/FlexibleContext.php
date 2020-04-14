@@ -2050,8 +2050,8 @@ JS
     private function getAncestors(NodeElement $node, $stopAt)
     {
         $nodeElements = [];
-        while ($node->getParent() instanceof NodeElement) {
-            $nodeElements[] = ($node = $node->getParent());
+        while (($node = $node->getParent()) instanceof NodeElement) {
+            $nodeElements[] = $node;
             if (strcasecmp($node->getTagName(), $stopAt) === 0) {
                 break;
             }

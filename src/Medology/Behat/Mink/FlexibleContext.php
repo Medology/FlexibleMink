@@ -1742,7 +1742,7 @@ class FlexibleContext extends MinkContext
     {
         $driver = $this->assertSelenium2Driver('Checks if a node Element is fully visible in the viewport.');
         if (!$driver->isDisplayed($element->getXpath()) ||
-            count(($parents = $this->getListOfAllNodeElementParents($element, 'html'))) < 1
+            count(($parents = $this->getAncestors($element, 'html'))) < 1
         ) {
             return false;
         }
@@ -1787,7 +1787,7 @@ class FlexibleContext extends MinkContext
     {
         $driver = $this->assertSelenium2Driver('Checks if a node Element is visible in the viewport.');
 
-        $parents = $this->getListOfAllNodeElementParents($element, 'body');
+        $parents = $this->getAncestors($element, 'body');
 
         if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
             return false;
@@ -2040,13 +2040,13 @@ JS
     }
 
     /**
-     * Get list of of all NodeElement parents.
+     * Returns all ancestors of the specified node element.
      *
      * @param string $stopAt html tag to stop at
      *
      * @return NodeElement[]
      */
-    private function getListOfAllNodeElementParents(NodeElement $nodeElement, $stopAt)
+    private function getAncestors(NodeElement $nodeElement, $stopAt)
     {
         $nodeElements = [];
         while ($nodeElement->getParent() instanceof NodeElement) {

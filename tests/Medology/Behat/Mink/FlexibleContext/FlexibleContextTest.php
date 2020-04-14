@@ -6,12 +6,12 @@ use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Session;
 use Medology\Behat\Mink\FlexibleContext;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use Tests\TestCase;
 
 /**
  * Instantiates the FlexibleContext so it can be used in Unit Tests functions.
  */
-abstract class FlexibleContextTest extends PHPUnit_Framework_TestCase
+abstract class FlexibleContextTest extends TestCase
 {
     /** @var Session|PHPUnit_Framework_MockObject_MockObject */
     protected $sessionMock;

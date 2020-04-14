@@ -2043,7 +2043,7 @@ JS
      * Returns all ancestors of the specified node element.
      *
      * @param NodeElement $node   the node element to fetch ancestors for.
-     * @param string      $stopAt html tag to stop at
+     * @param string      $stopAt html tag to stop at. This node will NOT be included in the returned list.
      *
      * @return NodeElement[]
      */
@@ -2051,10 +2051,11 @@ JS
     {
         $nodeElements = [];
         while (($node = $node->getParent()) instanceof NodeElement) {
-            $nodeElements[] = $node;
             if (strcasecmp($node->getTagName(), $stopAt) === 0) {
                 break;
             }
+
+            $nodeElements[] = $node;
         }
 
         return $nodeElements;

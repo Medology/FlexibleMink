@@ -2046,12 +2046,12 @@ JS
      *
      * @return NodeElement[]
      */
-    private function getAncestors(NodeElement $nodeElement, $stopAt)
+    private function getAncestors(NodeElement $node, $stopAt)
     {
         $nodeElements = [];
-        while ($nodeElement->getParent() instanceof NodeElement) {
-            $nodeElements[] = ($nodeElement = $nodeElement->getParent());
-            if (strtolower($nodeElement->getTagName()) === strtolower($stopAt)) {
+        while ($node->getParent() instanceof NodeElement) {
+            $nodeElements[] = ($node = $node->getParent());
+            if (strtolower($node->getTagName()) === strtolower($stopAt)) {
                 break;
             }
         }

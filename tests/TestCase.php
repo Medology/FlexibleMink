@@ -27,5 +27,4 @@ class TestCase extends PHPUnit_Framework_TestCase
 
         return $method->invokeArgs((is_string($object) ? null : $object), $parameters);
     }
-
 }

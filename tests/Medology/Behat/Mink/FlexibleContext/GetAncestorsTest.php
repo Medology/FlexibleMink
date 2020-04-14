@@ -13,7 +13,8 @@ class GetAncestorsTest extends FlexibleContextTest
     private $listItem;
     private $button;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         // Given I have an HTML body
@@ -32,7 +33,8 @@ class GetAncestorsTest extends FlexibleContextTest
         $this->button = $this->mockNode('button', $this->listItem);
     }
 
-    public function testAllAncestorsAreReturned() {
+    public function testAllAncestorsAreReturned()
+    {
         // When I pass the button to allAncestors()
         $ancestors = $this->invokeMethod($this->flexible_context, 'getAncestors', [$this->button]);
 
@@ -44,7 +46,8 @@ class GetAncestorsTest extends FlexibleContextTest
         $this->assertSame($this->body, $ancestors[3], "Button's fourth ancestor should be body");
     }
 
-    public function testStopAtIsNotReturned() {
+    public function testStopAtIsNotReturned()
+    {
         // When I pass the button to allAncestors() and request that it stop at "body"
         $ancestors = $this->invokeMethod($this->flexible_context, 'getAncestors', [$this->button, 'body']);
 
@@ -58,11 +61,12 @@ class GetAncestorsTest extends FlexibleContextTest
     /**
      * Creates a mocked NodeElement with an optional parent.
      *
-     * @param  string           $tagName the type of node element to mock
-     * @param  NodeElement|null $parent  the optional parent for the node element
+     * @param  string                 $tagName the type of node element to mock
+     * @param  NodeElement|null       $parent  the optional parent for the node element
      * @return MockObject|NodeElement
      */
-    protected function mockNode($tagName, NodeElement $parent = null) {
+    protected function mockNode($tagName, NodeElement $parent = null)
+    {
         $node = $this->createMock(NodeElement::class);
         $node->method('getTagName')->willReturn($tagName);
         $node->method('getParent')->willReturn($parent);
@@ -70,7 +74,8 @@ class GetAncestorsTest extends FlexibleContextTest
         return $node;
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->body = null;
         $this->div = null;
         $this->list = null;

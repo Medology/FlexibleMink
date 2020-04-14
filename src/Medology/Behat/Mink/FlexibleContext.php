@@ -1769,7 +1769,10 @@ class FlexibleContext extends MinkContext
     public function assertNodeElementVisibleInViewport(NodeElement $element)
     {
         if (!$this->nodeIsVisibleInViewport($element)) {
-            throw new ExpectationException('The following element was expected to be visible in viewport, but was not: ' . $element->getHtml(), $this->getSession());
+            throw new ExpectationException(
+                'The following element was expected to be visible in viewport, but was not: ' . $element->getHtml(),
+                $this->getSession()
+            );
         }
     }
 
@@ -2042,7 +2045,7 @@ JS
     /**
      * Get list of of all NodeElement parents.
      *
-     * @param string $stopAt html tag to stop at
+     * @param string $stopAt html tag to stop at. This tag will NOT be included in the returned list.
      *
      * @return NodeElement[]
      */

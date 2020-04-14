@@ -2052,7 +2052,7 @@ JS
         $nodeElements = [];
         while ($node->getParent() instanceof NodeElement) {
             $nodeElements[] = ($node = $node->getParent());
-            if (strtolower($node->getTagName()) === strtolower($stopAt)) {
+            if (strcasecmp($node->getTagName(), $stopAt) === 0) {
                 break;
             }
         }

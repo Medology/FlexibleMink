@@ -2042,7 +2042,8 @@ JS
     /**
      * Returns all ancestors of the specified node element.
      *
-     * @param string $stopAt html tag to stop at
+     * @param NodeElement $node   the node element to fetch ancestors for.
+     * @param string      $stopAt html tag to stop at
      *
      * @return NodeElement[]
      */

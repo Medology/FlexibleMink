@@ -34,7 +34,7 @@ class GetAncestorsTest extends FlexibleContextTest
 
     public function testAllAncestorsAreReturned() {
         // When I pass the button to allAncestors()
-        $ancestors = $this->invokeMethod($this->flexible_context, 'getAncestors', [$this->button, '']);
+        $ancestors = $this->invokeMethod($this->flexible_context, 'getAncestors', [$this->button]);
 
         // Then all ancestors should be returned in the correct order
         $this->assertCount(4, $ancestors, 'Number of returned ancestors should be 4');

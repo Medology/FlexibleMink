@@ -2049,15 +2049,15 @@ JS
      */
     private function getAncestors(NodeElement $node, $stopAt)
     {
-        $nodeElements = [];
+        $nodes = [];
         while (($node = $node->getParent()) instanceof NodeElement) {
             if (strcasecmp($node->getTagName(), $stopAt) === 0) {
                 break;
             }
 
-            $nodeElements[] = $node;
+            $nodes[] = $node;
         }
 
-        return $nodeElements;
+        return $nodes;
     }
 }

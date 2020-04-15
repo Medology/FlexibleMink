@@ -1789,7 +1789,8 @@ class FlexibleContext extends MinkContext
 
         $parents = $this->getAncestors($element, 'body');
 
-        if (!$driver->isDisplayed($element->getXpath()) || count($parents) < 1) {
+        // if the element is displayed, or it is detached from the DOM, it is not visible
+        if (!$driver->isDisplayed($element->getXpath()) || !$element->getParent()) {
             return false;
         }
 

@@ -1669,7 +1669,6 @@ class FlexibleContext extends MinkContext
      */
     public function compareElementsByCoords(NodeElement $a, NodeElement $b)
     {
-        /** @var Selenium2Driver $driver */
         $driver = $this->getSession()->getDriver();
         if (!($driver instanceof Selenium2Driver) || !method_exists($driver, 'getXpathBoundingClientRect')) {
             // If not supported by driver, just return -1 so the keep the original sort.

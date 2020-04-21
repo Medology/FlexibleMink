@@ -87,10 +87,10 @@ class TableContext implements Context
      * @Then  the table :name should have 1 row
      * @Then  the table :name should have :num rows
      *
-     * @param string $name      The name of the table
-     * @param int    $num       The number of BODY rows $name table should have
-     * @param bool   $fullTable By default, only table body rows are used. Setting this to true will count the whole
-     *                          table
+     * @param string     $name      The name of the table
+     * @param int|string $num       The number of BODY rows $name table should have
+     * @param bool       $fullTable By default, only table body rows are used. Setting this to true will count the whole
+     *                              table
      * @returns true
      *
      * @throws InvalidArgumentException If $num is not an integer
@@ -123,8 +123,8 @@ class TableContext implements Context
      * @Then  the table :name should have 1 column
      * @Then  the table :name should have :num columns
      *
-     * @param string $name The name of the table
-     * @param int    $num  The number of columns the table should have
+     * @param string     $name The name of the table
+     * @param int|string $num  The number of columns the table should have
      * @returns true
      *
      * @throws InvalidArgumentException If $num is not an integer

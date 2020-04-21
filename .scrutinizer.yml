@@ -1,0 +1,24 @@
+build:
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+          - phpcs-run
+  environment:
+    php:
+      version: 5.6.31
+
+filter:
+  excluded_paths:
+    - ".idea/"
+  dependency_paths:
+    - "vendor/"
+
+checks:
+  php: true
+
+build_failure_conditions:
+  - 'elements.rating(< A).new.exists'            # No new classes/methods with a rating below A
+  - 'issues.new.exists'                          # No new issues
+  - 'project.metric("scrutinizer.quality", < 8)' # Code Quality Rating drops below 8

@@ -520,8 +520,8 @@ class FlexibleContext extends MinkContext
      * @Given  the :locator button is :disabled
      * @Then   the :locator button should be :disabled
      *
-     * @param string $locator  The button
-     * @param bool   $disabled The state of the button
+     * @param string      $locator  The button
+     * @param string|bool $disabled The state of the button
      *
      * @throws DriverException                  when the operation cannot be performed
      * @throws ExpectationException             if button is disabled but shouldn't be

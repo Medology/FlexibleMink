@@ -76,11 +76,17 @@ class WebDownloadContext implements Context
      * @param string $key           the key to store the content under, defaulting to "Download"
      * @param string $headersString headers to pass with the curl request
      *
+     * @throws Exception if curl could not be initialized for the specified URL
+     *
      * @return mixed the curl_exec result of downloading the file
      */
     public function download($file, $key = 'Download', $headersString = '')
     {
         $ch = curl_init($file);
+        if ($ch === false) {
+            throw new Exception("Could not initialize curl for file $file");
+        }
+
         $headers = [$headersString];
 
         curl_setopt_array($ch, [

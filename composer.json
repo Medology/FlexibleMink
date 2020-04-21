@@ -15,7 +15,7 @@
     "behat/mink-extension": "^2.0",
     "chekote/noun-store": "^4.0",
     "ext-zip": "^1.0",
-    "ext-curl": "^7.2"
+    "ext-curl": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7",

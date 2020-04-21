@@ -83,16 +83,23 @@ class CsvContext implements Context
 
         $actualHeaders = str_getcsv(str_getcsv($this->storeContext->get($key), "\n")[0]);
 
-        if ($diff = array_diff($expectedHeaders, $actualHeaders)) {
-            $missing = implode("', '", $diff);
+        $this->assertCsvHeadersMatch($expectedHeaders, $actualHeaders, $key, 'is missing');
+        $this->assertCsvHeadersMatch($actualHeaders, $expectedHeaders, $key, 'contains extra');
+    }
 
-            throw new Exception("CSV '$key' is missing headers '$missing'");
-        }
-
-        if ($diff = array_diff($actualHeaders, $expectedHeaders)) {
-            $extra = implode("', '", $diff);
-
-            throw new Exception("CSV '$key' contains extra headers '$extra'");
+    /**
+     * Asserts that certain CSV headers are present.
+     *
+     * @param  string[]  $required the CSV headers that are required to be present.
+     * @param  string[]  $actual   the CSV headers that are actually present.
+     * @param  string    $csvName  the name of the CSV (for the exception message).
+     * @param  string    $context  the context of what's being checked (for the exception message).
+     * @throws Exception if the required headers are not present in the actual headers.
+     */
+    private function assertCsvHeadersMatch($required, $actual, $csvName, $context)
+    {
+        if ($diff = array_diff($required, $actual)) {
+            throw new Exception("CSV '$csvName' $context headers '" . implode("', '", $diff) . "'");
         }
     }
 }

@@ -465,15 +465,6 @@ class TableContext implements Context
 
         $table = $this->flexibleContext->assertSession()->elementExists('xpath', "//table[$idPiece or $namePiece]");
 
-        if (!$table) {
-            throw new ElementNotFoundException(
-                $this->flexibleContext->getSession()->getDriver(),
-                'table',
-                'xpath',
-                'id, name'
-            );
-        }
-
         if (!$table->isVisible()) {
             throw new RuntimeException("Found table '$name', but it is not visible!");
         }

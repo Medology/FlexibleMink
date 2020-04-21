@@ -22,7 +22,6 @@ use Medology\Behat\TypeCaster;
 use Medology\Behat\UsesStoreContext;
 use Medology\Spinner;
 use OutOfBoundsException;
-use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use ReflectionException;
 use WebDriver\Exception;
 use ZipArchive;

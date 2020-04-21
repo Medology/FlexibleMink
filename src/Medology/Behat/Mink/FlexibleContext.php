@@ -173,7 +173,7 @@ class FlexibleContext extends MinkContext
      *                                  injectStoredValues method.
      * @throws ResponseTextException    if the text is not found
      */
-    public function assertPageContainsTexts(TableNode $table, $not = null)
+    public function assertPageContainsTexts(TableNode $table, $not = '')
     {
         if (count($table->getRow(0)) > 1) {
             throw new InvalidArgumentException('Arguments must be a single-column list of items');

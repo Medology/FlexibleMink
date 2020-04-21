@@ -60,6 +60,8 @@ class FlexibleContext extends MinkContext
      *
      * Overrides the base method to support injecting stored values and matching URLs that include hostname.
      *
+     * @param  string $page the page to assert we are on.
+     *
      * @throws DriverException          if the driver failed to perform the action
      * @throws ExpectationException     If the current page is not the expected page.
      *                                  and they do not conform to its requirements. This method does not pass
@@ -1362,11 +1364,10 @@ class FlexibleContext extends MinkContext
     /**
      * Asserts that all nodes have the specified attribute value.
      *
-     * @param string $locator     the attribute locator of the node element
-     * @param array  $attributes  A key value paid of the attribute and value the nodes
-     *                            should contain
-     * @param string $selector    the selector to use to find the node
-     * @param null   $occurrences the number of time the node element should be found
+     * @param string   $locator     the attribute locator of the node element
+     * @param array    $attributes  A key value paid of the attribute and value the nodes should contain
+     * @param string   $selector    the selector to use to find the node
+     * @param int|null $occurrences the number of time the node element should be found
      *
      * @throws DriverException                  When the operation cannot be done
      * @throws ExpectationException             If the nodes attributes do not match

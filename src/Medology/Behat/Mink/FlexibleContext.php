@@ -1948,7 +1948,7 @@ JS
      *
      * @param NodeElement[] $elements the elements to look for
      *
-     * @return NodeElement the first visible element
+     * @return NodeElement|null the first visible element
      */
     public function scrollWindowToFirstVisibleElement(array $elements)
     {

@@ -27,6 +27,7 @@ class JavaScriptContext implements Context
     public function assertJavascriptVariableHasAValue($variable)
     {
         // Get the value of our variable from javascript
+        /** @var mixed $result return type for Session::evaluateScript is wrong */
         $result = $this->flexibleContext->getSession()->evaluateScript('return ' . $variable . ';');
 
         // If it's null - we failed

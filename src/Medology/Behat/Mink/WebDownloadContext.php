@@ -81,7 +81,7 @@ class WebDownloadContext implements Context
     public function download($file, $key = 'Download', $headersString = '')
     {
         $ch = curl_init($file);
-        $headers[] = $headersString;
+        $headers = [$headersString];
 
         curl_setopt_array($ch, [
             CURLOPT_HEADER         => 0,

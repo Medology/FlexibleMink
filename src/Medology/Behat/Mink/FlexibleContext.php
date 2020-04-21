@@ -2013,7 +2013,6 @@ JS
         $label = $this->storeContext->injectStoredValues($label);
         $this->fixStepArgument($label);
 
-        /** @var NodeElement[] $radioButtons */
         $radioButtons = $this->getSession()->getPage()->findAll('named', ['radio', $label]);
 
         if (!$radioButtons) {

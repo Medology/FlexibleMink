@@ -80,32 +80,21 @@ class FlexibleContext extends MinkContext
 
         /* @noinspection PhpUnhandledExceptionInspection */
         Spinner::waitFor(function () use ($page) {
-            $this->assertPageAddressOnce($page);
-        });
-    }
-
-    /**
-     * Logic for asserting a page address/URL. Call within a waitFor lambda function.
-     * Otherwise, call assertPageAddress, which calls this method in a waitFor for you.
-     *
-     * @param string $page the page to assert we're on
-     */
-    public function assertPageAddressOnce($page)
-    {
-        // is the page a path, or a full URL?
-        if (preg_match('!^https?://!', $page) == 0) {
-            // it's just a path. delegate to parents implementation
-            parent::assertPageAddress($page);
-        } else {
-            // it's a full URL, compare manually
-            $actual = $this->getSession()->getCurrentUrl();
-            if (strpos($actual, $page) !== 0) {
-                throw new ExpectationException(
-                    sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
-                    $this->getSession()
-                );
+            // is the page a path, or a full URL?
+            if (preg_match('!^https?://!', $page) == 0) {
+                // it's just a path. delegate to parents implementation
+                parent::assertPageAddress($page);
+            } else {
+                // it's a full URL, compare manually
+                $actual = $this->getSession()->getCurrentUrl();
+                if (strpos($actual, $page) !== 0) {
+                    throw new ExpectationException(
+                        sprintf('Current page is "%s", but "%s" expected.', $actual, $page),
+                        $this->getSession()
+                    );
+                }
             }
-        }
+        });
     }
 
     /**

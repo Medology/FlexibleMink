@@ -15,6 +15,7 @@ docker run \
     -i"${TTY}" \
     --rm \
     -v "$(pwd)":/app \
+    -v ~/.composer:/home/user/.composer:delegated \
     -w /app \
 	--link web:dockermachine.local \
 	--net ${PROJECT_NAME}_default \

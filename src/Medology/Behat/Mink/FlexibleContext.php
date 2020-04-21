@@ -271,8 +271,8 @@ class FlexibleContext extends MinkContext
      *
      * @see    StoreContext::injectStoredValues()
      *
-     * @param string|array $element css element selector
-     * @param string       $text    expected text
+     * @param string $element css element selector
+     * @param string $text    expected text
      *
      * @throws InvalidArgumentException If injectStoredValues incorrectly believes one or more closures were passed,
      *                                  and they do not conform to its requirements. This method does not pass

@@ -47,13 +47,7 @@ class AlertContext implements Context
      */
     public function confirmAlert()
     {
-        $driver = $this->flexibleContext->getSession()->getDriver();
-
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException('Confirm Alert is not supported by %s', $driver);
-        }
-
-        $driver->getWebDriverSession()->accept_alert();
+        $this->flexibleContext->assertSelenium2Driver('Confirm Alert')->getWebDriverSession()->accept_alert();
     }
 
     /**
@@ -65,13 +59,7 @@ class AlertContext implements Context
      */
     public function cancelAlert()
     {
-        $driver = $this->flexibleContext->getSession()->getDriver();
-
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException('Cancel Alert is not supported by %s', $driver);
-        }
-
-        $driver->getWebDriverSession()->dismiss_alert();
+        $this->flexibleContext->assertSelenium2Driver('Cancel Alert')->getWebDriverSession()->dismiss_alert();
     }
 
     /**
@@ -86,12 +74,8 @@ class AlertContext implements Context
      */
     public function assertAlertMessage($expected)
     {
+        $driver = $this->flexibleContext->assertSelenium2Driver('Assert Alert');
         $session = $this->flexibleContext->getSession();
-        $driver = $session->getDriver();
-
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException('Assert Alert message is not supported by %s', $driver);
-        }
 
         try {
             $actual = $driver->getWebDriverSession()->getAlert_text();
@@ -115,12 +99,7 @@ class AlertContext implements Context
      */
     public function setAlertText($message)
     {
-        $driver = $this->flexibleContext->getSession()->getDriver();
-
-        if (!($driver instanceof Selenium2Driver)) {
-            throw new UnsupportedDriverActionException('Set Alert text is not supported by %s', $driver);
-        }
-
-        $driver->getWebDriverSession()->postAlert_text(['text' => $message]);
+        $this->flexibleContext->assertSelenium2Driver('Set Alert')->getWebDriverSession()
+            ->postAlert_text(['text' => $message]);
     }
 }

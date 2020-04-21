@@ -1226,6 +1226,12 @@ class FlexibleContext extends MinkContext
 
             $session = $this->getSession();
             $value = $session->getPage()->findField($field)->getValue();
+            if (!is_string($value)) {
+                throw new ExpectationException(
+                    "The value of input $field is not a string. Maybe you specified the wrong field?",
+                    $this->getSession()
+                );
+            }
 
             // Workaround for browser's fake path stuff that obscures the directory of the attached file.
             $fileParts = explode(DIRECTORY_SEPARATOR, $path);

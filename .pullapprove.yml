@@ -1,7 +1,7 @@
 version: 3
 extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/base.pullapprove.yml?ref=master"
 pullapprove_conditions:
-  - condition: "base.ref == '2.0'"
+  - condition: "base.ref == 'master'"
     unmet_status: failure
     explanation: "PullApprove is not configured for this branch"
   - condition: "'[DO NOT REVIEW]' not in title"

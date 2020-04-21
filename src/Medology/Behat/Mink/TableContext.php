@@ -564,12 +564,14 @@ class TableContext implements Context
         $parser = function (array $rows) {
             $data = [];
 
-            for ($i = 0; $i < count($rows); ++$i) {
+            $rowCount = count($rows);
+            for ($i = 0; $i < $rowCount; ++$i) {
                 $row = $rows[$i];
                 /** @var NodeElement[] $cells */
                 $cells = $row->findAll('xpath', '/td|/th');
 
-                for ($j = 0; $j < count($cells); ++$j) {
+                $cellCount = count($cells);
+                for ($j = 0; $j < $cellCount; ++$j) {
                     $cell = $cells[$j];
 
                     //Handle select

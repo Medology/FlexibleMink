@@ -253,10 +253,7 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->fixStepArgument($field);
 
-        $fields = $this->getSession()->getPage()->findAll(
-            'named',
-            ['field', $this->getSession()->getSelectorsHandler()->xpathLiteral($locator)]
-        );
+        $fields = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
         if (count($fields) > 1) {
             throw new ExpectationException("The field '$locator' was found more than one time", $this->getSession());

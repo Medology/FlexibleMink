@@ -555,23 +555,21 @@ class TableContext implements Context
         $bodyRows = $table->findAll('xpath', '/tbody/tr');
         $footRows = $table->findAll('xpath', '/tfoot/tr');
 
-        /*
+        /**
          * Anonymous function to retrieve cell values from an array of row nodes. Does not support row or colspan!
          *
-         * @param NodeElement[] $rows The rows to parse
-         * @return array The cell values for the rows numerically indexed as [row][col]
+         * @param  NodeElement[] $rows The rows to parse
+         * @return array         The cell values for the rows numerically indexed as [row][col]
          */
         $parser = function (array $rows) {
             $data = [];
 
-            /** @var NOdeElement[] $rows */
             for ($i = 0; $i < count($rows); ++$i) {
                 $row = $rows[$i];
                 /** @var NodeElement[] $cells */
                 $cells = $row->findAll('xpath', '/td|/th');
 
                 for ($j = 0; $j < count($cells); ++$j) {
-                    /** @var NodeElement $cell */
                     $cell = $cells[$j];
 
                     //Handle select

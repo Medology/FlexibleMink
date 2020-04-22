@@ -110,7 +110,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         try {
             /* @noinspection PhpParamsInspection intentional wrong argument type */
             $this->storeContext->injectStoredValues([]);
-            $this->setExpectedException('PHPUnit_Framework_Error_Warning');
+            $this->expectException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
             $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
         }
@@ -118,7 +118,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         try {
             $this->storeContext->injectStoredValues(function () {
             });
-            $this->setExpectedException('PHPUnit_Framework_Error_Warning');
+            $this->expectException('PHPUnit_Framework_Error_Warning');
         } catch (Exception $e) {
             $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
         }
@@ -140,7 +140,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues("(the test_property_1 of the $badName)");
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals("Entry '$badName' was not found in the store.", $e->getMessage());
@@ -151,7 +151,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues("(the $badProperty of the $name)");
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals("$name does not have a $badProperty property", $e->getMessage());
@@ -176,7 +176,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->setExpectedException('TypeError');
+            $this->expectException('TypeError');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
@@ -187,7 +187,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
@@ -201,7 +201,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
@@ -214,7 +214,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
@@ -227,7 +227,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
@@ -251,7 +251,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         try {
             $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $goodFn);
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('testObj does not have a test_property_1 property', $e->getMessage());
@@ -298,7 +298,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         foreach ($wrongArgCounts as $wrongArgCount) {
             try {
                 $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongArgCount);
-                $this->setExpectedException('Exception');
+                $this->expectException('Exception');
             } catch (Exception $e) {
                 $this->assertInstanceOf('Exception', $e);
                 $this->assertEquals('Lambda $hasValue must take two arguments!', $e->getMessage());
@@ -320,7 +320,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         foreach ($wrongReturnTypes as $wrongReturnType) {
             try {
                 $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', null, $wrongReturnType);
-                $this->setExpectedException('Exception');
+                $this->expectException('Exception');
             } catch (Exception $e) {
                 $this->assertInstanceOf('Exception', $e);
                 $this->assertEquals('$hasValue lambda must return a boolean!', $e->getMessage());
@@ -336,7 +336,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
                     return false;
                 }
             );
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('testObj does not have a test_property_1 property', $e->getMessage());
@@ -423,9 +423,9 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         list($majorVersion, $minorVersion) = explode('.', PHP_VERSION, 3);
 
         if ($majorVersion >= 7) {
-            $this->setExpectedException(TypeError::class);
+            $this->expectException(TypeError::class);
         } elseif ($majorVersion == 5 && $minorVersion == 6) {
-            $this->setExpectedException(PHPUnit_Framework_Error::class);
+            $this->expectException(PHPUnit_Framework_Error::class);
         } else {
             throw new Exception('This php version is not supported. PHP version must be >= 5.6');
         }

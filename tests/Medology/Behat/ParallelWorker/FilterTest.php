@@ -19,7 +19,7 @@ class FilterTest extends FilterTestBase
         // message check
         try {
             new Filter(-10, 10);
-            self::setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertEquals('Received bad arguments for ($curNode, $totalNodes): (-10, 10).', $e->getMessage());
         }
@@ -29,28 +29,28 @@ class FilterTest extends FilterTestBase
          **************************/
         try {
             new Filter(-1, 1);
-            self::setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
             new Filter(0, 0);
-            self::setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
             new Filter(-1, -1);
-            self::setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }
 
         try {
             new Filter(2, 1);
-            self::setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         } catch (Exception $e) {
             $this->assertTrue($e instanceof InvalidArgumentException);
         }

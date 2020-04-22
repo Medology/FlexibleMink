@@ -102,22 +102,22 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($this->storeContext->injectStoredValues('', null));
 
         // test function with bad arguments
-        $badFn = function () {
+        $noArgsFn = function () {
         };
 
         try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $noArgsFn);
             $this->expectException('TypeError');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
         }
 
-        $badFn = function ($a, $b) {
+        $tooManyArgsFn = function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {
         };
 
         try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $tooManyArgsFn);
             $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -125,13 +125,11 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         }
 
         // test function with no return
-        $badFn = function (/* @noinspection PhpUnusedParameterInspection */ $a) {
-            /** @noinspection PhpUnusedLocalVariableInspection */
-            $a = 1;
+        $noReturnFn = function (/** @scrutinizer ignore-unused */ $a) {
         };
 
         try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $noReturnFn);
             $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -139,25 +137,26 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         }
 
         // test function with bad return
-        $badFn = function (/* @noinspection PhpUnusedParameterInspection */ $a) {
-            return 'bad return';
+        $wrongReturnFn = function ($a) {
+            return gettype($a);
         };
 
         try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $wrongReturnFn);
             $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
             $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
         }
 
-        $badFn = function (/* @noinspection PhpUnusedParameterInspection */ $a) {
-            return function () {
+        $wrongReturnFn2 = function (/** @scrutinizer ignore-unused */ $a) {
+            return function () use ($a) {
+                return gettype($a);
             };
         };
 
         try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $badFn);
+            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $wrongReturnFn2);
             $this->expectException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
@@ -222,8 +221,12 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             function () {
             },
             function ($a) {
+                gettype($a);
             },
             function ($a, $b, $c) {
+                gettype($a);
+                gettype($b);
+                gettype($c);
             },
         ];
         foreach ($wrongArgCounts as $wrongArgCount) {
@@ -238,13 +241,14 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // Lambda with wrong return type throws appropriate error
         $wrongReturnTypes = [
+            function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {
+            },
             function ($a, $b) {
+                return gettype($a) . gettype($b);
             },
-            function (/* @noinspection PhpUnusedParameterInspection */ $a, $b) {
-                return '';
-            },
-            function (/* @noinspection PhpUnusedParameterInspection */ $a, $b) {
-                return function () {
+            function ($a, $b) {
+                return function () use ($a, $b) {
+                    return gettype($a) . gettype($b);
                 };
             },
         ];

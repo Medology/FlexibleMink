@@ -94,10 +94,11 @@ class TableContext implements Context
      * @param int|string $num       The number of BODY rows $name table should have
      * @param bool       $fullTable By default, only table body rows are used. Setting this to true will count the whole
      *                              table
-     * @returns true
      *
      * @throws InvalidArgumentException If $num is not an integer
      * @throws ExpectationException     If the number of found rows was not $num
+     *
+     * @return true
      */
     public function assertTableHasRows($name, $num = 1, $fullTable = false)
     {

@@ -18,7 +18,7 @@ class ScrollToButtonTest extends FlexibleContextTest
     /** @var NodeElement|PHPUnit_Framework_MockObject_MockObject */
     protected $element2;
 
-    /** @var NodeElement[] */
+    /** @var NodeElement[]|PHPUnit_Framework_MockObject_MockObject[] */
     protected $expectedElements;
 
     protected $locator = 'button';

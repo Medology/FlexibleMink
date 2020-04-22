@@ -24,58 +24,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
-     *
-     * @throws Exception when a unsupported version of PHP is being used
-     */
-    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnEmptyString()
-    {
-        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
-            $this->storeContext->injectStoredValues('', '');
-        }, 'injectStoredValues() must be callable');
-    }
-
-    /**
-     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
-     *
-     * @throws Exception when a unsupported version of PHP is being used
-     */
-    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnInteger()
-    {
-        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
-            $this->storeContext->injectStoredValues('', 0);
-        }, 'injectStoredValues() must be callable');
-    }
-
-    /**
-     * Tests that an error is thrown when second argument of injectStoredValues is an empty string.
-     *
-     * @throws Exception when a unsupported version of PHP is being used
-     */
-    public function testErrorIsThrownWhenSecondArgumentOfInjectStoredValuesIsAnObject()
-    {
-        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () {
-            $this->storeContext->injectStoredValues('', $this->getMockObject());
-        }, 'injectStoredValues() must be callable');
-    }
-
-    /**
-     * Test that a non-callable has value throws appropriate error.
-     *
-     * @dataProvider nonCallableValuesProvider
-     *
-     * @param mixed $nonCallable non-callable variable from data provider
-     *
-     * @throws Exception when a unsupported version of PHP is being used
-     */
-    public function testNonCallableHasValueThrowsAppropriateError($nonCallable)
-    {
-        $this->assertFunctionThrowsTypeErrorThatContainsMessage(function () use ($nonCallable) {
-            $this->storeContext->injectStoredValues('', null, $nonCallable);
-        }, 'injectStoredValues() must be callable');
-    }
-
-    /**
      * Returns a list of non-callable values.
      *
      * @return array
@@ -105,23 +53,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // test empty string and variations
         $this->assertEmpty($this->storeContext->injectStoredValues(''));
         $this->assertEmpty($this->storeContext->injectStoredValues(null));
-
-        // test invalid argument for $string
-        try {
-            /* @noinspection PhpParamsInspection intentional wrong argument type */
-            $this->storeContext->injectStoredValues([]);
-            $this->expectException('PHPUnit_Framework_Error_Warning');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
-        }
-
-        try {
-            $this->storeContext->injectStoredValues(function () {
-            });
-            $this->expectException('PHPUnit_Framework_Error_Warning');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('PHPUnit_Framework_Error_Warning', $e);
-        }
 
         // test reflection of non-matching inputs
         $this->assertEquals(1452, $this->storeContext->injectStoredValues(1452));

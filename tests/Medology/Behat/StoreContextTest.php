@@ -204,7 +204,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
+            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
         }
 
         // test function with bad return
@@ -217,7 +217,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
+            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
         }
 
         $badFn = function (/* @noinspection PhpUnusedParameterInspection */ $a) {
@@ -230,7 +230,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             $this->setExpectedException('Exception');
         } catch (Exception $e) {
             $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an object or an array!', $e->getMessage());
+            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
         }
 
         // test basic reflection

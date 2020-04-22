@@ -184,9 +184,11 @@ class StoreContext extends Store implements Context
                 $thing = $onGetFn($thing);
             }
 
-            // must return object, array, but not function
-            if (!is_object($thing) && !is_array($thing) || is_callable($thing)) {
-                throw new InvalidArgumentException('The $onGetFn method must return an object or an array!');
+            // must return an array or a non-callable object
+            if (!is_array($thing) && (!is_object($thing) || is_callable($thing))) {
+                throw new InvalidArgumentException(
+                    'The $onGetFn method must return an array or a non-callable object!'
+                );
             }
 
             $hasValueResult = $hasValue($thing, $thingProperty);

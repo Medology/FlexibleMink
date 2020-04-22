@@ -320,32 +320,42 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          * Formatted as
          *****************************/
 
-        // DateTime is formatted with default format when no format is specified
-        $this->assertEquals(
-            '2028-10-28T15:30:10+0000',
-            $this->storeContext->injectStoredValues('(the date_prop of the testObj)')
-        );
-
-        // DateTime is formatted with specified format
-        $this->assertEquals(
-            '10/28/2028',
-            $this->storeContext->injectStoredValues('(the date_prop of the testObj formatted as a US date)')
-        );
-
         // DateTime is formatted as per host object format
         $testObj->dateFormat = 'm/d/Y H:i';
         $this->assertEquals(
             '10/28/2028 15:30',
             $this->storeContext->injectStoredValues('(the date_prop of the testObj)')
         );
+    }
 
-        // DateTime is formatted as specified format, even if host object has format
-        $this->assertEquals(
-            '10/28/2028 at 3:30 PM',
-            $this->storeContext->injectStoredValues(
-                '(the date_prop of the testObj formatted as a US date and 12hr time)'
-            )
-        );
+    public function dateTimeFormatDataProvider()
+    {
+        return [
+            'DateTime is formatted with default format when no format is specified' => [
+                '(the date_prop of the testObj)',
+                '2028-10-28T15:30:10+0000',
+            ],
+            'DateTime is formatted with specified format' => [
+                '(the date_prop of the testObj formatted as a US date)',
+                '10/28/2028',
+            ],
+            'DateTime is formatted as specified format, even if host object has format' => [
+                '(the date_prop of the testObj formatted as a US date and 12hr time)',
+                '10/28/2028 at 3:30 PM',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dateTimeFormatDataProvider
+     *
+     * @param $input
+     * @param $output
+     */
+    public function testDateTimeFormatting($input, $output)
+    {
+        $this->storeContext->set('testObj', $this->getMockObject());
+        $this->assertEquals($output, $this->storeContext->injectStoredValues($input));
     }
 
     /**
@@ -425,19 +435,11 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
      */
     private function getMockObject()
     {
-        static $obj = null;
-
-        if (is_object($obj)) {
-            return $obj;
-        }
-
-        $obj = (object) [
+        return (object) [
             'test_property_1' => 'test_value_1',
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
             'date_prop'       => new DateTime('2028-10-28 15:30:10'),
         ];
-
-        return $obj;
     }
 }

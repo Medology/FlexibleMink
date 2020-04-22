@@ -24,7 +24,7 @@ class Spinner
      */
     public static function waitFor(callable $lambda, $timeout = null)
     {
-        if (!$timeout) {
+        if ($timeout === null) {
             $timeout = self::$default_timeout;
         }
 

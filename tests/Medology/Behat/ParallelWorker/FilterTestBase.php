@@ -4,7 +4,9 @@ namespace Tests\Medology\Behat\ParallelWorker;
 
 use Behat\Gherkin\Keywords\ArrayKeywords;
 use Behat\Gherkin\Lexer;
+use Behat\Gherkin\Node\FeatureNode;
 use Behat\Gherkin\Parser;
+use PHPUnit_Framework_AssertionFailedError;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -78,10 +80,15 @@ GHERKIN;
     }
 
     /**
-     * @return \Behat\Gherkin\Node\FeatureNode|null
+     * @throws PHPUnit_Framework_AssertionFailedError if the parser returns null (it should never do this).
+     * @return FeatureNode
      */
     protected function getParsedFeature()
     {
-        return $this->getParser()->parse($this->getGherkinFeature());
+        if (!$feature = $this->getParser()->parse($this->getGherkinFeature())) {
+            throw new PHPUnit_Framework_AssertionFailedError('Parser returned null when parsing out Gherkin fixture.');
+        }
+
+        return $feature;
     }
 }

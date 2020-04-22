@@ -264,15 +264,15 @@ class StoreContext extends Store implements Context
     /**
      * Fetches a value from an object and ensures it is prepared for injection into a string.
      *
-     * @param mixed  $property       the property to get from the object
-     * @param object $thing          the object to get the value from
-     * @param string $propertyFormat the pattern for formatting the value
+     * @param mixed        $property       the property to get from the object
+     * @param array|object $thing          the thing to get the value from
+     * @param string       $propertyFormat the pattern for formatting the value
      *
      * @return mixed the prepared value
      */
     protected function getValueForInjection($property, $thing, $propertyFormat = null)
     {
-        $value = $thing->$property;
+        $value = is_array($thing) ? $thing[$property] : $thing->$property;
 
         if ($propertyFormat) {
             $propertyFormat = $this->processPropertyFormat($propertyFormat);

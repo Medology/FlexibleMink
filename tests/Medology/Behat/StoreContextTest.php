@@ -40,7 +40,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     /**
      * Provides examples of strings that have injection-like syntax, but are not really injectable.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function injectLikeSyntaxDataProvider()
     {
@@ -60,6 +60,31 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     public function testInjectionLikeSyntaxIsNotInjected($string)
     {
         $this->assertEquals($string, $this->storeContext->injectStoredValues($string));
+    }
+
+    /**
+     * Provides examples of strings that reference things not in the store, and the expected error message.
+     *
+     * @return string[][]
+     */
+    public function nonExistentItemDataProvider()
+    {
+        return [
+            ['(the test_property_1 of the FakeObj)', "Entry 'FakeObj' was not found in the store."],
+        ];
+    }
+
+    /**
+     * @dataProvider nonExistentItemDataProvider
+     * @param string $string the value to pass to injectStoredValues
+     * @param string $error  the expected Exception error message
+     */
+    public function testInjectNonExistentItem($string, $error)
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($error);
+
+        $this->storeContext->injectStoredValues($string);
     }
 
     /**
@@ -86,17 +111,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // test reflection of non-matching inputs
         $this->assertEquals(1452, $this->storeContext->injectStoredValues(1452));
         $this->assertEquals('lol', $this->storeContext->injectStoredValues('lol'));
-
-        // test non-existing store key
-        $badName = 'FakeObj';
-
-        try {
-            $this->storeContext->injectStoredValues("(the test_property_1 of the $badName)");
-            $this->expectException('Exception');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals("Entry '$badName' was not found in the store.", $e->getMessage());
-        }
 
         // test bad property
         $badProperty = 'bad_property_1';

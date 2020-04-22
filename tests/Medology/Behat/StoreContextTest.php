@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ * @noinspection PhpUnhandledExceptionInspection
+ */
 namespace Tests\Medology\Behat;
 
 use DateTime;
@@ -34,6 +38,31 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Provides examples of strings that have injection-like syntax, but are not really injectable.
+     *
+     * @return array[]
+     */
+    public function injectLikeSyntaxDataProvider()
+    {
+        return [
+            ['the total_cost of the Order'],
+            ['(the total_cost of the Order'],
+            ['the total_cost of the Order)'],
+            ['the (total_cost of the Order)'],
+            ['(the total_cost of Order)'],
+        ];
+    }
+
+    /**
+     * @dataProvider injectLikeSyntaxDataProvider
+     * @param string $string the value to pass to injectStoredValues
+     */
+    public function testInjectionLikeSyntaxIsNotInjected($string)
+    {
+        $this->assertEquals($string, $this->storeContext->injectStoredValues($string));
+    }
+
+    /**
      * Tests the StoreContext::injectStoredValues method.
      */
     public function testInjectStoredValues()
@@ -57,14 +86,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         // test reflection of non-matching inputs
         $this->assertEquals(1452, $this->storeContext->injectStoredValues(1452));
         $this->assertEquals('lol', $this->storeContext->injectStoredValues('lol'));
-        $this->assertEquals('the total_cost of the Order', $this->storeContext->injectStoredValues('the total_cost of the Order'));
-        $this->assertEquals('(the total_cost of the Order', $this->storeContext->injectStoredValues('(the total_cost of the Order'));
-        $this->assertEquals('the total_cost of the Order)', $this->storeContext->injectStoredValues('the total_cost of the Order)'));
-        $this->assertEquals(
-            'the (total_cost of the Order)',
-            $this->storeContext->injectStoredValues('the (total_cost of the Order)')
-        );
-        $this->assertEquals('(the total_cost of Order)', $this->storeContext->injectStoredValues('(the total_cost of Order)'));
 
         // test non-existing store key
         $badName = 'FakeObj';

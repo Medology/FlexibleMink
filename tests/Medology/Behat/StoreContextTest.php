@@ -87,6 +87,26 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->storeContext->injectStoredValues($string);
     }
 
+    public function onGetFnWrongArgsDataProvider()
+    {
+        return [
+            'no args'       => [function () {}],
+            'too many args' => [function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {}],
+        ];
+    }
+
+    /**
+     * @dataProvider onGetFnWrongArgsDataProvider
+     * @param $onGetFn
+     */
+    public function testOnGetFnMustTakeOneArgument($onGetFn)
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Method $onGetFn must take one argument!');
+
+        $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $onGetFn);
+    }
+
     /**
      * Tests the StoreContext::injectStoredValues method.
      */
@@ -135,29 +155,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test null values
         $this->assertEmpty($this->storeContext->injectStoredValues('', null));
-
-        // test function with bad arguments
-        $noArgsFn = function () {
-        };
-
-        try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $noArgsFn);
-            $this->expectException('TypeError');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
-        }
-
-        $tooManyArgsFn = function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {
-        };
-
-        try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $tooManyArgsFn);
-            $this->expectException('Exception');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('Method $onGetFn must take one argument!', $e->getMessage());
-        }
 
         // test function with no return
         $noReturnFn = function (/** @scrutinizer ignore-unused */ $a) {

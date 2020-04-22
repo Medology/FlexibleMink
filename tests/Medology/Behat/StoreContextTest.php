@@ -108,6 +108,40 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Provides examples of onGetFn that return the wrong data type.
+     *
+     * @return callable[][]
+     */
+    public function onGetFnWrongReturnTypeDataProvider()
+    {
+        return [
+            'no return'       => [function (/** @scrutinizer ignore-unused */ $a) {}],
+            'return string'   => [function ($a) {
+                return gettype($a);
+            }],
+            'return function' => [function ($a) {
+                return function () use ($a) {
+                    gettype($a);
+                };
+            }],
+        ];
+    }
+
+    /**
+     * @dataProvider onGetFnWrongReturnTypeDataProvider
+     * @param callable $onGetFn
+     */
+    public function testOnGetFnWrongReturnType(callable $onGetFn)
+    {
+        $this->storeContext->set('person', $this->getMockObject());
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('The $onGetFn method must return an array or a non-callable object!');
+
+        $this->storeContext->injectStoredValues('(the name of the person)', $onGetFn);
+    }
+
+    /**
      * Tests the StoreContext::injectStoredValues method.
      */
     public function testInjectStoredValues()
@@ -155,45 +189,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // test null values
         $this->assertEmpty($this->storeContext->injectStoredValues('', null));
-
-        // test function with no return
-        $noReturnFn = function (/** @scrutinizer ignore-unused */ $a) {
-        };
-
-        try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $noReturnFn);
-            $this->expectException('Exception');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
-        }
-
-        // test function with bad return
-        $wrongReturnFn = function ($a) {
-            return gettype($a);
-        };
-
-        try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $wrongReturnFn);
-            $this->expectException('Exception');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
-        }
-
-        $wrongReturnFn2 = function (/** @scrutinizer ignore-unused */ $a) {
-            return function () use ($a) {
-                return gettype($a);
-            };
-        };
-
-        try {
-            $this->storeContext->injectStoredValues('(the test_property_1 of the testObj)', $wrongReturnFn2);
-            $this->expectException('Exception');
-        } catch (Exception $e) {
-            $this->assertInstanceOf('Exception', $e);
-            $this->assertEquals('The $onGetFn method must return an array or a non-callable object!', $e->getMessage());
-        }
 
         // test basic reflection
         $goodFn = function ($thing) {

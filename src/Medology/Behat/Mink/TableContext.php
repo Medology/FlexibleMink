@@ -192,7 +192,7 @@ class TableContext implements Context
 
         if ($remainingCols) {
             throw new ExpectationException(
-                "Did not find matches for '" . implode($remainingCols, ',') . "'.",
+                "Did not find matches for '" . implode(',', $remainingCols) . "'.",
                 $this->flexibleContext->getSession()
             );
         }

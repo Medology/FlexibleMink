@@ -83,8 +83,8 @@ class CsvContext implements Context
 
         $actualHeaders = str_getcsv(str_getcsv($this->storeContext->get($key), "\n")[0]);
 
-        $this->assertColumnsArePresent($expectedHeaders, $actualHeaders, $key);
-        $this->assertNoAdditionalColumns($expectedHeaders, $actualHeaders, $key);
+        $this->assertHeadersArePresent($expectedHeaders, $actualHeaders, $key);
+        $this->assertNoAdditionalHeaders($expectedHeaders, $actualHeaders, $key);
     }
 
     /**
@@ -95,7 +95,7 @@ class CsvContext implements Context
      * @param  string    $csvName  The name of the CSV (for the exception message).
      * @throws Exception if any of the required headers are not present.
      */
-    private function assertColumnsArePresent(array $required, array $actual, $csvName)
+    private function assertHeadersArePresent(array $required, array $actual, $csvName)
     {
         if ($diff = array_diff($required, $actual)) {
             throw new Exception("CSV '$csvName' is missing headers '" . implode("', '", $diff) . "'");
@@ -110,7 +110,7 @@ class CsvContext implements Context
      * @param  string    $csvName  The name of the CSV (for the exception message).
      * @throws Exception if any additional headers are present.
      */
-    private function assertNoAdditionalColumns(array $required, array $actual, $csvName)
+    private function assertNoAdditionalHeaders(array $required, array $actual, $csvName)
     {
         if ($diff = array_diff($actual, $required)) {
             throw new Exception("CSV '$csvName' contains extra headers '" . implode("', '", $diff) . "'");

@@ -20,22 +20,14 @@ class TableContext implements Context
     use UsesStoreContext;
 
     /**
-     * This method will retrieve a table by its name. If the table is stored in the key store, that will be used,
-     * otherwise a fresh parse will be done against the table's HTML. Setting $forceFresh to true will ignore the key
-     * store and build the table from HTML.
+     * This method will retrieve a table by its name.
      *
-     * @param string $name       The name of the table to be used in an xpath query
-     * @param bool   $forceFresh Setting to true will rebuild the table from HTML and not use the store
+     * @param string $name The name of the table to be used in an xpath query
      *
-     * @return array An array containing parsed rows and cells as returned form $this->buildTableFromHtml
+     * @return array An array containing parsed rows and cells as returned from $this->buildTableFromHtml
      */
-    public function getTableFromName($name, $forceFresh = false)
+    public function getTableFromName($name)
     {
-        // retrieve table from the store if it exists there
-        if ($this->storeContext->keyExists($name) && !$forceFresh) {
-            return $this->storeContext->get($name);
-        }
-
         // find the table node and parse it's contents
         $table = $this->findNamedTable($name);
         $tableData = $this->buildTableFromHtml($table);
@@ -43,20 +35,6 @@ class TableContext implements Context
         $this->storeContext->set($name, $tableData);
 
         return $tableData;
-    }
-
-    /**
-     * Re-parses the table give by $name ensuring the key store is up to date.
-     *
-     * @Then   the table :name is updated
-     *
-     * @param string $name The name of the table
-     *
-     * @return array An array of the parsed table as returned by $this->buildTableFromHtml
-     */
-    public function refreshTable($name)
-    {
-        return $this->getTableFromName($name, true);
     }
 
     /**
@@ -106,7 +84,7 @@ class TableContext implements Context
             throw new InvalidArgumentException('Number of rows must be an integer greater than 0.');
         }
 
-        $table = $this->getTableFromName($name, true);
+        $table = $this->getTableFromName($name);
 
         $rowCount = count($table['body']);
 
@@ -311,7 +289,7 @@ class TableContext implements Context
     {
         $expectedRow = $tableNode->getRowsHash();
 
-        $actualTable = $this->getTableFromName($name, true);
+        $actualTable = $this->getTableFromName($name);
         $colHeaders = $actualTable['colHeaders'];
 
         array_walk($actualTable['body'], function (&$row) use ($colHeaders) {

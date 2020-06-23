@@ -16,7 +16,7 @@ trait TypeCaster
      */
     public function castStringToInt($string)
     {
-        return intval($string);
+        return $string <= PHP_INT_MAX ? intval($string) : $string;
     }
 
     /**
@@ -28,6 +28,7 @@ trait TypeCaster
      */
     public function castStringToFloat($string)
     {
+        /** @todo Add PHP_FLOAT_MAX check when we move all our projects to at least php 7.2 */
         return floatval($string);
     }
 

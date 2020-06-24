@@ -14,7 +14,7 @@ trait TypeCaster
      *
      * @param string $string the string to cast
      *
-     * @return int the resulting int
+     * @return int|string the resulting int
      */
     public function castStringToInt($string)
     {

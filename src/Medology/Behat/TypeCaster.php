@@ -18,7 +18,9 @@ trait TypeCaster
      */
     public function castStringToInt($string)
     {
-        return $string <= PHP_INT_MAX ? intval($string) : $string;
+        $intval = intval($string);
+
+        return strval($intval) === $string ? $intval : $string;
     }
 
     /**

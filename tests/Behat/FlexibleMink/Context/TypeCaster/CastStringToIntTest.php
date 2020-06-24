@@ -13,11 +13,11 @@ use PHPUnit_Framework_MockObject_MockObject;
  */
 class CastStringToIntTest extends TestCase
 {
-    /** @var PHPUnit_Framework_MockObject_MockObject|TypeCaster  */
+    /** @var PHPUnit_Framework_MockObject_MockObject|TypeCaster */
     private $typeCasterTraitMock;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
@@ -44,20 +44,13 @@ class CastStringToIntTest extends TestCase
     public function conversionExamples()
     {
         return [
-            'numeric string values more than PHP_INT_MAX are not converted to integers' =>
-                ['9223372036854775808', '9223372036854775808'],
-            'numeric string values equal to PHP_INT_MAX are converted to integers' =>
-                ['9223372036854775807', 9223372036854775807],
-            'numeric string values less than PHP_INT_MAX are converted to integers' =>
-                ['9223372036854775806', 9223372036854775806],
-            'zero string values is converted to a integer' =>
-                ['0', 0],
-            'low number string value is converted to a integer' =>
-                ['1', 1],
-            'negative number string value is converted to a integer' =>
-                ['-9999', -9999],
-            'negative numeric string values less than negative PHP_INT_MAX are not converted to integers' =>
-                ['-9223372036854775809', '-9223372036854775809'],
+            'numeric string values more than PHP_INT_MAX are not converted to integers'                   => ['9223372036854775808', '9223372036854775808'],
+            'numeric string values equal to PHP_INT_MAX are converted to integers'                        => ['9223372036854775807', 9223372036854775807],
+            'numeric string values less than PHP_INT_MAX are converted to integers'                       => ['9223372036854775806', 9223372036854775806],
+            'zero string values is converted to a integer'                                                => ['0', 0],
+            'low number string value is converted to a integer'                                           => ['1', 1],
+            'negative number string value is converted to a integer'                                      => ['-9999', -9999],
+            'negative numeric string values less than negative PHP_INT_MAX are not converted to integers' => ['-9223372036854775809', '-9223372036854775809'],
         ];
     }
 }

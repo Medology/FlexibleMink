@@ -11,8 +11,8 @@ trait TypeCaster
      * Casts a step argument from a string to an int.
      *
      * @Transform /^(0|[1-9]\d*)$/
-     * @param  string $string the string to cast.
-     * @return string|int    The resulting int.
+     * @param  string     $string the string to cast.
+     * @return string|int The resulting int.
      */
     public function castStringToInt($string)
     {

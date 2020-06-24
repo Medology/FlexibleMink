@@ -12,7 +12,7 @@ trait TypeCaster
      *
      * @Transform /^(0|[1-9]\d*)$/
      * @param  string $string the string to cast.
-     * @return int    The resulting int.
+     * @return string|int    The resulting int.
      */
     public function castStringToInt($string)
     {

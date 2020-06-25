@@ -10,11 +10,14 @@ trait TypeCaster
     /**
      * Casts a step argument from a string to an int.
      *
-     * @Transform /^(0|[1-9]\d*)$/
+     * Will cast the string to an int if the string is int like and within the max int range of the system.
+     * Otherwise, the original string will be returned unmodified.
+     *
+     * @Transform /^((\-\d+)|\d+)$/
      *
      * @param string $string the string to cast
      *
-     * @return int|string the resulting int
+     * @return int|string the string cast to an int, or the original string if it is outside the max int range of the system
      */
     public function castStringToInt($string)
     {

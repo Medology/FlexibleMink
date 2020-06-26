@@ -13,7 +13,7 @@ trait TypeCaster
      * Will cast the string to an int if the string is int like and within the max int range of the system.
      * Otherwise, the original string will be returned unmodified.
      *
-     * @Transform /^((\-\d+)|\d+)$/
+     * @Transform /^(0|-?[1-9]\d*)$/
      *
      * @param string $string the string to cast
      *

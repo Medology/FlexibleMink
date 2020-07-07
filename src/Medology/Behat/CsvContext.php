@@ -90,10 +90,11 @@ class CsvContext implements Context
     /**
      * Asserts that required CSV headers are present.
      *
-     * @param  string[]  $required the headers that are required to be present.
-     * @param  string[]  $actual   the headers that are actually present.
-     * @param  string    $csvName  The name of the CSV (for the exception message).
-     * @throws Exception if any of the required headers are not present.
+     * @param string[] $required the headers that are required to be present
+     * @param string[] $actual   the headers that are actually present
+     * @param string   $csvName  the name of the CSV (for the exception message)
+     *
+     * @throws Exception if any of the required headers are not present
      */
     private function assertHeadersArePresent(array $required, array $actual, $csvName)
     {
@@ -105,10 +106,11 @@ class CsvContext implements Context
     /**
      * Asserts that no additional CSV headers are present.
      *
-     * @param  string[]  $required the headers that are required to be present.
-     * @param  string[]  $actual   the headers that are actually present.
-     * @param  string    $csvName  The name of the CSV (for the exception message).
-     * @throws Exception if any additional headers are present.
+     * @param string[] $required the headers that are required to be present
+     * @param string[] $actual   the headers that are actually present
+     * @param string   $csvName  the name of the CSV (for the exception message)
+     *
+     * @throws Exception if any additional headers are present
      */
     private function assertNoAdditionalHeaders(array $required, array $actual, $csvName)
     {

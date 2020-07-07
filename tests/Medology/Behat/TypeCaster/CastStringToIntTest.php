@@ -28,8 +28,8 @@ class CastStringToIntTest extends TestCase
     /**
      * Test numbers are converted properly.
      *
-     * @param $input    string The input to the conversion method.
-     * @param $expected mixed  The out put of the conversion method.
+     * @param $input    string The input to the conversion method
+     * @param $expected mixed  The out put of the conversion method
      *
      * @dataProvider conversionExamples
      */

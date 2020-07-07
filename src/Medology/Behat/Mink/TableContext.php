@@ -537,8 +537,9 @@ class TableContext implements Context
         /**
          * Anonymous function to retrieve cell values from an array of row nodes. Does not support row or colspan!
          *
-         * @param  NodeElement[] $rows The rows to parse
-         * @return array         The cell values for the rows numerically indexed as [row][col]
+         * @param NodeElement[] $rows The rows to parse
+         *
+         * @return array The cell values for the rows numerically indexed as [row][col]
          */
         $parser = function (array $rows) {
             $data = [];

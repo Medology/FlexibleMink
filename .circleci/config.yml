@@ -26,6 +26,12 @@ commands:
     steps:
     - pull-merge
     - run:
+        name: Add in submodules
+        command: git submodule update --init
+    - run:
+        name: Run style fixer
+        command: bin/ci-style-fixer
+    - run:
         name: Initialize docker .env
         command: bin/init/init_docker_env.sh
     - run:

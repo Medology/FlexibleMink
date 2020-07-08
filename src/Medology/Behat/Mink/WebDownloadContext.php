@@ -109,10 +109,12 @@ class WebDownloadContext implements Context
     /**
      * This method checks if the image for an <img> tag actually loaded.
      *
-     * @param  string      $xpath The xpath of the <img> tag to check
-     * @param  string|null $src   The src value.
+     * @param string      $xpath The xpath of the <img> tag to check
+     * @param string|null $src   the src value
+     *
      * @throws Exception
-     * @return bool        True if image loaded, false otherwise
+     *
+     * @return bool True if image loaded, false otherwise
      */
     public function checkImageLoaded($xpath, $src = null)
     {

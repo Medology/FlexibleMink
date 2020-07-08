@@ -60,7 +60,7 @@ class FlexibleContext extends MinkContext
      *
      * Overrides the base method to support injecting stored values and matching URLs that include hostname.
      *
-     * @param string $page the page to assert we are on.
+     * @param string $page the page to assert we are on
      *
      * @throws DriverException          if the driver failed to perform the action
      * @throws ExpectationException     If the current page is not the expected page.
@@ -623,7 +623,7 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->fixStepArgument($locator);
 
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($locator, $context) {
             $context = $context ? $context : $this->getSession()->getPage();
             $buttons = $context->findAll('named', ['button', $locator]);
@@ -681,7 +681,7 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToLink($locator)
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($locator) {
             $links = $this->getLinks($locator);
 
@@ -765,7 +765,7 @@ class FlexibleContext extends MinkContext
     {
         $locator = $this->fixStepArgument($locator);
 
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($locator) {
             $options = $this->getSession()->getPage()->findAll('named', ['field', $locator]);
 
@@ -819,7 +819,7 @@ class FlexibleContext extends MinkContext
      */
     public function scrollToField($fieldName, TraversableElement $context = null)
     {
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         return Spinner::waitFor(function () use ($fieldName, $context) {
             $context = $context ?: $this->getSession()->getPage();
 
@@ -2032,7 +2032,7 @@ JS
     /**
      * Returns all ancestors of the specified node element.
      *
-     * @param NodeElement $node   the node element to fetch ancestors for.
+     * @param NodeElement $node   the node element to fetch ancestors for
      * @param string|null $stopAt html tag to stop at. This node will NOT be included in the returned list.
      *
      * @return NodeElement[]

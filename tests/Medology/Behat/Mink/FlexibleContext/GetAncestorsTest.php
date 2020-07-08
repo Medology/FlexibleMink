@@ -8,9 +8,13 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 class GetAncestorsTest extends FlexibleContextTest
 {
     private $body;
+
     private $div;
+
     private $list;
+
     private $listItem;
+
     private $button;
 
     public function setUp()
@@ -31,6 +35,17 @@ class GetAncestorsTest extends FlexibleContextTest
 
         // And the list item has a button
         $this->button = $this->mockNode('button', $this->listItem);
+    }
+
+    public function tearDown()
+    {
+        $this->body = null;
+        $this->div = null;
+        $this->list = null;
+        $this->listItem = null;
+        $this->button = null;
+
+        parent::tearDown();
     }
 
     public function testAllAncestorsAreReturned()
@@ -61,8 +76,9 @@ class GetAncestorsTest extends FlexibleContextTest
     /**
      * Creates a mocked NodeElement with an optional parent.
      *
-     * @param  string                 $tagName the type of node element to mock
-     * @param  NodeElement|null       $parent  the optional parent for the node element
+     * @param string           $tagName the type of node element to mock
+     * @param NodeElement|null $parent  the optional parent for the node element
+     *
      * @return MockObject|NodeElement
      */
     protected function mockNode($tagName, NodeElement $parent = null)
@@ -72,16 +88,5 @@ class GetAncestorsTest extends FlexibleContextTest
         $node->method('getParent')->willReturn($parent);
 
         return $node;
-    }
-
-    public function tearDown()
-    {
-        $this->body = null;
-        $this->div = null;
-        $this->list = null;
-        $this->listItem = null;
-        $this->button = null;
-
-        parent::tearDown();
     }
 }

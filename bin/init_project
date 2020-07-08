@@ -9,3 +9,12 @@ echo "Installing Composer..."
 
 echo "Installing Composer dependencies with out dev..."
 composer install --no-interaction --no-suggest
+
+if  [[ ! "$CI" == 'true' ]]; then
+    echo "Initializing git hooks..."
+    "$ROOT"/bin/init_git_hooks
+
+    echo "Initializing submodules..."
+    git submodule update --init
+fi
+        

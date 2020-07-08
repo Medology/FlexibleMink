@@ -4,6 +4,7 @@
  * @noinspection PhpDocMissingThrowsInspection
  * @noinspection PhpUnhandledExceptionInspection
  */
+
 namespace Tests\Medology\Behat;
 
 use DateTime;
@@ -55,6 +56,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider injectLikeSyntaxDataProvider
+     *
      * @param string $string the value to pass to injectStoredValues
      */
     public function testInjectionLikeSyntaxIsNotInjected($string)
@@ -76,6 +78,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider nonExistentItemDataProvider
+     *
      * @param string $string the value to pass to injectStoredValues
      * @param string $error  the expected Exception error message
      */
@@ -91,12 +94,13 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     {
         return [
             'no args'       => [function () {}],
-            'too many args' => [function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {}],
+            'too many args' => [function (/* @scrutinizer ignore-unused */ $a, /* @scrutinizer ignore-unused */ $b) {}],
         ];
     }
 
     /**
      * @dataProvider onGetFnWrongArgsDataProvider
+     *
      * @param $onGetFn
      */
     public function testOnGetFnMustTakeOneArgument($onGetFn)
@@ -115,8 +119,8 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     public function onGetFnWrongReturnTypeDataProvider()
     {
         return [
-            'no return'       => [function (/** @scrutinizer ignore-unused */ $a) {}],
-            'return string'   => [function ($a) {
+            'no return'     => [function (/* @scrutinizer ignore-unused */ $a) {}],
+            'return string' => [function ($a) {
                 return gettype($a);
             }],
             'return function' => [function ($a) {
@@ -129,7 +133,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider onGetFnWrongReturnTypeDataProvider
-     * @param callable $onGetFn
      */
     public function testOnGetFnWrongReturnType(callable $onGetFn)
     {
@@ -268,7 +271,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
 
         // Lambda with wrong return type throws appropriate error
         $wrongReturnTypes = [
-            function (/** @scrutinizer ignore-unused */ $a, /** @scrutinizer ignore-unused */ $b) {
+            function (/* @scrutinizer ignore-unused */ $a, /* @scrutinizer ignore-unused */ $b) {
             },
             function ($a, $b) {
                 return gettype($a) . gettype($b);

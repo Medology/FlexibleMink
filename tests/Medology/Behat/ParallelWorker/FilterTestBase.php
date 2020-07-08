@@ -80,7 +80,8 @@ GHERKIN;
     }
 
     /**
-     * @throws PHPUnit_Framework_AssertionFailedError if the parser returns null (it should never do this).
+     * @throws PHPUnit_Framework_AssertionFailedError if the parser returns null (it should never do this)
+     *
      * @return FeatureNode
      */
     protected function getParsedFeature()

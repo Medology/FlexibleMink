@@ -17,4 +17,3 @@ if  [[ ! "$CI" == 'true' ]]; then
     echo "Initializing submodules..."
     git submodule update --init
 fi
-        

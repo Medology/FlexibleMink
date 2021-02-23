@@ -78,37 +78,40 @@ commands:
     - store_artifacts:
         path: /tmp/artifacts
 
+executors:
+  ubuntu:
+    machine:
+      image: ubuntu-1604:202007-01
+      enabled: true
+
 jobs:
   build:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
-    machine:
-      enabled: true
+    executor: ubuntu
     environment:
-    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - build
+      - build
 
   test:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
-    machine:
-      enabled: true
+    executor: ubuntu
     environment:
-    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - test
+      - test
 
   build-php5:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
-    machine:
-      enabled: true
+    executor: ubuntu
     environment:
-    - USE_PHP5: 1
-    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - USE_PHP5: 1
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
     - build
@@ -116,14 +119,13 @@ jobs:
   test-php5:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
-    machine:
-      enabled: true
+    executor: ubuntu
     environment:
-    - USE_PHP5: 1
-    - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - USE_PHP5: 1
+      - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-    - test
+      - test
 
 workflows:
   version: 2

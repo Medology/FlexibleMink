@@ -30,6 +30,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
             'date_prop'       => new DateTime('2028-10-28 15:30:10'),
+            'phone_prop'      => '4414031737',
         ];
 
         return $obj;
@@ -429,6 +430,18 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             '10/28/2028 at 3:30 PM',
             $this->injectStoredValues('(the date_prop of the testObj formatted as a US date and 12hr time)')
+        );
+
+        // Phone is formatted as US phone specified format
+        $this->assertEquals(
+            '(441) 403-1737',
+            $this->injectStoredValues('(the phone_prop of the testObj formatted as a US phone number)')
+        );
+
+        // Phone is formatted as ###-###-#### specified format
+        $this->assertEquals(
+            '441-403-1737',
+            $this->injectStoredValues('(the phone_prop of the testObj formatted as ###-###-#### phone number)')
         );
     }
 

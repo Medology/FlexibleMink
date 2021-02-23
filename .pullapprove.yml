@@ -1,7 +1,7 @@
 version: 3
-extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/base.pullapprove.yml?ref=master"
+extends: "https://api.github.com/repos/medology/Scripts/contents/Pull%20Approve/arepa.pullapprove.yml?ref=master"
 pullapprove_conditions:
-  - condition: "base.ref == '1.0'"
+  - condition: "base.ref == 'master'"
     unmet_status: failure
     explanation: "PullApprove is not configured for this branch"
   - condition: "'[DO NOT REVIEW]' not in title"
@@ -22,7 +22,3 @@ pullapprove_conditions:
   - condition: "'ci/circleci: test-php5' in statuses.succeeded or 'Force Review' in labels"
     unmet_status: pending
     explanation: "ci/circleci: test-php5 must pass before requesting review"
-  - condition: "'continuous-integration/styleci/pr' in statuses.succeeded or 'Force Review' in labels"
-    unmet_status: pending
-    explanation: "StyleCI must pass before requesting review"
-

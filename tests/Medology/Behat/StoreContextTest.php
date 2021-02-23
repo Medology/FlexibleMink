@@ -361,6 +361,36 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($output, $this->storeContext->injectStoredValues($input));
     }
 
+    public function phoneNumberFormatDataProvider()
+    {
+        return [
+            'Phone is formatted with default format when no format is specified' => [
+                '(the phone_prop of the testObj)',
+                '4414031737',
+            ],
+            'Phone is formatted with specified US format' => [
+                '(the phone_prop of the testObj formatted as a US phone number)',
+                '(441) 403-1737',
+            ],
+            'Phone is formatted as specified ###-###-#### format' => [
+                '(the phone_prop of the testObj formatted as a ###-###-### phone number)',
+                '(441) 403-1737',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider phoneNumberFormatDataProvider
+     *
+     * @param $input
+     * @param $output
+     */
+    public function testPhoneNumberFormatting($input, $output)
+    {
+        $this->storeContext->set('testObj', $this->getMockObject());
+        $this->assertEquals($output, $this->storeContext->injectStoredValues($input));
+    }
+
     /**
      * Tests injectStoredValues using objects with magic properties.
      */
@@ -443,6 +473,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             'test_property_2' => 'test_value_2',
             'test_property_3' => 'test_value_3',
             'date_prop'       => new DateTime('2028-10-28 15:30:10'),
+            'phone_prop'      => '4414031737',
         ];
     }
 }

@@ -31,22 +31,14 @@ class StoreContext extends Store implements Context
 
     protected static $dateFormat = DateTime::ISO8601;
 
-    protected static $FORMAT_MYSQL_DATE = 'a MySQL date';
-
-    protected static $FORMAT_MYSQL_DATE_AND_TIME = 'a MySQL date and time';
-
-    protected static $FORMAT_US_DATE = 'a US date';
-
-    protected static $FORMAT_US_DATE_AND_TIME = 'a US date and time';
-
-    protected static $FORMAT_US_DATE_AND_12HR_TIME = 'a US date and 12hr time';
-
     protected static $format_map = [
-        'a MySQL date'            => 'Y-m-d',
-        'a MySQL date and time'   => 'Y-m-d H:i:s',
-        'a US date'               => 'm/d/Y',
-        'a US date and time'      => 'm/d/Y H:i:s',
-        'a US date and 12hr time' => 'm/d/Y \a\t g:i A',
+        'a MySQL date'               => 'Y-m-d',
+        'a MySQL date and time'      => 'Y-m-d H:i:s',
+        'a US date'                  => 'm/d/Y',
+        'a US date and time'         => 'm/d/Y H:i:s',
+        'a US date and 12hr time'    => 'm/d/Y \a\t g:i A',
+        'a US phone number'          => ['/(\d{3})(\d{3})(\d{4})/', '($1) $2-$3'],
+        'a ###-###-### phone number' => ['/(\d{3})(\d{3})(\d{4})/', '$1-$2-$3'],
     ];
 
     public function __construct()
@@ -266,7 +258,7 @@ class StoreContext extends Store implements Context
      *
      * @param mixed        $property       the property to get from the object
      * @param array|object $thing          the thing to get the value from
-     * @param string       $propertyFormat the pattern for formatting the value
+     * @param mixed        $propertyFormat the pattern for formatting the value
      *
      * @return mixed the prepared value
      */
@@ -276,6 +268,8 @@ class StoreContext extends Store implements Context
 
         if ($propertyFormat) {
             $propertyFormat = $this->processPropertyFormat($propertyFormat);
+        } else if (is_string($value) && is_array($propertyFormat)) {
+            $value = preg_replace($propertyFormat[0], $propertyFormat[1], $value);
         }
 
         if ($value instanceof DateTimeInterface) {
@@ -294,7 +288,7 @@ class StoreContext extends Store implements Context
      *
      * @throws InvalidArgumentException if the property format is not supported
      *
-     * @return string the programmatic format
+     * @return mixed the programmatic format
      */
     protected function processPropertyFormat($propertyFormat)
     {

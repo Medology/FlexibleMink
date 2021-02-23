@@ -510,7 +510,7 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             ],
             'Phone is formatted as specified ###-###-#### format' => [
                 '(the phone_prop of the testObj formatted as a ###-###-### phone number)',
-                '(441) 403-1737',
+                '441-403-1737',
             ],
         ];
     }

@@ -431,18 +431,6 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
             '10/28/2028 at 3:30 PM',
             $this->injectStoredValues('(the date_prop of the testObj formatted as a US date and 12hr time)')
         );
-
-        // Phone is formatted as US phone specified format
-        $this->assertEquals(
-            '(441) 403-1737',
-            $this->injectStoredValues('(the phone_prop of the testObj formatted as a US phone number)')
-        );
-
-        // Phone is formatted as ###-###-#### specified format
-        $this->assertEquals(
-            '441-403-1737',
-            $this->injectStoredValues('(the phone_prop of the testObj formatted as ###-###-#### phone number)')
-        );
     }
 
     /**
@@ -507,6 +495,38 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
          ***********************/
         $this->assertEquals(['1 University', null], $this->parseKey('1 University'));
         $this->assertEquals(['2 University', null], $this->parseKey('2 University'));
+    }
+
+    public function phoneNumberFormatDataProvider()
+    {
+        return [
+            'Phone is formatted with default format when no format is specified' => [
+                '(the phone_prop of the testObj)',
+                '4414031737',
+            ],
+            'Phone is formatted with specified US format' => [
+                '(the phone_prop of the testObj formatted as a US phone number)',
+                '(441) 403-1737',
+            ],
+            'Phone is formatted as specified ###-###-#### format' => [
+                '(the phone_prop of the testObj formatted as a ###-###-### phone number)',
+                '(441) 403-1737',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider phoneNumberFormatDataProvider
+     *
+     * @param $input
+     * @param $output
+     */
+    public function testPhoneNumberFormatting($input, $output)
+    {
+        $testObj = $this->getMockObject();
+        $name = 'testObj';
+        $this->put($testObj, $name);
+        $this->assertEquals($output, $this->injectStoredValues($input));
     }
 
     /**

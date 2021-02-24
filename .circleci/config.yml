@@ -4,79 +4,79 @@ commands:
   pull-merge:
     description: "Bring the repository up-to-date with master and handle setup"
     steps:
-    - checkout
-    - restore_cache:
-        key: composer-{{ checksum "composer.lock" }}
-    - run:
-        name: Configure the CircleCI git user
-        command: |
-          git config --global user.email "ci@medology.com"
-          git config --global user.name "Circle CI"
-    - run:
-        name: Configure git to use SSH instead of HTTP
-        command: |
-          git config --global url.git@github.com:.insteadOf git://github.com/
-          git config --global --add url.git@github.com:.insteadOf https://github.com/
-    - run:
-        name: Merge master
-        command: git fetch origin && git merge origin/master --no-edit
+      - checkout
+      - restore_cache:
+          key: composer-{{ checksum "composer.lock" }}
+      - run:
+          name: Configure the CircleCI git user
+          command: |
+            git config --global user.email "ci@medology.com"
+            git config --global user.name "Circle CI"
+      - run:
+          name: Configure git to use SSH instead of HTTP
+          command: |
+            git config --global url.git@github.com:.insteadOf git://github.com/
+            git config --global --add url.git@github.com:.insteadOf https://github.com/
+      - run:
+          name: Merge master
+          command: git fetch origin && git merge origin/master --no-edit
 
   build:
     description: "Build the project."
     steps:
-    - pull-merge
-    - run:
-        name: Add in submodules
-        command: git submodule update --init
-    - run:
-        name: Run style fixer
-        command: bin/ci-style-fixer
-    - run:
-        name: Initialize docker .env
-        command: bin/init/init_docker_env.sh
-    - run:
-        name: Start containers
-        command: |
-          .circleci/containers up -d
-          bin/init/wait_for_services.sh
-    - run:
-        name: Initialize the project
-        command: |
-          mkdir -p /tmp/artifacts
-          bin/init_project
-    - store_test_results:
-        path: /tmp/artifacts
-    - store_artifacts:
-        path: /tmp/artifacts
-    - persist_to_workspace:
-        root: .
-        paths:
-        - .
-    - save_cache:
-        key: composer-{{ checksum "composer.lock" }}
-        paths:
-        - ~/.composer/cache
+      - pull-merge
+      - run:
+          name: Add in submodules
+          command: git submodule update --init
+      - run:
+          name: Run style fixer
+          command: bin/ci-style-fixer
+      - run:
+          name: Initialize docker .env
+          command: bin/init/init_docker_env.sh
+      - run:
+          name: Start containers
+          command: |
+            .circleci/containers up -d
+            bin/init/wait_for_services.sh
+      - run:
+          name: Initialize the project
+          command: |
+            mkdir -p /tmp/artifacts
+            bin/init_project
+      - store_test_results:
+          path: /tmp/artifacts
+      - store_artifacts:
+          path: /tmp/artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+          - .
+      - save_cache:
+          key: composer-{{ checksum "composer.lock" }}
+          paths:
+          - ~/.composer/cache
 
   test:
     description: "Test the project."
     steps:
-    - attach_workspace:
-        at: .
-    - run:
-        name: Start containers
-        command: |
-          .circleci/containers up -d
-          bin/init/wait_for_services.sh
-    - run:
-        name: Unit tests
-        command: phpunit --log-junit /tmp/artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
-    - run:
-        name: Behat tests
-        command: behat --strict -vv -f pretty -o std -f junit -o /tmp/artifacts
-    - store_test_results:
-        path: /tmp/artifacts
-    - store_artifacts:
-        path: /tmp/artifacts
+      - attach_workspace:
+          at: .
+      - run:
+          name: Start containers
+          command: |
+            .circleci/containers up -d
+            bin/init/wait_for_services.sh
+      - run:
+          name: Unit tests
+          command: phpunit --log-junit /tmp/artifacts/phpunit.junit.xml --report-useless-tests --strict-coverage
+      - run:
+          name: Behat tests
+          command: behat --strict -vv -f pretty -o std -f junit -o /tmp/artifacts
+      - store_test_results:
+          path: /tmp/artifacts
+      - store_artifacts:
+          path: /tmp/artifacts
 
 executors:
   ubuntu:
@@ -89,10 +89,8 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
-    context: org-global
     environment:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
     steps:
       - build
 
@@ -100,10 +98,8 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
-    context: org-global
     environment:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
     steps:
       - test
 
@@ -111,23 +107,19 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
-    context: org-global
     environment:
       - USE_PHP5: 1
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
     steps:
-    - build
+      - build
 
   test-php5:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
-    context: org-global
     environment:
       - USE_PHP5: 1
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
     steps:
       - test
 
@@ -135,11 +127,19 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-    - build
+    - build:
+        context:
+          - org-global
     - test:
+        context:
+          - org-global
         requires:
-        - build
-    - build-php5
+          - build
+    - build-php5:
+        context:
+          - org-global
     - test-php5:
+        context:
+          - org-global
         requires:
-        - build-php5
+          - build-php5

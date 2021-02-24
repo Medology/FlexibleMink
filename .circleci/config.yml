@@ -89,6 +89,7 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
+    context: org-global
     environment:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -99,6 +100,7 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
+    context: org-global
     environment:
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
@@ -109,6 +111,7 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
+    context: org-global
     environment:
       - USE_PHP5: 1
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -120,6 +123,7 @@ jobs:
     working_directory: /tmp/FlexibleMink
     parallelism: 1
     executor: ubuntu
+    context: org-global
     environment:
       - USE_PHP5: 1
       - PATH: /opt/circleci/.pyenv/shims:./bin:./node_modules/.bin:./vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

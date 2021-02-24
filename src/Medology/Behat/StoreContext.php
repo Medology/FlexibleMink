@@ -258,7 +258,7 @@ class StoreContext extends Store implements Context
      *
      * @param mixed        $property       the property to get from the object
      * @param array|object $thing          the thing to get the value from
-     * @param mixed        $propertyFormat the pattern for formatting the value
+     * @param mixed|null   $propertyFormat the pattern for formatting the value
      *
      * @return mixed the prepared value
      */

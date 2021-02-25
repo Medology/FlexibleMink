@@ -272,7 +272,7 @@ class StoreContext extends Store implements Context
 
         if ($value instanceof DateTimeInterface) {
             $value = $this->formatDateTime($value, $thing, $propertyFormat);
-        } else if (is_string($value) && is_array($propertyFormat)) {
+        } elseif (is_string($value) && is_array($propertyFormat)) {
             $value = preg_replace($propertyFormat[0], $propertyFormat[1], $value);
         }
 

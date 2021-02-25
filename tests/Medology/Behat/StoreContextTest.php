@@ -382,8 +382,8 @@ class StoreContextTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider phoneNumberFormatDataProvider
      *
-     * @param string $input  the store context input to retrieve value from.
-     * @param string $output the expected output from the store.
+     * @param string $input  the store context input to retrieve value from
+     * @param string $output the expected output from the store
      */
     public function testPhoneNumberFormatting($input, $output)
     {

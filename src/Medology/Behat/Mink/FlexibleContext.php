@@ -431,7 +431,7 @@ class FlexibleContext extends MinkContext
         $locator = $this->storeContext->injectStoredValues($locator);
 
         Spinner::waitFor(
-            function() use($locator) {
+            function () use ($locator) {
                 $this->scrollToLink($locator)->click();
             }
         );

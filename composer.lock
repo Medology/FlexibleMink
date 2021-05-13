@@ -306,20 +306,20 @@
         },
         {
             "name": "chekote/noun-store",
-            "version": "v4.0.0",
+            "version": "v4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Chekote/noun-store.git",
-                "reference": "c50c685e44c8b3e348c3461727d8d278c4f45e50"
+                "reference": "a9fc8d69300b9b2c7cdc9e4e87e1bc77632d11fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Chekote/noun-store/zipball/c50c685e44c8b3e348c3461727d8d278c4f45e50",
-                "reference": "c50c685e44c8b3e348c3461727d8d278c4f45e50",
+                "url": "https://api.github.com/repos/Chekote/noun-store/zipball/a9fc8d69300b9b2c7cdc9e4e87e1bc77632d11fb",
+                "reference": "a9fc8d69300b9b2c7cdc9e4e87e1bc77632d11fb",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "~5.4",
+                "illuminate/support": ">=5.4",
                 "php": ">=5.6.30"
             },
             "require-dev": {
@@ -343,7 +343,7 @@
                 "noun",
                 "testing"
             ],
-            "time": "2020-03-16T16:36:03+00:00"
+            "time": "2021-05-12T13:00:37+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -545,16 +545,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.18",
+            "version": "v2.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db"
+                "reference": "0f1f60250fccffeaf5dda91eea1c018aed1adc2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
-                "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0f1f60250fccffeaf5dda91eea1c018aed1adc2a",
+                "reference": "0f1f60250fccffeaf5dda91eea1c018aed1adc2a",
                 "shasum": ""
             },
             "require": {
@@ -590,7 +590,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2019-01-03T20:59:08+00:00"
+            "time": "2021-04-17T09:33:01+00:00"
         },
         {
             "name": "psr/container",
@@ -2101,6 +2101,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2017-12-04T08:55:13+00:00"
         },
         {
@@ -2755,12 +2756,12 @@
             "version": "1.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/webmozart/assert.git",
+                "url": "https://github.com/webmozarts/assert.git",
                 "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/83e253c8e0be5b0257b881e1827274667c5c17a9",
                 "reference": "83e253c8e0be5b0257b881e1827274667c5c17a9",
                 "shasum": ""
             },
